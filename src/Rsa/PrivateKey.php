@@ -23,12 +23,12 @@
 /**
  * @namespace
  */
-namespace Zend\Crypt\RSA;
+namespace Zend\Crypt\Rsa;
 
 /**
  * @uses       Zend\Crypt\Exception
- * @uses       Zend\Crypt\RSA\Key
- * @uses       Zend\Crypt\RSA\PublicKey
+ * @uses       Zend\Crypt\Rsa\Key
+ * @uses       Zend\Crypt\Rsa\PublicKey
  * @category   Zend
  * @package    Zend_Crypt
  * @copyright  Copyright (c) 2005-2010 Zend Technologies USA Inc. (http://www.zend.com)
@@ -61,7 +61,7 @@ class PrivateKey extends Key
 
     public function getPublicKey()
     {
-        if (is_null($this->_publicKey)) {
+        if ($this->_publicKey === null) {
             $this->_publicKey = new PublicKey($this->_details['key']);
         }
         return $this->_publicKey;

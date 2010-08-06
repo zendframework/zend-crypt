@@ -25,14 +25,14 @@
 namespace Zend\Crypt;
 
 /**
- * @uses       Zend\Crypt\RSA\PrivateKey
- * @uses       Zend\Crypt\RSA\PublicKey
+ * @uses       Zend\Crypt\Rsa\PrivateKey
+ * @uses       Zend\Crypt\Rsa\PublicKey
  * @category   Zend
  * @package    Zend_Crypt
  * @copyright  Copyright (c) 2005-2010 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
-class RSA
+class Rsa
 {
     const BINARY = 'binary';
     const BASE64 = 'base64';
@@ -101,11 +101,11 @@ class RSA
 
     /**
      * @param  string $data
-     * @param  Zend\Crypt\RSA\PrivateKey $privateKey
+     * @param  Zend\Crypt\Rsa\PrivateKey $privateKey
      * @param  string $format
      * @return string
      */
-    public function sign($data, RSA\PrivateKey $privateKey = null, $format = null)
+    public function sign($data, Rsa\PrivateKey $privateKey = null, $format = null)
     {
         $signature = '';
         if (isset($privateKey)) {
@@ -143,15 +143,15 @@ class RSA
 
     /**
      * @param string $data
-     * @param Zend\Crypt\RSA\Key $key
+     * @param Zend\Crypt\Rsa\Key $key
      * @param string $format
      * @return string
      */
-    public function encrypt($data, RSA\Key $key, $format = null)
+    public function encrypt($data, Rsa\Key $key, $format = null)
     {
         $encrypted = '';
         $function = 'openssl_public_encrypt';
-        if ($key instanceof RSA\PrivateKey) {
+        if ($key instanceof Rsa\PrivateKey) {
             $function = 'openssl_private_encrypt';
         }
         $function($data, $encrypted, $key->getOpensslKeyResource());
@@ -163,18 +163,18 @@ class RSA
 
     /**
      * @param string $data
-     * @param \Zend\Crypt\RSA\Key $key
+     * @param \Zend\Crypt\Rsa\Key $key
      * @param string $format
      * @return string
      */
-    public function decrypt($data, RSA\Key $key, $format = null)
+    public function decrypt($data, Rsa\Key $key, $format = null)
     {
         $decrypted = '';
         if ($format == self::BASE64) {
             $data = base64_decode($data);
         }
         $function = 'openssl_private_decrypt';
-        if ($key instanceof RSA\PublicKey) {
+        if ($key instanceof Rsa\PublicKey) {
             $function = 'openssl_public_decrypt';
         }
         $function($data, $decrypted, $key->getOpensslKeyResource());
@@ -185,7 +185,7 @@ class RSA
     {
         $config = null;
         $passPhrase = null;
-        if (!is_null($configargs)) {
+        if ($configargs !== null) {
             if (isset($configargs['passPhrase'])) {
                 $passPhrase = $configargs['passPhrase'];
                 unset($configargs['passPhrase']);
@@ -200,9 +200,9 @@ class RSA
         
         openssl_pkey_export($resource, $private, $passPhrase);
 
-        $privateKey = new RSA\PrivateKey($private, $passPhrase);
+        $privateKey = new Rsa\PrivateKey($private, $passPhrase);
         $details    = openssl_pkey_get_details($resource);
-        $publicKey  = new RSA\PublicKey($details['key']);
+        $publicKey  = new Rsa\PublicKey($details['key']);
         $return     = new \ArrayObject(array(
            'privateKey' => $privateKey,
            'publicKey'  => $publicKey
@@ -216,8 +216,13 @@ class RSA
     public function setPemString($value)
     {
         $this->_pemString = $value;
-        $this->_privateKey = new RSA\PrivateKey($this->_pemString, $this->_passPhrase);
-        $this->_publicKey = $this->_privateKey->getPublicKey();
+        try {
+            $this->_privateKey = new Rsa\PrivateKey($this->_pemString, $this->_passPhrase);
+            $this->_publicKey = $this->_privateKey->getPublicKey();
+        } catch (Exception $e) {
+            $this->_privateKey = null;
+            $this->_publicKey = new Rsa\PublicKey($this->_pemString);
+        }
     }
 
     public function setPemPath($value)
@@ -229,7 +234,7 @@ class RSA
     public function setCertificateString($value)
     {
         $this->_certificateString = $value;
-        $this->_publicKey = new RSA\PublicKey($this->_certificateString, $this->_passPhrase);
+        $this->_publicKey = new Rsa\PublicKey($this->_certificateString, $this->_passPhrase);
     }
 
     public function setCertificatePath($value)
@@ -240,7 +245,7 @@ class RSA
 
     public function setHashAlgorithm($name)
     {
-        switch ($name) {
+        switch (strtolower($name)) {
             case 'md2':
                 $this->_hashAlgorithm = OPENSSL_ALGO_MD2;
                 break;
@@ -249,6 +254,12 @@ class RSA
                 break;
             case 'md5':
                 $this->_hashAlgorithm = OPENSSL_ALGO_MD5;
+                break;
+            case 'sha1':
+                $this->_hashAlgorithm = OPENSSL_ALGO_SHA1;
+                break;
+            case 'dss1':
+                $this->_hashAlgorithm = OPENSSL_ALGO_DSS1;
                 break;
         }
     }
