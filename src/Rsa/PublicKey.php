@@ -23,11 +23,11 @@
 /**
  * @namespace
  */
-namespace Zend\Crypt\RSA;
+namespace Zend\Crypt\Rsa;
 
 /**
  * @uses       Zend\Crypt\Exception
- * @uses       Zend\Crypt\RSA\Key
+ * @uses       Zend\Crypt\Rsa\Key
  * @category   Zend
  * @package    Zend_Crypt
  * @copyright  Copyright (c) 2005-2010 Zend Technologies USA Inc. (http://www.zend.com)
