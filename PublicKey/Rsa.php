@@ -1,18 +1,30 @@
 <?php
 /**
- * Zend Framework (http://framework.zend.com/)
+ * Zend Framework
  *
- * @link      http://github.com/zendframework/zf2 for the canonical source repository
- * @copyright Copyright (c) 2005-2012 Zend Technologies USA Inc. (http://www.zend.com)
- * @license   http://framework.zend.com/license/new-bsd New BSD License
- * @package   Zend_Crypt
+ * LICENSE
+ *
+ * This source file is subject to the new BSD license that is bundled
+ * with this package in the file LICENSE.txt.
+ * It is also available through the world-wide-web at this URL:
+ * http://framework.zend.com/license/new-bsd
+ * If you did not receive a copy of the license and are unable to
+ * obtain it through the world-wide-web, please send an email
+ * to license@zend.com so we can send you a copy immediately.
+ *
+ * @category   Zend
+ * @package    Zend_Crypt
+ * @copyright  Copyright (c) 2005-2012 Zend Technologies USA Inc. (http://www.zend.com)
+ * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
-namespace Zend\Crypt;
 
-use Zend\Crypt\Rsa\Exception\RuntimeException,
-    Zend\Crypt\Exception\InvalidArgumentException;
+namespace Zend\Crypt\PublicKey;
+
+use Zend\Crypt\Exception;
 
 /**
+ * @uses       Zend\Crypt\Rsa\PrivateKey
+ * @uses       Zend\Crypt\Rsa\PublicKey
  * @category   Zend
  * @package    Zend_Crypt
  * @copyright  Copyright (c) 2005-2012 Zend Technologies USA Inc. (http://www.zend.com)
@@ -22,36 +34,48 @@ class Rsa
 {
     const BINARY = 'binary';
     const BASE64 = 'base64';
-
+    /**
+     * @var string
+     */
     protected $_privateKey;
-
+    /**
+     * @var string
+     */
     protected $_publicKey;
-
     /**
      * @var string
      */
     protected $_pemString;
-
+    /**
+     * @var string
+     */
     protected $_pemPath;
-
+    /**
+     * @var string
+     */
     protected $_certificateString;
-
+    /**
+     * @var string
+     */
     protected $_certificatePath;
-
+    /**
+     * @var string
+     */
     protected $_hashAlgorithm;
-
+    /**
+     * @var string
+     */
     protected $_passPhrase;
-
     /**
      * Class constructor
      *
      * @param array $options
-     * @throws RuntimeException
+     * @throws Zend\Crypt\Rsa\Exception
      */
     public function __construct(array $options = null)
     {
         if (!extension_loaded('openssl')) {
-            throw new RuntimeException('Zend\Crypt\Rsa requires openssl extention to be loaded.');
+            throw new \Zend\Crypt\Rsa\Exception('Zend_Crypt_Rsa requires openssl extention to be loaded.');
         }
 
         // Set _hashAlgorithm property when we are sure, that openssl extension is loaded
@@ -62,12 +86,10 @@ class Rsa
             $this->setOptions($options);
         }
     }
-
     /**
      * Set options
-     *
-     * @param array $options
-     * @return void
+     * 
+     * @param array $options 
      */
     public function setOptions(array $options)
     {
@@ -94,20 +116,29 @@ class Rsa
             }
         }
     }
-
+    /**
+     * Get the private key
+     * 
+     * @return string 
+     */
     public function getPrivateKey()
     {
         return $this->_privateKey;
     }
-
+    /**
+     * Get the public key
+     * 
+     * @return string 
+     */
     public function getPublicKey()
     {
         return $this->_publicKey;
     }
-
     /**
+     * Sign
+     * 
      * @param  string $data
-     * @param  \Zend\Crypt\Rsa\PrivateKey $privateKey
+     * @param  PrivateKey $privateKey
      * @param  string $format
      * @return string
      */
@@ -129,8 +160,9 @@ class Rsa
         }
         return $signature;
     }
-
     /**
+     * Verify signature
+     * 
      * @param  string $data
      * @param  string $signature
      * @param  string $format
@@ -146,8 +178,9 @@ class Rsa
             $this->getHashAlgorithm());
         return $result;
     }
-
     /**
+     * Encrypt
+     * 
      * @param string $data
      * @param Zend\Crypt\Rsa\Key $key
      * @param string $format
@@ -168,6 +201,8 @@ class Rsa
     }
 
     /**
+     * Decrypt
+     * 
      * @param string $data
      * @param \Zend\Crypt\Rsa\Key $key
      * @param string $format
@@ -186,7 +221,12 @@ class Rsa
         $function($data, $decrypted, $key->getOpensslKeyResource());
         return $decrypted;
     }
-
+    /**
+     * Generate keys
+     * 
+     * @param  array $configargs
+     * @return \ArrayObject 
+     */
     public function generateKeys(array $configargs = null)
     {
         $config     = array();
@@ -218,6 +258,8 @@ class Rsa
     }
 
     /**
+     * Set PEM string
+     * 
      * @param string $value
      */
     public function setPemString($value)
@@ -226,24 +268,36 @@ class Rsa
         try {
             $this->_privateKey = new Rsa\PrivateKey($this->_pemString, $this->_passPhrase);
             $this->_publicKey = $this->_privateKey->getPublicKey();
-        } catch (RuntimeException $e) {
+        } catch (Exception $e) {
             $this->_privateKey = null;
             $this->_publicKey = new Rsa\PublicKey($this->_pemString);
         }
     }
-
+    /**
+     * Set PEM path
+     * 
+     * @param string $value 
+     */
     public function setPemPath($value)
     {
         $this->_pemPath = $value;
         $this->setPemString(file_get_contents($this->_pemPath));
     }
-
+    /**
+     * Set certificate string
+     * 
+     * @param string $value 
+     */
     public function setCertificateString($value)
     {
         $this->_certificateString = $value;
         $this->_publicKey = new Rsa\PublicKey($this->_certificateString, $this->_passPhrase);
     }
-
+    /**
+     * Set certificate path
+     * 
+     * @param string $value 
+     */
     public function setCertificatePath($value)
     {
         $this->_certificatePath = $value;
@@ -252,9 +306,9 @@ class Rsa
 
     /**
      * Set hash algorithm
-     *
-     * @param string $name
-     * @throws InvalidArgumentException
+     * 
+     * @param  string $name
+     * @throws Exception\RuntimeException
      */
     public function setHashAlgorithm($name)
     {
@@ -263,7 +317,7 @@ class Rsa
                 // check if md2 digest is enabled on openssl just for backwards compatibility
                 $digests = openssl_get_md_methods();
                 if (!in_array(strtoupper($name), $digests)) {
-                    throw new InvalidArgumentException('Openssl md2 digest is not enabled  (deprecated)');
+                    throw new Exception\RuntimeException('Openssl md2 digest is not enabled  (deprecated)');
                 }
                 $this->_hashAlgorithm = OPENSSL_ALGO_MD2;
                 break;
@@ -281,35 +335,57 @@ class Rsa
                 break;
         }
     }
-
     /**
+     * Get PEM string
+     * 
      * @return string
      */
     public function getPemString()
     {
         return $this->_pemString;
     }
-
+    /**
+     * Get PEM path
+     * 
+     * @return string 
+     */
     public function getPemPath()
     {
         return $this->_pemPath;
     }
-
+    /**
+     * Get certificate string
+     * 
+     * @return string 
+     */
     public function getCertificateString()
     {
         return $this->_certificateString;
     }
-
+    /**
+     * Get certificate path
+     * 
+     * @return string 
+     */
     public function getCertificatePath()
     {
         return $this->_certificatePath;
     }
-
+    /**
+     * Get hash algorithm
+     * 
+     * @return string 
+     */
     public function getHashAlgorithm()
     {
         return $this->_hashAlgorithm;
     }
-
+    /**
+     * Parse config arguments
+     * 
+     * @param  array $config
+     * @return array 
+     */
     protected function _parseConfigArgs(array $config = null)
     {
         $configs = array();
@@ -321,5 +397,4 @@ class Rsa
         }
         return null;
     }
-
 }

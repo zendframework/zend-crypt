@@ -1,28 +1,38 @@
 <?php
 /**
- * Zend Framework (http://framework.zend.com/)
+ * Zend Framework
  *
- * @link      http://github.com/zendframework/zf2 for the canonical source repository
- * @copyright Copyright (c) 2005-2012 Zend Technologies USA Inc. (http://www.zend.com)
- * @license   http://framework.zend.com/license/new-bsd New BSD License
- * @package   Zend_Crypt
- */
-
-namespace Zend\Crypt;
-
-use Zend\Crypt\Exception\RuntimeException;
-
-/**
+ * LICENSE
+ *
+ * This source file is subject to the new BSD license that is bundled
+ * with this package in the file LICENSE.txt.
+ * It is also available through the world-wide-web at this URL:
+ * http://framework.zend.com/license/new-bsd
+ * If you did not receive a copy of the license and are unable to
+ * obtain it through the world-wide-web, please send an email
+ * to license@zend.com so we can send you a copy immediately.
+ *
  * @category   Zend
  * @package    Zend_Crypt
  * @copyright  Copyright (c) 2005-2012 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
-class Crypt
+
+namespace Zend\Crypt;
+
+/**
+ * @uses       Zend\Crypt\Exception
+ * @category   Zend
+ * @package    Zend_Crypt
+ * @copyright  Copyright (c) 2005-2012 Zend Technologies USA Inc. (http://www.zend.com)
+ * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ */
+class Hash
 {
     const TYPE_OPENSSL = 'openssl';
     const TYPE_HASH    = 'hash';
     const TYPE_MHASH   = 'mhash';
+    const BCRYPT_COST  = '14';
 
     protected static $_type = null;
 
@@ -63,29 +73,29 @@ class Crypt
         'tiger128',
         'tiger160',
     );
-
+    
     /**
      * @param  string $algorithm
      * @param  string $data
      * @param  bool $binaryOutput
      * @return void
      */
-    public static function hash($algorithm, $data, $binaryOutput = false)
+    public static function compute($algorithm, $data, $binaryOutput = false)
     {
         $algorithm = strtolower($algorithm);
         if (function_exists($algorithm)) {
             return $algorithm($data, $binaryOutput);
         }
-        self::_detectHashSupport($algorithm);
+        self::detectHashSupport($algorithm);
         $supportedMethod = '_digest' . ucfirst(self::$_type);
         return self::$supportedMethod($algorithm, $data, $binaryOutput);
     }
 
     /**
      * @param  string $algorithm
-     * @throws RuntimeException
+     * @throws Zend\Crypt\Exception
      */
-    protected static function _detectHashSupport($algorithm)
+    protected static function detectHashSupport($algorithm)
     {
         if (function_exists('hash')) {
             self::$_type = self::TYPE_HASH;
@@ -108,9 +118,23 @@ class Crypt
                return;
             }
         }
-        throw new RuntimeException('\'' . $algorithm . '\' is not supported by any available extension or native function');
+        throw new Exception\RuntimeException('\'' . $algorithm . '\' is not supported by any available extension or native function');
     }
-
+    /**
+     * Check is a hash function is supported
+     * 
+     * @param  string $algorithm 
+     * @return boolean
+     */
+    public static function isSupported($algorithm) 
+    {
+        try {
+            $supported = self::detectHashSupport($algorithm);
+        } catch (Exception\RuntimeException $e) {
+            return false;
+        }
+        return true;
+    }
     /**
      * @param  string $algorithm
      * @param  string $data

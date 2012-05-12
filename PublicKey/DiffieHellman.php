@@ -1,22 +1,34 @@
 <?php
 /**
- * Zend Framework (http://framework.zend.com/)
+ * Zend Framework
  *
- * @link      http://github.com/zendframework/zf2 for the canonical source repository
- * @copyright Copyright (c) 2005-2012 Zend Technologies USA Inc. (http://www.zend.com)
- * @license   http://framework.zend.com/license/new-bsd New BSD License
- * @package   Zend_Crypt
+ * LICENSE
+ *
+ * This source file is subject to the new BSD license that is bundled
+ * with this package in the file LICENSE.txt.
+ * It is also available through the world-wide-web at this URL:
+ * http://framework.zend.com/license/new-bsd
+ * If you did not receive a copy of the license and are unable to
+ * obtain it through the world-wide-web, please send an email
+ * to license@zend.com so we can send you a copy immediately.
+ *
+ * @category   Zend
+ * @package    Zend_Crypt
+ * @subpackage DiffieHellman
+ * @copyright  Copyright (c) 2005-2012 Zend Technologies USA Inc. (http://www.zend.com)
+ * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
 
-namespace Zend\Crypt;
+namespace Zend\Crypt\PublicKey;
 
-use Zend\Crypt\Exception\DiffieHellmanException;
+use Zend\Math\Math;
 
 /**
  * PHP implementation of the Diffie-Hellman public key encryption algorithm.
  * Allows two unassociated parties to establish a joint shared secret key
  * to be used in encrypting subsequent communications.
  *
+ * @uses       Zend\Crypt\Math
  * @category   Zend
  * @package    Zend_Crypt
  * @copyright  Copyright (c) 2005-2012 Zend Technologies USA Inc. (http://www.zend.com)
@@ -59,7 +71,7 @@ class DiffieHellman
     /**
      * BigInteger support object courtesy of Zend_Crypt_Math
      *
-     * @var \Zend\Crypt\Math\BigInteger
+     * @var Zend\Crypt\Math\BigInteger
      */
     private $_math = null;
 
@@ -146,7 +158,7 @@ class DiffieHellman
             $number = $this->_math->fromBinary($number);
         }
         if (!preg_match("/^\d+$/", $number)) {
-            throw new DiffieHellmanException('invalid parameter; not a positive natural number');
+            throw new Exception\InvalidArgumentException('Invalid parameter; not a positive natural number');
         }
         $this->_publicKey = (string) $number;
         return $this;
@@ -162,7 +174,7 @@ class DiffieHellman
     public function getPublicKey($type = self::NUMBER)
     {
         if ($this->_publicKey === null) {
-            throw new DiffieHellmanException('A public key has not yet been generated using a prior call to generateKeys()');
+            throw new Exception\InvalidArgumentException('A public key has not yet been generated using a prior call to generateKeys()');
         }
         if ($type == self::BINARY) {
             return $this->_math->toBinary($this->_publicKey);
@@ -193,7 +205,7 @@ class DiffieHellman
             $publicKey = $this->_math->fromBinary($publicKey);
         }
         if (!preg_match("/^\d+$/", $publicKey)) {
-            throw new DiffieHellmanException('invalid parameter; not a positive natural number');
+            throw new Exception\InvalidArgumentException('Invalid parameter; not a positive natural number');
         }
         if (function_exists('openssl_dh_compute_key') && self::$useOpenssl !== false) {
             $this->_secretKey = openssl_dh_compute_key($publicKey, $this->getPublicKey());
@@ -212,7 +224,7 @@ class DiffieHellman
     public function getSharedSecretKey($type = self::NUMBER)
     {
         if (!isset($this->_secretKey)) {
-            throw new DiffieHellmanException('A secret key has not yet been computed; call computeSecretKey()');
+            throw new Exception\InvalidArgumentException('A secret key has not yet been computed; call computeSecretKey()');
         }
         if ($type == self::BINARY) {
             return $this->_math->toBinary($this->_secretKey);
@@ -231,7 +243,7 @@ class DiffieHellman
     public function setPrime($number)
     {
         if (!preg_match("/^\d+$/", $number) || $number < 11) {
-            throw new DiffieHellmanException('invalid parameter; not a positive natural number or too small: should be a large natural number prime');
+            throw new Exception\InvalidArgumentException('Invalid parameter; not a positive natural number or too small: should be a large natural number prime');
         }
         $this->_prime = (string) $number;
         return $this;
@@ -245,7 +257,7 @@ class DiffieHellman
     public function getPrime()
     {
         if (!isset($this->_prime)) {
-            throw new DiffieHellmanException('No prime number has been set');
+            throw new Exception\InvalidArgumentException('No prime number has been set');
         }
         return $this->_prime;
     }
@@ -260,7 +272,7 @@ class DiffieHellman
     public function setGenerator($number)
     {
         if (!preg_match("/^\d+$/", $number) || $number < 2) {
-            throw new DiffieHellmanException('invalid parameter; not a positive natural number greater than 1');
+            throw new Exception\InvalidArgumentException('Invalid parameter; not a positive natural number greater than 1');
         }
         $this->_generator = (string) $number;
         return $this;
@@ -274,7 +286,7 @@ class DiffieHellman
     public function getGenerator()
     {
         if (!isset($this->_generator)) {
-            throw new DiffieHellmanException('No generator number has been set');
+            throw new Exception\InvalidArgumentException('No generator number has been set');
         }
         return $this->_generator;
     }
@@ -292,7 +304,7 @@ class DiffieHellman
             $number = $this->_math->fromBinary($number);
         }
         if (!preg_match("/^\d+$/", $number)) {
-            throw new DiffieHellmanException('invalid parameter; not a positive natural number');
+            throw new Exception\InvalidArgumentException('Invalid parameter; not a positive natural number');
         }
         $this->_privateKey = (string) $number;
         return $this;
@@ -338,7 +350,7 @@ class DiffieHellman
      */
     public function setBigIntegerMath($extension = null)
     {
-        $this->_math = new \Zend\Crypt\Math($extension);
+        $this->_math = new Math($extension);
     }
 
     /**
@@ -352,7 +364,7 @@ class DiffieHellman
      */
     protected function _generatePrivateKey()
     {
-        $rand = $this->_math->rand($this->getGenerator(), $this->getPrime());
+        $rand = $this->_math->randBytes(strlen($this->getPrime()), true);
         return $rand;
     }
 
