@@ -7,7 +7,7 @@
  * @license   http://framework.zend.com/license/new-bsd New BSD License
  * @package   Zend_Crypt
  */
-namespace Zend\Crypt\Exception;
+namespace Zend\Crypt\Password\Exception;
 
 /**
  * Invalid argument exception
