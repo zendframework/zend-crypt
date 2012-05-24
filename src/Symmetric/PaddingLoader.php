@@ -7,19 +7,26 @@
  * @license   http://framework.zend.com/license/new-bsd New BSD License
  * @package   Zend_Crypt
  */
-namespace Zend\Crypt\Exception;
+
+namespace Zend\Crypt\Symmetric;
+
+use Zend\Loader\PluginClassLoader;
 
 /**
- * Invalid argument exception
+ * Plugin Class Loader implementation for padding
  *
  * @category   Zend
  * @package    Zend_Crypt
- * @subpackage Exception
+ * @subpackage Symmetric
  * @copyright  Copyright (c) 2005-2012 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
-class InvalidArgumentException
-    extends \InvalidArgumentException
-    implements ExceptionInterface
+class PaddingLoader extends PluginClassLoader
 {
+    /**
+     * @var array Pre-aliased adapters
+     */
+    protected $plugins = array(
+        'pkcs7' => 'Zend\Crypt\Symmetric\Padding\Pkcs7'
+    );
 }

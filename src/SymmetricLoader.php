@@ -7,19 +7,25 @@
  * @license   http://framework.zend.com/license/new-bsd New BSD License
  * @package   Zend_Crypt
  */
-namespace Zend\Crypt\Exception;
+
+namespace Zend\Crypt;
+
+use Zend\Loader\PluginClassLoader;
 
 /**
- * Invalid argument exception
+ * Plugin Class Loader implementation for symmetric cipher adapter
  *
  * @category   Zend
  * @package    Zend_Crypt
- * @subpackage Exception
  * @copyright  Copyright (c) 2005-2012 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
-class InvalidArgumentException
-    extends \InvalidArgumentException
-    implements ExceptionInterface
+class SymmetricLoader extends PluginClassLoader
 {
+    /**
+     * @var array Pre-aliased adapters
+     */
+    protected $plugins = array(
+        'mcrypt' => 'Zend\Crypt\Symmetric\Mcrypt'
+    );
 }
