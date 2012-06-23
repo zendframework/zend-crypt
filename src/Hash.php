@@ -10,15 +10,15 @@
 namespace Zend\Crypt;
 
 /**
- * PHP implementation of the RFC 2104 Hash based Message Authentication Code
- *
  * @category   Zend
  * @package    Zend_Crypt
  * @copyright  Copyright (c) 2005-2012 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
-class Hmac
+class Hash
 {
+    const STRING = 'string';
+    const BINARY = 'binary';
     /**
      * List of hash algorithms supported
      *
@@ -27,39 +27,21 @@ class Hmac
     protected static $supportedAlgorithms = array();
 
     /**
-     * Constants representing the output mode of the hash algorithm
-     */
-    const STRING = 'string';
-    const BINARY = 'binary';
-
-    /**
-     * Performs a HMAC computation given relevant details such as Key, Hashing
-     * algorithm, the data to compute MAC of, and an output format of String,
-     * Binary notation or BTWOC.
-     *
-     * @param  string $key
      * @param  string $hash
      * @param  string $data
      * @param  string $output
      * @throws Exception\InvalidArgumentException
      * @return string
      */
-    public static function compute($key, $hash, $data, $output = self::STRING)
+    public static function compute($hash, $data, $output = self::STRING)
     {
-        if (!isset($key) || empty($key)) {
-            throw new Exception\InvalidArgumentException('Provided key is null or empty');
-        }
-
         $hash = strtolower($hash);
         if (!self::isSupported($hash)) {
             throw new Exception\InvalidArgumentException('Hash algorithm provided is not supported on this PHP installation');
         }
 
-        if ($output == self::BINARY) {
-            return hash_hmac($hash, $data, $key, 1);
-        } else {
-            return hash_hmac($hash, $data, $key);
-        }
+        $output = ($output === self::BINARY);
+        return hash($hash, $data, $output);
     }
 
     /**
@@ -71,7 +53,7 @@ class Hmac
      */
     public static function getOutputSize($hash, $output = self::STRING)
     {
-        return strlen(self::compute('key', $hash, 'data', $output));
+        return strlen(self::compute($hash, 'data', $output));
     }
 
     /**
