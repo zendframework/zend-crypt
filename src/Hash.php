@@ -11,12 +11,10 @@
 namespace Zend\Crypt;
 
 /**
- * PHP implementation of the RFC 2104 Hash based Message Authentication Code
- *
  * @category   Zend
  * @package    Zend_Crypt
  */
-class Hmac
+class Hash
 {
     const OUTPUT_STRING = 'string';
     const OUTPUT_BINARY = 'binary';
@@ -29,32 +27,23 @@ class Hmac
     protected static $supportedAlgorithms = array();
 
     /**
-     * Performs a HMAC computation given relevant details such as Key, Hashing
-     * algorithm, the data to compute MAC of, and an output format of String,
-     * or Binary.
-     *
-     * @param  string $key
      * @param  string $hash
      * @param  string $data
      * @param  string $output
      * @throws Exception\InvalidArgumentException
      * @return string
      */
-    public static function compute($key, $hash, $data, $output = self::OUTPUT_STRING)
+    public static function compute($hash, $data, $output = self::OUTPUT_STRING)
     {
-        if (!isset($key) || empty($key)) {
-            throw new Exception\InvalidArgumentException('Provided key is null or empty');
-        }
-
         $hash = strtolower($hash);
         if (!self::isSupported($hash)) {
             throw new Exception\InvalidArgumentException(
-                "Hash algorithm is not supported on this PHP installation; provided '{$hash}'"
+                'Hash algorithm provided is not supported on this PHP installation'
             );
         }
 
         $output = ($output === self::OUTPUT_BINARY);
-        return hash_hmac($hash, $data, $key, $output);
+        return hash($hash, $data, $output);
     }
 
     /**
@@ -66,7 +55,7 @@ class Hmac
      */
     public static function getOutputSize($hash, $output = self::OUTPUT_STRING)
     {
-        return strlen(self::compute('key', $hash, 'data', $output));
+        return strlen(self::compute($hash, 'data', $output));
     }
 
     /**
