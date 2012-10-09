@@ -9,7 +9,7 @@
     "homepage": "https://github.com/zendframework/zend-crypt",
     "autoload": {
         "psr-4": {
-            "Zend\\Crypt": "src/"
+            "Zend\\Crypt\\": "src/"
         }
     },
     "require": {
