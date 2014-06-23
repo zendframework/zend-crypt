@@ -3,7 +3,7 @@
  * Zend Framework (http://framework.zend.com/)
  *
  * @link      http://github.com/zendframework/zf2 for the canonical source repository
- * @copyright Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright Copyright (c) 2005-2013 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   http://framework.zend.com/license/new-bsd New BSD License
  */
 
@@ -219,7 +219,6 @@ class Mcrypt implements SymmetricInterface
 
     /**
      * Set the encryption key
-     * If the key is longer than maximum supported, it will be truncated by getKey().
      *
      * @param  string                             $key
      * @throws Exception\InvalidArgumentException
@@ -227,25 +226,13 @@ class Mcrypt implements SymmetricInterface
      */
     public function setKey($key)
     {
-        $keyLen = strlen($key);
-
-        if (!$keyLen) {
+        if (empty($key)) {
             throw new Exception\InvalidArgumentException('The key cannot be empty');
         }
-        $keySizes = mcrypt_module_get_supported_key_sizes($this->supportedAlgos[$this->algo]);
-        $maxKey = $this->getKeySize();
-
-        /*
-         * blowfish has $keySizes empty, meaning it can have arbitrary key length.
-         * the others are more picky.
-         */
-        if (!empty($keySizes) && $keyLen < $maxKey) {
-
-            if (!in_array($keyLen, $keySizes)) {
-                 throw new Exception\InvalidArgumentException(
-                    "The size of the key must be one of "
-                    . implode(", ", $keySizes) . " bytes or longer");
-            }
+        if (strlen($key) < $this->getKeySize()) {
+             throw new Exception\InvalidArgumentException(
+                'The size of the key must be at least of ' . $this->getKeySize() . ' bytes'
+             );
         }
         $this->key = $key;
 
@@ -326,8 +313,7 @@ class Mcrypt implements SymmetricInterface
      */
     public function encrypt($data)
     {
-        // Cannot encrypt empty string
-        if (!is_string($data) || $data === '') {
+        if (empty($data)) {
             throw new Exception\InvalidArgumentException('The data to encrypt cannot be empty');
         }
         if (null === $this->getKey()) {
