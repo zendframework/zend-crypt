@@ -3,11 +3,12 @@
  * Zend Framework (http://framework.zend.com/)
  *
  * @link      http://github.com/zendframework/zf2 for the canonical source repository
- * @copyright Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   http://framework.zend.com/license/new-bsd New BSD License
  */
 
 namespace Zend\Crypt\Key\Derivation;
+
 
 /**
  * Scrypt key derivation function
@@ -124,7 +125,7 @@ abstract class Scrypt
     {
         $b32 = array();
         for ($i = 0; $i < 16; $i++) {
-            list(, $b32[$i]) = unpack("V", substr($b, $i * 4, 4));
+           list(, $b32[$i]) = unpack("V", substr($b, $i * 4, 4));
         }
 
         $x = $b32;
@@ -327,7 +328,7 @@ abstract class Scrypt
      */
     protected static function hex2bin($hex)
     {
-        if (PHP_VERSION_ID >= 50400) {
+        if (version_compare(PHP_VERSION, '5.4') >= 0) {
             return hex2bin($hex);
         }
         $len    = strlen($hex);
