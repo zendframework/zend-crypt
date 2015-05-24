@@ -21,6 +21,8 @@
     "suggest": {
         "ext-mcrypt": "Required for most features of Zend\\Crypt"
     },
+    "minimum-stability": "dev",
+    "prefer-stable": true,
     "extra": {
         "branch-alias": {
             "dev-master": "2.4-dev",
