@@ -1,5 +1,8 @@
 # zend-crypt
 
+[![Build Status](https://secure.travis-ci.org/zendframework/zend-crypt.svg?branch=master)](https://secure.travis-ci.org/zendframework/zend-crypt)
+[![Coverage Status](https://coveralls.io/repos/zendframework/zend-crypt/badge.svg?branch=master)](https://coveralls.io/r/zendframework/zend-crypt)
+
 `Zend\Crypt` provides support of some cryptographic tools.
 The available features are:
 
