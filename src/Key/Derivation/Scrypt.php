@@ -44,7 +44,7 @@ abstract class Scrypt
             if ($length < 16) {
                 throw new Exception\InvalidArgumentException("Key length is too low, must be greater or equal to 16");
             }
-            return self::hex2bin(scrypt($password, $salt, $n, $r, $p, $length));
+            return hex2bin(scrypt($password, $salt, $n, $r, $p, $length));
         }
 
         $b = Pbkdf2::calc('sha256', $password, $salt, 1, $p * 128 * $r);
@@ -317,16 +317,5 @@ abstract class Scrypt
         }
         list(, $n) = unpack($v, substr($b, -64));
         return $n;
-    }
-
-    /**
-     * Convert hex string in a binary string
-     *
-     * @param  string $hex
-     * @return string
-     */
-    protected static function hex2bin($hex)
-    {
-        return hex2bin($hex);
     }
 }
