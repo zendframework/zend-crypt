@@ -327,14 +327,6 @@ abstract class Scrypt
      */
     protected static function hex2bin($hex)
     {
-        if (PHP_VERSION_ID >= 50400) {
-            return hex2bin($hex);
-        }
-        $len    = strlen($hex);
-        $result = '';
-        for ($i = 0; $i < $len; $i+=2) {
-            $result .= chr(hexdec($hex[$i] . $hex[$i+1]));
-        }
-        return $result;
+        return hex2bin($hex);
     }
 }
