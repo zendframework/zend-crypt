@@ -12,6 +12,7 @@ namespace Zend\Crypt;
 use Zend\Crypt\Key\Derivation\Pbkdf2;
 use Zend\Crypt\Symmetric\SymmetricInterface;
 use Zend\Math\Rand;
+use Interop\Container\ContainerInterface;
 
 /**
  * Encrypt using a symmetric cipher then authenticate using HMAC (SHA-256)
@@ -103,7 +104,7 @@ class BlockCipher
     /**
      * Returns the symmetric cipher plugin manager.  If it doesn't exist it's created.
      *
-     * @return SymmetricPluginManager
+     * @return ContainerInterface
      */
     public static function getSymmetricPluginManager()
     {
@@ -123,18 +124,17 @@ class BlockCipher
     public static function setSymmetricPluginManager($plugins)
     {
         if (is_string($plugins)) {
-            if (!class_exists($plugins)) {
+            if (!class_exists($plugins) || ! is_subclass_of($plugins, ContainerInterface::class)) {
                 throw new Exception\InvalidArgumentException(sprintf(
-                    'Unable to locate symmetric cipher plugins using class "%s"; class does not exist',
+                    'Unable to locate symmetric cipher plugins using class "%s"; class does not exist or does not implement ContainerInterface',
                     $plugins
                 ));
             }
             $plugins = new $plugins();
         }
-        if (!$plugins instanceof SymmetricPluginManager) {
+        if (!$plugins instanceof ContainerInterface) {
             throw new Exception\InvalidArgumentException(sprintf(
-                'Expected an instance or extension of %s\SymmetricPluginManager; received "%s"',
-                __NAMESPACE__,
+                'Symmetric plugin must implements Interop\Container\ContainerInterface;; received "%s"',
                 (is_object($plugins) ? get_class($plugins) : gettype($plugins))
             ));
         }

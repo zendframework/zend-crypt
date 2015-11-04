@@ -192,4 +192,12 @@ class BlockCipherTest extends \PHPUnit_Framework_TestCase
         $decrypted = $this->blockCipher->decrypt($encrypted);
         $this->assertFalse($decrypted);
     }
+
+    public function testSetSymmetricPluginManager()
+    {
+        $this->blockCipher->setSymmetricPluginManager(
+            $this->getMockBuilder('Interop\Container\ContainerInterface')->getMock()
+        );
+        $this->assertInstanceOf(\Interop\Container\ContainerInterface::class, $this->blockCipher->getSymmetricPluginManager());
+    }
 }

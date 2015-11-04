@@ -197,7 +197,7 @@ class Mcrypt implements SymmetricInterface
     /**
      * Returns the padding plugin manager.  If it doesn't exist it's created.
      *
-     * @return PaddingPluginManager
+     * @return ContainerInterface
      */
     public static function getPaddingPluginManager()
     {
