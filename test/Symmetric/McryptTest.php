@@ -13,6 +13,7 @@ use Zend\Crypt\Symmetric\Exception;
 use Zend\Crypt\Symmetric\Mcrypt;
 use Zend\Crypt\Symmetric\Padding\PKCS7;
 use Zend\Config\Config;
+use Zend\Crypt\Symmetric\Padding\NoPadding;
 
 /**
  * @group      Zend_Crypt
@@ -206,5 +207,32 @@ class McryptTest extends \PHPUnit_Framework_TestCase
     {
         $this->setExpectedException('Zend\Crypt\Symmetric\Exception\InvalidArgumentException');
         $this->mcrypt->decrypt($this->plaintext);
+    }
+
+    public function testSetOptions()
+    {
+        $options = [
+            'algo'    => 'blowfish',
+            'mode'    =>  MCRYPT_MODE_CFB,
+            'key'     => 'test',
+            'iv'      => '12345678',
+            'padding' => 'nopadding'
+        ];
+        $this->mcrypt->setOptions($options);
+
+        $this->assertEquals($options, $this->mcrypt->getOptions());
+        $this->assertEquals($options['algo'], $this->mcrypt->getAlgorithm());
+        $this->assertEquals($options['mode'], $this->mcrypt->getMode());
+        $this->assertEquals($options['key'], $this->mcrypt->getKey());
+        $this->assertEquals($options['iv'], $this->mcrypt->getSalt());
+        $this->assertInstanceOf(NoPadding::class, $this->mcrypt->getPadding());
+    }
+
+    public function testSetPaddingPluginManager()
+    {
+        $this->mcrypt->setPaddingPluginManager(
+            $this->getMockBuilder('Interop\Container\ContainerInterface')->getMock()
+        );
+        $this->assertInstanceOf(\Interop\Container\ContainerInterface::class, $this->mcrypt->getPaddingPluginManager());
     }
 }

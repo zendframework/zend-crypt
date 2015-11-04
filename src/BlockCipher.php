@@ -85,7 +85,7 @@ class BlockCipher
     }
 
     /**
-     * Factory.
+     * Factory
      *
      * @param  string      $adapter
      * @param  array       $options
@@ -94,7 +94,8 @@ class BlockCipher
     public static function factory($adapter, $options = [])
     {
         $plugins = static::getSymmetricPluginManager();
-        $adapter = $plugins->get($adapter, (array) $options);
+        $adapter = $plugins->get($adapter);
+        $adapter->setOptions($options);
 
         return new static($adapter);
     }

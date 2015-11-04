@@ -14,9 +14,9 @@
     },
     "require": {
         "php": ">=5.5",
-        "zendframework/zend-math": "~2.5",
-        "zendframework/zend-stdlib": "~2.5",
-        "zendframework/zend-servicemanager": "~2.5"
+        "zendframework/zend-math": "dev-develop as 2.6.0",
+        "zendframework/zend-stdlib": "~2.7",
+        "container-interop/container-interop": "~1.0"
     },
     "suggest": {
         "ext-mcrypt": "Required for most features of Zend\\Crypt"

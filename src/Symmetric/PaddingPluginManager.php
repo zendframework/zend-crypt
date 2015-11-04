@@ -9,7 +9,7 @@
 
 namespace Zend\Crypt\Symmetric;
 
-use Zend\ServiceManager\AbstractPluginManager;
+use Interop\Container\ContainerInterface;
 
 /**
  * Plugin manager implementation for the padding adapter instances.
@@ -18,44 +18,34 @@ use Zend\ServiceManager\AbstractPluginManager;
  * Padding\PaddingInterface. Additionally, it registers a number of default
  * padding adapters available.
  */
-class PaddingPluginManager extends AbstractPluginManager
+class PaddingPluginManager implements ContainerInterface
 {
-    /**
-     * Default set of padding adapters
-     *
-     * @var array
-     */
-    protected $invokableClasses = [
-        'pkcs7' => 'Zend\Crypt\Symmetric\Padding\Pkcs7'
+    private $paddings = [
+        'pkcs7'     => Padding\Pkcs7::class,
+        'nopadding' => Padding\NoPadding::class,
+        'null'      => Padding\NoPadding::class,
     ];
 
     /**
-     * Do not share by default
+     * Do we have the padding plugin?
      *
-     * @var bool
+     * @param  string $id
+     * @return bool
      */
-    protected $shareByDefault = false;
+    public function has($id)
+    {
+        return array_key_exists($id, $this->paddings);
+    }
 
     /**
-     * Validate the plugin
+     * Retrieve the padding plugin
      *
-     * Checks that the padding adapter loaded is an instance of Padding\PaddingInterface.
-     *
-     * @param  mixed $plugin
-     * @return void
-     * @throws Exception\InvalidArgumentException if invalid
+     * @param  string $id
+     * @return Padding\PaddingInterface
      */
-    public function validatePlugin($plugin)
+    public function get($id)
     {
-        if ($plugin instanceof Padding\PaddingInterface) {
-            // we're okay
-            return;
-        }
-
-        throw new Exception\InvalidArgumentException(sprintf(
-            'Plugin of type %s is invalid; must implement %s\Padding\PaddingInterface',
-            (is_object($plugin) ? get_class($plugin) : gettype($plugin)),
-            __NAMESPACE__
-        ));
+        $class = $this->paddings[$id];
+        return new $class();
     }
 }
