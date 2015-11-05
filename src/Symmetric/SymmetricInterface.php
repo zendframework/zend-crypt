@@ -87,11 +87,6 @@ interface SymmetricInterface
     public function getSupportedModes();
 
     /**
-     * @return array
-     */
-    public function getOptions();
-
-    /**
      * @param array $options
      */
     public function setOptions($options);

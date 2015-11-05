@@ -11,19 +11,30 @@ namespace ZendTest\Crypt\Symmetric;
 
 use Zend\Crypt\Symmetric\Exception;
 use Zend\Crypt\Symmetric\Mcrypt;
+use Zend\Crypt\Symmetric\Padding\NoPadding;
 use Zend\Crypt\Symmetric\Padding\PKCS7;
 use Zend\Config\Config;
-use Zend\Crypt\Symmetric\Padding\NoPadding;
 
 /**
  * @group      Zend_Crypt
  */
 class McryptTest extends \PHPUnit_Framework_TestCase
 {
-    /** @var Mcrypt */
+    /**
+     * @var Mcrypt
+     */
     protected $mcrypt;
+    /**
+     * @var string
+     */
     protected $key;
+    /**
+     * @var string
+     */
     protected $salt;
+    /**
+     * @var string
+     */
     protected $plaintext;
 
     public function setUp()
@@ -220,7 +231,6 @@ class McryptTest extends \PHPUnit_Framework_TestCase
         ];
         $this->mcrypt->setOptions($options);
 
-        $this->assertEquals($options, $this->mcrypt->getOptions());
         $this->assertEquals($options['algo'], $this->mcrypt->getAlgorithm());
         $this->assertEquals($options['mode'], $this->mcrypt->getMode());
         $this->assertEquals($options['key'], $this->mcrypt->getKey());

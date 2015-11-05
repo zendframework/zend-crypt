@@ -25,13 +25,6 @@ class Mcrypt implements SymmetricInterface
     const DEFAULT_PADDING = 'pkcs7';
 
     /**
-     * Options
-     *
-     * @var array
-     */
-    protected $options = [];
-
-    /**
      * Key
      *
      * @var string
@@ -165,18 +158,7 @@ class Mcrypt implements SymmetricInterface
                         break;
                 }
             }
-            $this->options = $options;
         }
-    }
-
-    /**
-     * Get the Options
-     *
-     * @return array
-     */
-    public function getOptions()
-    {
-        return $this->options;
     }
 
     /**
