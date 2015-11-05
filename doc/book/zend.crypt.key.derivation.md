@@ -26,7 +26,7 @@ is known as [key stretching](http://en.wikipedia.org/wiki/Key_stretching).
 
 In the example below we show a typical usage of the `Pbkdf2` adapter.
 
-``` sourceCode
+```php
 use Zend\Crypt\Key\Derivation\Pbkdf2;
 use Zend\Math\Rand;
 
@@ -61,7 +61,7 @@ suggest to use the SaltedS2k algorithm only if you really need it.
 
 Below is reported a usage example of the `SaltedS2k` adapter to generate a key of 32 bytes.
 
-``` sourceCode
+```php
 use Zend\Crypt\Key\Derivation\SaltedS2k;
 use Zend\Math\Rand;
 
@@ -103,7 +103,7 @@ This algorithm uses 4 parameters to generate a key of 32 bytes:
 
 Below is reported a usage example of the `Scrypt` adapter.
 
-``` sourceCode
+```php
 use Zend\Crypt\Key\Derivation\Scrypt;
 use Zend\Math\Rand;
 

@@ -16,7 +16,7 @@ The `FileCipher` uses a symmetric cipher, with the `Zend\Crypt\Symmetric\Mcrypt`
 The usage of this component is very simple, you just need to create an instance of `FileCipher` and
 specify the key, and you are ready to encrypt/decrypt any file:
 
-``` sourceCode
+```php
 use Zend\Crypt\FileCipher;
 
 $fileCipher = new FileCipher;

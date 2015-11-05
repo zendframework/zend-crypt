@@ -27,7 +27,7 @@ Wikipedia page):
 The schema's colors represent the parameters of the algorithm. Here is reported an example of usage
 using the `Zend\Crypt\PublicKey\DiffieHellman` class:
 
-``` sourceCode
+```php
 use Zend\Crypt\PublicKey\DiffieHellman;
 
 $aliceOptions = array(
@@ -123,7 +123,7 @@ Below we reported some examples of usage of the `Zend\Crypt\PublicKey\Rsa` class
 
 In order to generate a public and private key you can use the following code:
 
-``` sourceCode
+```php
 use Zend\Crypt\PublicKey\RsaOptions;
 
 $rsaOptions = new RsaOptions(array(
@@ -142,7 +142,7 @@ This example generates a public and private key of 2048 bit storing the keys in 
 the `private_key.pem` for the private key and the `public_key.pub` for the public key. You can also
 generate the public and private key using OpenSSL from the command line (Unix style syntax):
 
-``` sourceCode
+```php
 ssh-keygen -t rsa
 ```
 
@@ -159,7 +159,7 @@ you want to respectively encrypt or sign. A hash is typically 128-256 bits (the 
 returns a 160 bit hash). An AES encryption key is 128 to 256 bits. So either of those will
 comfortably fit inside a single RSA encryption.
 
-``` sourceCode
+```php
 use Zend\Crypt\PublicKey\Rsa;
 
 $rsa = Rsa::factory(array(
@@ -187,7 +187,7 @@ if ($text !== $decrypt) {
 
 Below is reported an example of how to generate a digital signature of a file.
 
-``` sourceCode
+```php
 use Zend\Crypt\PublicKey\Rsa;
 
 $rsa = Rsa::factory(array(

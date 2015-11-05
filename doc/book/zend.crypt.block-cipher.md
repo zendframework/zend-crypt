@@ -13,7 +13,7 @@ encrypt-then-authenticate a string using the
 [AES](http://en.wikipedia.org/wiki/Advanced_Encryption_Standard) block cipher (with a key of 256
 bit) and the HMAC algorithm (using the [SHA-256](http://en.wikipedia.org/wiki/SHA-2) hash function).
 
-``` sourceCode
+```php
 use Zend\Crypt\BlockCipher;
 
 $blockCipher = BlockCipher::factory('mcrypt', array('algo' => 'aes'));
@@ -48,7 +48,7 @@ You can change all the default settings passing the values to the factory parame
 if you want to use the Blowfish algorithm, with the CFB mode and the SHA512 hash function for HMAC
 you have to initialize the class as follow:
 
-``` sourceCode
+```php
 use Zend\Crypt\BlockCipher;
 
 $blockCipher = BlockCipher::factory('mcrypt', array(
@@ -71,7 +71,7 @@ We can also initialize the BlockCipher manually without use the factory method. 
 symmetric cipher adapter directly to the constructor of the BlockCipher class. For instance, we can
 rewrite the previous example as follow:
 
-``` sourceCode
+```php
 use Zend\Crypt\BlockCipher;
 use Zend\Crypt\Symmetric\Mcrypt;
 

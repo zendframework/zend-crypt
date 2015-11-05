@@ -41,7 +41,7 @@ $'s, first the algorithm, then the cost, the salt, and then finally the hash.
 
 The example below shows how to use the bcrypt algorithm to store a user's password:
 
-``` sourceCode
+```php
 use Zend\Crypt\Password\Bcrypt;
 
 $bcrypt = new Bcrypt();
@@ -61,7 +61,7 @@ string, you should pre-hash it using SHA256 prior to passing it to the bcrypt al
 To verify if a given password is valid against a bcrypt value you can use the `verify()` method. An
 example is reported below:
 
-``` sourceCode
+```php
 use Zend\Crypt\Password\Bcrypt;
 
 $bcrypt = new Bcrypt();
@@ -83,7 +83,7 @@ We provide also a `getSalt()` method to retrieve the *salt* specified by the use
 the *cost* parameter can be also specified during the constructor of the class, below is reported an
 example:
 
-``` sourceCode
+```php
 use Zend\Crypt\Password\Bcrypt;
 
 $bcrypt = new Bcrypt(array(
@@ -122,7 +122,7 @@ httpd.conf.
 In order to specify the format of the Apache's password you can use the `setFormat()` method. An
 example with all the formats usage is reported below:
 
-``` sourceCode
+```php
 use Zend\Crypt\Password\Apache;
 
 $apache = new Apache();
@@ -144,7 +144,7 @@ printf ("Digest output: %s\n", $apache->create('password'));
 
 You can also specify the format of the password during the constructor of the class:
 
-``` sourceCode
+```php
 use Zend\Crypt\Password\Apache;
 
 $apache = new Apache(array(
