@@ -1,0 +1,12 @@
+{
+    "title": "Zend\\Crypt",
+    "target": "html/",
+    "content": [
+        "book/zend.crypt.introduction.md",
+        "book/zend.crypt.block-cipher.md",
+        "book/zend.crypt.file.md",
+        "book/zend.crypt.key.derivation.md",
+        "book/zend.crypt.password.md",
+        "book/zend.crypt.public-key.md"
+    ]
+}
