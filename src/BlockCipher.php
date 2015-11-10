@@ -9,10 +9,10 @@
 
 namespace Zend\Crypt;
 
+use Interop\Container\ContainerInterface;
 use Zend\Crypt\Key\Derivation\Pbkdf2;
 use Zend\Crypt\Symmetric\SymmetricInterface;
 use Zend\Math\Rand;
-use Interop\Container\ContainerInterface;
 
 /**
  * Encrypt using a symmetric cipher then authenticate using HMAC (SHA-256)

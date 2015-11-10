@@ -9,9 +9,9 @@
 
 namespace Zend\Crypt\Symmetric;
 
+use Interop\Container\ContainerInterface;
 use Traversable;
 use Zend\Stdlib\ArrayUtils;
-use Interop\Container\ContainerInterface;
 
 /**
  * Symmetric encryption using the Mcrypt extension
