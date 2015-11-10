@@ -9,7 +9,7 @@
 
 namespace Zend\Crypt;
 
-use Zend\ServiceManager\AbstractPluginManager;
+use Interop\Container\ContainerInterface;
 
 /**
  * Plugin manager implementation for the symmetric adapter instances.
@@ -18,45 +18,37 @@ use Zend\ServiceManager\AbstractPluginManager;
  * Symmetric\SymmetricInterface. Additionally, it registers a number of default
  * symmetric adapters available.
  */
-class SymmetricPluginManager extends AbstractPluginManager
+class SymmetricPluginManager implements ContainerInterface
 {
     /**
      * Default set of symmetric adapters
      *
      * @var array
      */
-    protected $invokableClasses = [
-        'mcrypt' => 'Zend\Crypt\Symmetric\Mcrypt',
+    protected $symmetric = [
+        'mcrypt' => Symmetric\Mcrypt::class,
     ];
 
     /**
-     * Do not share by default
+     * Do we have the symmetric plugin?
      *
-     * @var bool
+     * @param  string $id
+     * @return bool
      */
-    protected $shareByDefault = false;
+    public function has($id)
+    {
+        return array_key_exists($id, $this->symmetric);
+    }
 
     /**
-     * Validate the plugin
+     * Retrieve the symmetric plugin
      *
-     * Checks that the adapter loaded is an instance
-     * of Symmetric\SymmetricInterface.
-     *
-     * @param  mixed $plugin
-     * @return void
-     * @throws Exception\InvalidArgumentException if invalid
+     * @param  string $id
+     * @return Symmetric\SymmetricInterface
      */
-    public function validatePlugin($plugin)
+    public function get($id)
     {
-        if ($plugin instanceof Symmetric\SymmetricInterface) {
-            // we're okay
-            return;
-        }
-
-        throw new Exception\InvalidArgumentException(sprintf(
-            'Plugin of type %s is invalid; must implement %s\Symmetric\SymmetricInterface',
-            (is_object($plugin) ? get_class($plugin) : gettype($plugin)),
-            __NAMESPACE__
-        ));
+        $class = $this->symmetric[$id];
+        return new $class();
     }
 }
