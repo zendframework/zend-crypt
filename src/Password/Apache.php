@@ -10,8 +10,8 @@
 namespace Zend\Crypt\Password;
 
 use Traversable;
-use Zend\Math\Rand;
 use Zend\Crypt\Utils;
+use Zend\Math\Rand;
 
 /**
  * Apache password authentication
