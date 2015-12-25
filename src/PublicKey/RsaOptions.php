@@ -56,7 +56,7 @@ class RsaOptions extends AbstractOptions
      *
      * @var int
      */
-    protected $padding = OPENSSL_PKCS1_OAEP_PADDING;
+    protected $padding;
 
     /**
      * Set private key
