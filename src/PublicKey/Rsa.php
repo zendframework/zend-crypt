@@ -249,7 +249,7 @@ class Rsa
      * @return string
      * @throws Rsa\Exception\InvalidArgumentException
      */
-    public function encrypt($data, Rsa\AbstractKey $key = null, $padding = null)
+    public function encrypt($data, Rsa\AbstractKey $key = null)
     {
         if (null === $key) {
             $key = $this->options->getPublicKey();
@@ -259,11 +259,7 @@ class Rsa
             throw new Exception\InvalidArgumentException('No key specified for the decryption');
         }
 
-        if (null === $padding) {
-            $encrypted = $key->encrypt($data);
-        } else {
-            $encrypted = $key->encrypt($data, $padding);
-        }
+        $encrypted = $key->encrypt($data, $this->getOptions()->getPadding());
 
         if ($this->options->getBinaryOutput()) {
             return $encrypted;
@@ -292,8 +288,7 @@ class Rsa
     public function decrypt(
         $data,
         Rsa\AbstractKey $key = null,
-        $mode = self::MODE_AUTO,
-        $padding = null
+        $mode = self::MODE_AUTO
     ) {
         if (null === $key) {
             $key = $this->options->getPrivateKey();
@@ -319,11 +314,7 @@ class Rsa
                 break;
         }
 
-        if (null === $padding) {
-            return $key->decrypt($data);
-        } else {
-            return $key->decrypt($data, $padding);
-        }
+        return $key->decrypt($data, $this->getOptions()->getPadding());
     }
 
     /**

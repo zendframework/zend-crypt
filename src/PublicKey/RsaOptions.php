@@ -52,6 +52,13 @@ class RsaOptions extends AbstractOptions
     protected $binaryOutput = true;
 
     /**
+     * OPENSSL padding
+     *
+     * @var int
+     */
+    protected $padding = OPENSSL_PKCS1_OAEP_PADDING;
+
+    /**
      * Set private key
      *
      * @param  Rsa\PrivateKey $key
@@ -178,6 +185,28 @@ class RsaOptions extends AbstractOptions
     public function getBinaryOutput()
     {
         return $this->binaryOutput;
+    }
+
+    /**
+     * Get the OPENSSL padding
+     *
+     * @return int
+     */
+    public function getPadding()
+    {
+        return $this->padding;
+    }
+
+    /**
+     * Set the OPENSSL padding
+     *
+     * @param int $padding
+     * @return $this
+     */
+    public function setPadding($padding)
+    {
+        $this->padding = (int) $padding;
+        return $this;
     }
 
     /**
