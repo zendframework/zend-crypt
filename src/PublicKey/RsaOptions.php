@@ -54,9 +54,9 @@ class RsaOptions extends AbstractOptions
     /**
      * OPENSSL padding
      *
-     * @var int
+     * @var int|null
      */
-    protected $padding;
+    protected $opensslPadding;
 
     /**
      * Set private key
@@ -190,22 +190,22 @@ class RsaOptions extends AbstractOptions
     /**
      * Get the OPENSSL padding
      *
-     * @return int
+     * @return int|null
      */
-    public function getPadding()
+    public function getOpensslPadding()
     {
-        return $this->padding;
+        return $this->opensslPadding;
     }
 
     /**
      * Set the OPENSSL padding
      *
-     * @param int $padding
+     * @param int|null $opensslPadding
      * @return $this
      */
-    public function setPadding($padding)
+    public function setOpensslPadding($opensslPadding)
     {
-        $this->padding = (int) $padding;
+        $this->opensslPadding = (int) $opensslPadding;
         return $this;
     }
 

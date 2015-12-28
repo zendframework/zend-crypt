@@ -259,10 +259,11 @@ class Rsa
             throw new Exception\InvalidArgumentException('No key specified for the decryption');
         }
 
-        if (null === $this->getOptions()->getPadding()) {
+        $padding = $this->getOptions()->getOpensslPadding();
+        if (null === $padding) {
             $encrypted = $key->encrypt($data);
         } else {
-            $encrypted = $key->encrypt($data, $this->getOptions()->getPadding());
+            $encrypted = $key->encrypt($data, $padding);
         }
 
         if ($this->options->getBinaryOutput()) {
@@ -318,10 +319,11 @@ class Rsa
                 break;
         }
 
-        if (null === $this->getOptions()->getPadding()) {
+        $padding = $this->getOptions()->getOpensslPadding();
+        if (null === $padding) {
             return $key->decrypt($data);
         } else {
-            return $key->decrypt($data, $this->getOptions()->getPadding());
+            return $key->decrypt($data, $padding);
         }
     }
 
