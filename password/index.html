@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">  
+    <link rel="shortcut icon" href="../img/favicon.ico">
+
+    <title>Passwords - zend-crypt</title>
+
+    <link href="../css/bootstrap-custom.min.css" rel="stylesheet">
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/font-hack/2.018/css/hack.min.css">
+    <link href="//fonts.googleapis.com/css?family=PT+Sans:400,400italic,700,700italic&subset=latin-ext,latin" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,700italic,400,300,600,700&subset=latin-ext,latin" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Libre+Baskerville:400,400italic,700&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+    <link href="../css/base.css" rel="stylesheet">
+    <link href="../css/zf.css" rel="stylesheet">
+    <link href="../css/prism-zf.css" rel="stylesheet">
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+            <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+            <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+        <![endif]-->
+
+    <script src="https://ajax.googleapis.com/ajax/libs/webfont/1.5.18/webfont.js"></script>
+    <script>
+    WebFont.load({
+        google: {
+            families: ['Open Sans', 'PT Sans']
+        }
+    });
+    </script>
+
+    
+</head>
+
+<body>
+
+    <div class="navbar navbar-default navbar-fixed-top" role="navigation">
+    <div class="container">
+
+        <!-- Collapsed navigation -->
+        <div class="navbar-header">
+            
+            <!-- Expander button -->
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            
+
+            <!-- Main title -->
+            <span class="navbar-brand">
+              <a href="http://framework.zend.com"><img src="../img/zf-logo-mark.png" height="28" alt="Zend Framework" /></a>
+              <a href="..">zend-crypt</a>
+            </span>
+        </div>
+
+        <!-- Expanded navigation -->
+        <div class="navbar-collapse collapse">
+            
+                <!-- Main navigation -->
+                <ul class="nav navbar-nav">
+                
+                
+                    <li >
+                        <a href="..">Home</a>
+                    </li>
+                
+                
+                
+                    <li >
+                        <a href="../intro/">Intro</a>
+                    </li>
+                
+                
+                
+                    <li class="dropdown active">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">Reference <b class="caret"></b></a>
+                        <ul class="dropdown-menu">
+                        
+                            
+<li >
+    <a href="../block-cipher/">Block Ciphers</a>
+</li>
+
+                        
+                            
+<li >
+    <a href="../files/">Encrypting Files</a>
+</li>
+
+                        
+                            
+<li >
+    <a href="../key-derivation/">Key Derivation</a>
+</li>
+
+                        
+                            
+<li class="active">
+    <a href="./">Passwords</a>
+</li>
+
+                        
+                            
+<li >
+    <a href="../public-key/">Public Key Cryptography</a>
+</li>
+
+                        
+                        </ul>
+                    </li>
+                
+                
+                </ul>
+            
+
+            <ul class="nav navbar-nav navbar-right">
+                <li>
+                    <a href="#" data-toggle="modal" data-target="#mkdocs_search_modal">
+                        <i class="fa fa-search"></i> Search
+                    </a>
+                </li>
+                
+                    <li >
+                        <a rel="prev" href="../key-derivation/">
+                            <i class="fa fa-arrow-left"></i> Previous
+                        </a>
+                    </li>
+                    <li >
+                        <a rel="next" href="../public-key/">
+                            Next <i class="fa fa-arrow-right"></i>
+                        </a>
+                    </li>
+                
+                
+                    <li>
+                        <a href="https://github.com/zendframework/zend-crypt">
+                            
+                                <i class="fa fa-github"></i>
+                            
+                            GitHub
+                        </a>
+                    </li>
+                
+            </ul>
+        </div>
+    </div>
+</div>
+
+    <!-- content:begin -->
+    <div class="container">
+        
+        <div class="col-md-3"><div class="bs-sidebar hidden-print affix well" role="complementary">
+    <ul class="nav bs-sidenav">
+    
+        <li class="main active"><a href="#password">Password</a></li>
+        
+            <li><a href="#bcrypt">Bcrypt</a></li>
+        
+            <li><a href="#apache">Apache</a></li>
+        
+    
+    </ul>
+</div></div>
+        <div class="col-md-9" role="main">
+
+<ol class="breadcrumb" role="navigation" aria-label="breadcrumbs navigation">
+  <li><a href="..">Docs</a> &raquo;</li>
+  
+    
+      
+        <li>Reference &raquo;</li>
+      
+    
+  
+  <li class="active">Passwords</li>
+</ol>
+
+<nav class="hidden-lg">
+  <ul class="pager">
+    <li class="previous">
+      <a rel="prev" href="../key-derivation/"><i class="fa fa-arrow-left"></i> Previous</a>
+    </li>
+    <li class="next">
+      <a rel="next" href="../public-key/">Next <i class="fa fa-arrow-right"></i></a>
+    </li>
+  </ul>
+</nav>
+
+<h1 id="password">Password</h1>
+<p>In the <code>Zend\Crypt\Password</code> namespace you will find a number of password
+formats supported by the zend-crypt component. These currently include:</p>
+<ul>
+<li>bcrypt </li>
+<li>Apache (htpasswd)</li>
+</ul>
+<p>If you need to choose a password format to store a user’s password, we suggest
+using the bcrypt algorithm, as it is considered secure against brute forcing
+attacks (see details below).</p>
+<h2 id="bcrypt">Bcrypt</h2>
+<p>The <a href="http://en.wikipedia.org/wiki/Bcrypt">bcrypt</a> algorithm is a hashing algorithm that is widely used and recommended
+by the security community to store user’s passwords in a secure way.</p>
+<p>Classic hashing mechanisms like MD5 or SHA, with or without a salt value, are
+not considered secure anymore (<a href="http://codahale.com/how-to-safely-store-a-password/">read this post to understand
+why</a>).</p>
+<p>The security of bcrypt is related to the speed of the algorithm. Bcrypt is very
+slow, and can take up to a second to generate a hash value. That means a brute
+force attack is impossible to execute, due to the amount of time that required.</p>
+<p>Bcrypt uses a <em>cost</em> parameter that specify the number of cycles to use in the
+algorithm. Increasing this number the algorithm will spend more time to generate
+the hash output. The cost parameter is represented by an integer value between 4
+to 31. The default cost value of <code>Zend\Crypt\Password\Bcrypt</code> is 10, requiring
+around 0.07s using a CPU Intel i5 at 3.3Ghz (the cost parameter is a relative
+value according to the speed of the CPU used). Starting with version 2.3.0, we
+changed the default value of the cost parameter from 14 to 10, in an effort to
+reduce denial-of-service attacks due to too high computational time
+requirements.  (Read this article on <a href="http://timoh6.github.io/2013/11/26/Aggressive-password-stretching.html">aggressive password
+stretching</a>
+for more information).</p>
+<p>If you want to change the cost parameter of the bcrypt algorithm, you can use
+the <code>setCost()</code> method. Please note, if you change the cost parameter, the
+resulting hash will be different. However, This will not affect the verification
+process of the algorithm, therefore not breaking the password hashes you already
+have stored; Bcrypt reads the cost parameter from the hash value during password
+authentication. All of the parts needed to verify the hash are present in the
+hash itself,, separated with <code>$</code>’s; first the algorithm, then the cost, the
+salt, and then finally the hash.</p>
+<p>The example below demonstrates using the bcrypt algorithm to store a user’s password:</p>
+<pre class="codehilite"><code class="language-php">use Zend\Crypt\Password\Bcrypt;
+
+$bcrypt = new Bcrypt();
+$securePass = $bcrypt-&gt;create('user password');</code></pre>
+
+
+<p>The output of the <code>create()</code> method is the hash of the password. This value can
+then be stored in a repository like a database (the output is a string of 60
+bytes).</p>
+<blockquote>
+<h3 id="bcrypt-truncates-input-72-bytes">Bcrypt truncates input &gt; 72 bytes</h3>
+<p>The input string of the bcrypt algorithm is limited to 72 bytes. If you use a
+string with a length more than this limit, bcrypt will consider only the first
+72 bytes. If you need to use a longer string, you should pre-hash it using
+SHA256 prior to passing it to the bcrypt algorithm: <code>$hashedPassword =
+\Zend\Crypt\Hash::compute('sha256', $password);</code></p>
+</blockquote>
+<p>To verify if a given password is valid against a bcrypt value you can use the
+<code>verify()</code> method. The example below demonstrates verification:</p>
+<pre class="codehilite"><code class="language-php">use Zend\Crypt\Password\Bcrypt;
+
+$bcrypt = new Bcrypt();
+$securePass = 'the stored bcrypt value';
+$password = 'the password to check';
+
+if ($bcrypt-&gt;verify($password, $securePass)) {
+    echo &quot;The password is correct! \n&quot;;
+} else {
+    echo &quot;The password is NOT correct.\n&quot;;
+}</code></pre>
+
+
+<p>Bcrypt also uses a salt value to improve the randomness of the algorithm.
+By default, <code>Zend\Crypt\Password\Bcrypt</code> generates a random salt for
+each hash. If you want to specify a preselected salt you can use the <code>setSalt()</code>
+method.</p>
+<p>We also provide a <code>getSalt()</code> method to retrieve the salt specified by the user.
+The salt and the cost parameter can be also specified during the constructor of
+the class, as demonstrated below:</p>
+<pre class="codehilite"><code class="language-php">use Zend\Crypt\Password\Bcrypt;
+
+$bcrypt = new Bcrypt([
+    'salt' =&gt; 'random value',
+    'cost' =&gt; 11
+]);</code></pre>
+
+
+<h2 id="apache">Apache</h2>
+<p><code>Zend\Crypt\Password\Apache</code> supports all the password formats used by
+<a href="http://httpd.apache.org/docs/2.2/misc/password_encryptions.html">Apache</a>
+(htpasswd). These formats include:</p>
+<ul>
+<li>CRYPT, which uses the traditional Unix crypt(3) function with a
+  randomly-generated 32-bit salt (only 12 bits used) and the first 8 characters
+  of the password;</li>
+<li>SHA1, “{SHA}” + Base64-encoded SHA-1 digest of the password;</li>
+<li>MD5, “$apr1$” + the result of an Apache-specific algorithm using an iterated
+  (1,000 times) MD5 digest of various combinations of a random 32-bit salt and
+  the password.</li>
+<li>Digest, the MD5 hash of the string <code>user:realm:password</code> as a 32-character
+  string of hexadecimal digits. <code>realm</code> is the Authorization Realm argument to
+  the AuthName directive in <code>httpd.conf</code>.</li>
+</ul>
+<p>In order to specify the format of the Apache’s password, use the <code>setFormat()</code>
+method. An example with all the formats usage is demostrated below:</p>
+<pre class="codehilite"><code class="language-php">use Zend\Crypt\Password\Apache;
+
+$apache = new Apache();
+
+$apache-&gt;setFormat('crypt');
+printf (&quot;CRYPT output: %s\n&quot;, $apache-&gt;create('password'));
+
+$apache-&gt;setFormat('sha1');
+printf (&quot;SHA1 output: %s\n&quot;, $apache-&gt;create('password'));
+
+$apache-&gt;setFormat('md5');
+printf (&quot;MD5 output: %s\n&quot;, $apache-&gt;create('password'));
+
+$apache-&gt;setFormat('digest');
+$apache-&gt;setUserName('enrico');
+$apache-&gt;setAuthName('test');
+printf (&quot;Digest output: %s\n&quot;, $apache-&gt;create('password'));</code></pre>
+
+
+<p>You can also specify the format of the password during the constructor of the class:</p>
+<pre class="codehilite"><code class="language-php">use Zend\Crypt\Password\Apache;
+
+$apache = new Apache([
+    'format' =&gt; 'md5'
+]);</code></pre>
+
+
+<p>Other possible parameters to pass in the constructor are <code>username</code> and <code>authname</code>,
+for the digest format.</p>
+
+<hr />
+
+<nav>
+  <ul class="pager">
+    <li class="previous">
+      <a rel="prev" href="../key-derivation/"><i class="fa fa-arrow-left"></i> Previous</a>
+    </li>
+    <li class="next">
+      <a rel="next" href="../public-key/">Next <i class="fa fa-arrow-right"></i></a>
+    </li>
+  </ul>
+</nav></div>
+        
+    </div>
+    <!-- content:end -->
+
+    <footer class="col-md-12 text-center">
+        <hr>
+        <p>
+        <small>Copyright (c) 2016 <a href="http://www.zend.com/">Zend Technologies USA Inc.</a><br></small>
+        </p>
+        <p><small><a href="http://framework.zend.com">Learn more about Zend Framework</a></small></p>
+    </footer>
+
+    <script src="../js/jquery-1.10.2.min.js"></script>
+    <script src="../js/bootstrap-3.0.3.min.js"></script>
+    <script src="../js/prism-zf.js"></script>
+
+    <script>var base_url = '..';</script>
+    <script data-main="../mkdocs/js/search.js" src="../mkdocs/js/require.js"></script>
+    <script src="../js/base.js"></script>
+
+    <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="Search Modal" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">
+                        <span aria-hidden="true">&times;</span>
+                        <span class="sr-only">Close</span>
+                    </button>
+                    <h4 class="modal-title" id="exampleModalLabel">Search</h4>
+                </div>
+                <div class="modal-body">
+                    <p>
+                        From here you can search these documents. Enter your search terms below.
+                    </p>
+                    <form role="form">
+                        <div class="form-group">
+                            <input type="text" class="form-control" placeholder="Search..." id="mkdocs-search-query">
+                        </div>
+                    </form>
+                    <div id="mkdocs-search-results"></div>
+                </div>
+                <div class="modal-footer">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    </body>
+
+</html>

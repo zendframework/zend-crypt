@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">  
+    <link rel="shortcut icon" href="../img/favicon.ico">
+
+    <title>Key Derivation - zend-crypt</title>
+
+    <link href="../css/bootstrap-custom.min.css" rel="stylesheet">
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/font-hack/2.018/css/hack.min.css">
+    <link href="//fonts.googleapis.com/css?family=PT+Sans:400,400italic,700,700italic&subset=latin-ext,latin" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,700italic,400,300,600,700&subset=latin-ext,latin" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Libre+Baskerville:400,400italic,700&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+    <link href="../css/base.css" rel="stylesheet">
+    <link href="../css/zf.css" rel="stylesheet">
+    <link href="../css/prism-zf.css" rel="stylesheet">
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+            <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+            <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+        <![endif]-->
+
+    <script src="https://ajax.googleapis.com/ajax/libs/webfont/1.5.18/webfont.js"></script>
+    <script>
+    WebFont.load({
+        google: {
+            families: ['Open Sans', 'PT Sans']
+        }
+    });
+    </script>
+
+    
+</head>
+
+<body>
+
+    <div class="navbar navbar-default navbar-fixed-top" role="navigation">
+    <div class="container">
+
+        <!-- Collapsed navigation -->
+        <div class="navbar-header">
+            
+            <!-- Expander button -->
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            
+
+            <!-- Main title -->
+            <span class="navbar-brand">
+              <a href="http://framework.zend.com"><img src="../img/zf-logo-mark.png" height="28" alt="Zend Framework" /></a>
+              <a href="..">zend-crypt</a>
+            </span>
+        </div>
+
+        <!-- Expanded navigation -->
+        <div class="navbar-collapse collapse">
+            
+                <!-- Main navigation -->
+                <ul class="nav navbar-nav">
+                
+                
+                    <li >
+                        <a href="..">Home</a>
+                    </li>
+                
+                
+                
+                    <li >
+                        <a href="../intro/">Intro</a>
+                    </li>
+                
+                
+                
+                    <li class="dropdown active">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">Reference <b class="caret"></b></a>
+                        <ul class="dropdown-menu">
+                        
+                            
+<li >
+    <a href="../block-cipher/">Block Ciphers</a>
+</li>
+
+                        
+                            
+<li >
+    <a href="../files/">Encrypting Files</a>
+</li>
+
+                        
+                            
+<li class="active">
+    <a href="./">Key Derivation</a>
+</li>
+
+                        
+                            
+<li >
+    <a href="../password/">Passwords</a>
+</li>
+
+                        
+                            
+<li >
+    <a href="../public-key/">Public Key Cryptography</a>
+</li>
+
+                        
+                        </ul>
+                    </li>
+                
+                
+                </ul>
+            
+
+            <ul class="nav navbar-nav navbar-right">
+                <li>
+                    <a href="#" data-toggle="modal" data-target="#mkdocs_search_modal">
+                        <i class="fa fa-search"></i> Search
+                    </a>
+                </li>
+                
+                    <li >
+                        <a rel="prev" href="../files/">
+                            <i class="fa fa-arrow-left"></i> Previous
+                        </a>
+                    </li>
+                    <li >
+                        <a rel="next" href="../password/">
+                            Next <i class="fa fa-arrow-right"></i>
+                        </a>
+                    </li>
+                
+                
+                    <li>
+                        <a href="https://github.com/zendframework/zend-crypt">
+                            
+                                <i class="fa fa-github"></i>
+                            
+                            GitHub
+                        </a>
+                    </li>
+                
+            </ul>
+        </div>
+    </div>
+</div>
+
+    <!-- content:begin -->
+    <div class="container">
+        
+        <div class="col-md-3"><div class="bs-sidebar hidden-print affix well" role="complementary">
+    <ul class="nav bs-sidenav">
+    
+        <li class="main active"><a href="#key-derivation-function">Key derivation function</a></li>
+        
+            <li><a href="#pbkdf2-adapter">Pbkdf2 adapter</a></li>
+        
+            <li><a href="#salteds2k-adapter">SaltedS2k adapter</a></li>
+        
+            <li><a href="#scrypt-adapter">Scrypt adapter</a></li>
+        
+            <li><a href="#footnotes">Footnotes</a></li>
+        
+    
+    </ul>
+</div></div>
+        <div class="col-md-9" role="main">
+
+<ol class="breadcrumb" role="navigation" aria-label="breadcrumbs navigation">
+  <li><a href="..">Docs</a> &raquo;</li>
+  
+    
+      
+        <li>Reference &raquo;</li>
+      
+    
+  
+  <li class="active">Key Derivation</li>
+</ol>
+
+<nav class="hidden-lg">
+  <ul class="pager">
+    <li class="previous">
+      <a rel="prev" href="../files/"><i class="fa fa-arrow-left"></i> Previous</a>
+    </li>
+    <li class="next">
+      <a rel="next" href="../password/">Next <i class="fa fa-arrow-right"></i></a>
+    </li>
+  </ul>
+</nav>
+
+<h1 id="key-derivation-function">Key derivation function</h1>
+<p>In cryptography, a key derivation function (or KDF) derives one or more secret
+keys from a secret value such as a master key, or known information &mdash; such
+as a password or passphrase &mdash; using a pseudo-random function. For
+instance, a KDF function can be used to generate encryption or authentication
+keys from a user password. <code>Zend\Crypt\Key\Derivation</code> implements a key
+derivation function using specific adapters.</p>
+<p>User passwords are not really suitable to be used as keys in cryptographic
+algorithms, since users normally choose keys they can write with a keyboard. These
+passwords use only 6 to 7 bits per character (or less). It is highly recommended
+always to use a KDF function to transform a user's password in a cryptographic
+key.</p>
+<p>The output of the following key derivation functions is a binary string. If you
+need to store the value in a database or a different persistent storage, we
+suggest converting it to Base64 format, using the
+<a href="http://php.net/manual/en/function.base64-encode.php">base64_encode()</a> function,
+or to hex format, using the
+<a href="http://php.net/manual/en/function.bin2hex.php">bin2hex()</a> function.</p>
+<h2 id="pbkdf2-adapter">Pbkdf2 adapter</h2>
+<p><a href="http://en.wikipedia.org/wiki/PBKDF2">Pbkdf2</a> is a KDF that applies a
+pseudorandom function, such as a cryptographic hash, to the input password or
+passphrase along with a salt value and repeats the process many times to produce
+a derived key, which can then be used as a cryptographic key in subsequent
+operations. The added computational work makes password cracking much more
+difficult, and is known as <a href="http://en.wikipedia.org/wiki/Key_stretching">key
+stretching</a>.</p>
+<p>In the example below we demonstrate typical usage of the <code>Pbkdf2</code> adapter.</p>
+<pre class="codehilite"><code class="language-php">use Zend\Crypt\Key\Derivation\Pbkdf2;
+use Zend\Math\Rand;
+
+$pass = 'password';
+$salt = Rand::getBytes(32, true);
+$key  = Pbkdf2::calc('sha256', $pass, $salt, 10000, 32);
+
+printf (&quot;Original password: %s\n&quot;, $pass);
+printf (&quot;Derived key (hex): %s\n&quot;, bin2hex($key));</code></pre>
+
+
+<p>The <code>Pbkdf2</code> adapter takes the password (<code>$pass</code>) and generates a binary key of
+32 bytes. The syntax is <code>calc($hash, $pass, $salt, $iterations, $length)</code> where
+<code>$hash</code> is the name of the hash function to use, <code>$pass</code> is the password,
+<code>$salt</code> is a pseudo random value, <code>$iterations</code> is the number of iterations of
+the algorithm, and <code>$length</code> is the size of the key to be generated. We use the
+<code>Rand::getBytes()</code> function from the class <code>Zend\Math\Rand</code> to generate a random
+string of 32 bytes for the salt, using a strong generator (the <code>true</code> value
+means the usage of a cryptographically strong generator).</p>
+<p>The number of iterations is a very important parameter for the security of the
+algorithm; bigger values guarantee more security. There is no fixed value for
+the parameter because the number of iterations depends on CPU power. You should
+always choose a number of iterations that prevents brute force attacks.</p>
+<h2 id="salteds2k-adapter">SaltedS2k adapter</h2>
+<p>The <a href="http://www.faqs.org/rfcs/rfc2440.html">SaltedS2k</a> algorithm uses a hash
+function and a salt to generate a key based on a user's password. This algorithm
+doesn't use a parameter to specify the number of iterations, and for that reason
+it's considered less secure compared to Pbkdf2. We suggest using the SaltedS2k
+algorithm only if you really need it (for instance, due to hardware
+limitations).</p>
+<p>The following demonstrates usage of the <code>SaltedS2k</code> adapter to generate a 32
+byte key.</p>
+<pre class="codehilite"><code class="language-php">use Zend\Crypt\Key\Derivation\SaltedS2k;
+use Zend\Math\Rand;
+
+$pass = 'password';
+$salt = Rand::getBytes(32, true);
+$key  = SaltedS2k::calc('sha256', $pass, $salt, 32);
+
+printf (&quot;Original password: %s\n&quot;, $pass);
+printf (&quot;Derived key (hex): %s\n&quot;, bin2hex($key));</code></pre>
+
+
+<h2 id="scrypt-adapter">Scrypt adapter</h2>
+<p>The <a href="http://www.tarsnap.com/scrypt.html">scrypt</a> algorithm uses the <a href="http://cr.yp.to/salsa20.html">Salsa20/8
+core</a> algorithm and Pbkdf2-SHA256 to generate a
+key based on a user's password. This algorithm has been designed to be more
+secure against hardware brute-force attacks than alternative functions such as
+<a href="http://en.wikipedia.org/wiki/PBKDF2">Pbkdf2</a> or
+<a href="http://en.wikipedia.org/wiki/Bcrypt">bcrypt</a>.</p>
+<p>The scrypt algorithm is based on the idea of memory-hard algorithms and
+sequential memory-hard functions. A memory-hard algorithm is an algorithm which
+asymptotically uses almost as many memory locations as it uses
+operations<sup><a href="#footnotes">1</a></sup>. A natural way to reduce the advantage
+provided by an attacker’s ability to construct highly parallel circuits is to
+increase the size of a single key derivation circuit — if a circuit is twice as
+large, only half as many copies can be placed on a given area of silicon — while
+still operating within the resources available to software implementations,
+including a powerful CPU and large amounts of RAM.</p>
+<blockquote>
+<p>"From a test executed on modern (2009) hardware, if 5 seconds are spent
+computing a derived key, the cost of a hardware brute-force attack against
+scrypt is roughly 4000 times greater than the cost of a similar attack against
+bcrypt (to find the same password), and 20000 times greater than a similar
+attack against Pbkdf2."</p>
+<p><em>&mdash; </em>Colin Percival<em> (author of the scrypt algorithm)</em></p>
+</blockquote>
+<p>This algorithm uses 4 parameters to generate a key of 32 bytes:</p>
+<ul>
+<li><code>salt</code>, a random string;</li>
+<li><code>N</code>, the CPU cost;</li>
+<li><code>r</code>, the memory cost;</li>
+<li><code>p</code>, the parallelization cost.</li>
+</ul>
+<p>Following is a usage example for the <code>Scrypt</code> adapter:</p>
+<pre class="codehilite"><code class="language-php">use Zend\Crypt\Key\Derivation\Scrypt;
+use Zend\Math\Rand;
+
+$pass = 'password';
+$salt = Rand::getBytes(32, true);
+$key  = Scrypt::calc($pass, $salt, 2048, 2, 1, 32);
+
+printf (&quot;Original password: %s\n&quot;, $pass);
+printf (&quot;Derived key (hex): %s\n&quot;, bin2hex($key));</code></pre>
+
+
+<blockquote>
+<h3 id="performance-of-the-scrypt-implementation">Performance of the scrypt implementation</h3>
+<p>The aim of the scrypt algorithm is to generate a secure derived key that
+prevents brute force attacks.  Just like the other derivation functions, the
+more time (and memory) spent executing the algorithm, the more secure the
+derived key will be. Unfortunately a pure PHP implementation of the scrypt
+algorithm is very slow compared with the C implementation (this is always
+true, if you compare execution time of C with PHP). If you want use a faster
+scrypt algorithm, we suggest installing the PECL <a href="http://pecl.php.net/package/scrypt">scrypt
+extension</a>. The <code>Scrypt</code> adapter we
+provide is able to recognize if the PECL extension is loaded and will use it
+instead of the pure PHP implementation.</p>
+</blockquote>
+<h2 id="footnotes">Footnotes</h2>
+<ul>
+<li><sup>1</sup> See Colin Percival's <a href="http://www.tarsnap.com/scrypt/scrypt-slides.pdf">slides on scrypt from BSDCan'09</a>.</li>
+</ul>
+
+<hr />
+
+<nav>
+  <ul class="pager">
+    <li class="previous">
+      <a rel="prev" href="../files/"><i class="fa fa-arrow-left"></i> Previous</a>
+    </li>
+    <li class="next">
+      <a rel="next" href="../password/">Next <i class="fa fa-arrow-right"></i></a>
+    </li>
+  </ul>
+</nav></div>
+        
+    </div>
+    <!-- content:end -->
+
+    <footer class="col-md-12 text-center">
+        <hr>
+        <p>
+        <small>Copyright (c) 2016 <a href="http://www.zend.com/">Zend Technologies USA Inc.</a><br></small>
+        </p>
+        <p><small><a href="http://framework.zend.com">Learn more about Zend Framework</a></small></p>
+    </footer>
+
+    <script src="../js/jquery-1.10.2.min.js"></script>
+    <script src="../js/bootstrap-3.0.3.min.js"></script>
+    <script src="../js/prism-zf.js"></script>
+
+    <script>var base_url = '..';</script>
+    <script data-main="../mkdocs/js/search.js" src="../mkdocs/js/require.js"></script>
+    <script src="../js/base.js"></script>
+
+    <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="Search Modal" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">
+                        <span aria-hidden="true">&times;</span>
+                        <span class="sr-only">Close</span>
+                    </button>
+                    <h4 class="modal-title" id="exampleModalLabel">Search</h4>
+                </div>
+                <div class="modal-body">
+                    <p>
+                        From here you can search these documents. Enter your search terms below.
+                    </p>
+                    <form role="form">
+                        <div class="form-group">
+                            <input type="text" class="form-control" placeholder="Search..." id="mkdocs-search-query">
+                        </div>
+                    </form>
+                    <div id="mkdocs-search-results"></div>
+                </div>
+                <div class="modal-footer">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    </body>
+
+</html>

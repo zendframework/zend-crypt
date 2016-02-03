@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">  
+    <link rel="shortcut icon" href="../img/favicon.ico">
+
+    <title>Block Ciphers - zend-crypt</title>
+
+    <link href="../css/bootstrap-custom.min.css" rel="stylesheet">
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/font-hack/2.018/css/hack.min.css">
+    <link href="//fonts.googleapis.com/css?family=PT+Sans:400,400italic,700,700italic&subset=latin-ext,latin" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,700italic,400,300,600,700&subset=latin-ext,latin" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Libre+Baskerville:400,400italic,700&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+    <link href="../css/base.css" rel="stylesheet">
+    <link href="../css/zf.css" rel="stylesheet">
+    <link href="../css/prism-zf.css" rel="stylesheet">
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+            <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+            <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+        <![endif]-->
+
+    <script src="https://ajax.googleapis.com/ajax/libs/webfont/1.5.18/webfont.js"></script>
+    <script>
+    WebFont.load({
+        google: {
+            families: ['Open Sans', 'PT Sans']
+        }
+    });
+    </script>
+
+    
+</head>
+
+<body>
+
+    <div class="navbar navbar-default navbar-fixed-top" role="navigation">
+    <div class="container">
+
+        <!-- Collapsed navigation -->
+        <div class="navbar-header">
+            
+            <!-- Expander button -->
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            
+
+            <!-- Main title -->
+            <span class="navbar-brand">
+              <a href="http://framework.zend.com"><img src="../img/zf-logo-mark.png" height="28" alt="Zend Framework" /></a>
+              <a href="..">zend-crypt</a>
+            </span>
+        </div>
+
+        <!-- Expanded navigation -->
+        <div class="navbar-collapse collapse">
+            
+                <!-- Main navigation -->
+                <ul class="nav navbar-nav">
+                
+                
+                    <li >
+                        <a href="..">Home</a>
+                    </li>
+                
+                
+                
+                    <li >
+                        <a href="../intro/">Intro</a>
+                    </li>
+                
+                
+                
+                    <li class="dropdown active">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">Reference <b class="caret"></b></a>
+                        <ul class="dropdown-menu">
+                        
+                            
+<li class="active">
+    <a href="./">Block Ciphers</a>
+</li>
+
+                        
+                            
+<li >
+    <a href="../files/">Encrypting Files</a>
+</li>
+
+                        
+                            
+<li >
+    <a href="../key-derivation/">Key Derivation</a>
+</li>
+
+                        
+                            
+<li >
+    <a href="../password/">Passwords</a>
+</li>
+
+                        
+                            
+<li >
+    <a href="../public-key/">Public Key Cryptography</a>
+</li>
+
+                        
+                        </ul>
+                    </li>
+                
+                
+                </ul>
+            
+
+            <ul class="nav navbar-nav navbar-right">
+                <li>
+                    <a href="#" data-toggle="modal" data-target="#mkdocs_search_modal">
+                        <i class="fa fa-search"></i> Search
+                    </a>
+                </li>
+                
+                    <li >
+                        <a rel="prev" href="../intro/">
+                            <i class="fa fa-arrow-left"></i> Previous
+                        </a>
+                    </li>
+                    <li >
+                        <a rel="next" href="../files/">
+                            Next <i class="fa fa-arrow-right"></i>
+                        </a>
+                    </li>
+                
+                
+                    <li>
+                        <a href="https://github.com/zendframework/zend-crypt">
+                            
+                                <i class="fa fa-github"></i>
+                            
+                            GitHub
+                        </a>
+                    </li>
+                
+            </ul>
+        </div>
+    </div>
+</div>
+
+    <!-- content:begin -->
+    <div class="container">
+        
+        <div class="col-md-3"><div class="bs-sidebar hidden-print affix well" role="complementary">
+    <ul class="nav bs-sidenav">
+    
+        <li class="main active"><a href="#encryptdecrypt-using-block-ciphers">Encrypt/decrypt using block ciphers</a></li>
+        
+            <li><a href="#key-size">Key size</a></li>
+        
+            <li><a href="#recommendation">Recommendation</a></li>
+        
+    
+    </ul>
+</div></div>
+        <div class="col-md-9" role="main">
+
+<ol class="breadcrumb" role="navigation" aria-label="breadcrumbs navigation">
+  <li><a href="..">Docs</a> &raquo;</li>
+  
+    
+      
+        <li>Reference &raquo;</li>
+      
+    
+  
+  <li class="active">Block Ciphers</li>
+</ol>
+
+<nav class="hidden-lg">
+  <ul class="pager">
+    <li class="previous">
+      <a rel="prev" href="../intro/"><i class="fa fa-arrow-left"></i> Previous</a>
+    </li>
+    <li class="next">
+      <a rel="next" href="../files/">Next <i class="fa fa-arrow-right"></i></a>
+    </li>
+  </ul>
+</nav>
+
+<h1 id="encryptdecrypt-using-block-ciphers">Encrypt/decrypt using block ciphers</h1>
+<p><code>Zend\Crypt\BlockCipher</code> implements encrypt-then-authenticate mode using
+<a href="http://en.wikipedia.org/wiki/HMAC">HMAC</a> to provide authentication.</p>
+<p>The symmetric cipher can be chosen with a specific adapter that implements
+<code>Zend\Crypt\Symmetric\SymmetricInterface</code>. We support the standard algorithms of the
+<a href="http://php.net/manual/en/book.mcrypt.php">Mcrypt</a> extension; the adapter
+implementing the Mcrypt is <code>Zend\Crypt\Symmetric\Mcrypt</code>.</p>
+<p>In the following code, we detail an example of using the <code>BlockCipher</code> class to
+encrypt-then-authenticate a string using the
+<a href="http://en.wikipedia.org/wiki/Advanced_Encryption_Standard">AES</a> block cipher
+(with a 256-bit key) and the HMAC algorithm (using the
+<a href="http://en.wikipedia.org/wiki/SHA-2">SHA-256</a> hash function).</p>
+<pre class="codehilite"><code class="language-php">use Zend\Crypt\BlockCipher;
+
+$blockCipher = BlockCipher::factory('mcrypt', array('algo' =&gt; 'aes'));
+$blockCipher-&gt;setKey('encryption key');
+$result = $blockCipher-&gt;encrypt('this is a secret message');
+echo &quot;Encrypted text: $result\n&quot;;</code></pre>
+
+
+<p>The <code>BlockCipher</code> instance is initialized using a factory method with the name
+of the cipher adapter to use (mcrypt) and the parameters to pass to the adapter
+(the AES algorithm). In order to encrypt a string, we need to specify an
+encryption key, which we do via the <code>setKey()</code> method. Encryption is performed
+with the <code>encrypt()</code> method.</p>
+<p>The output of encryption is a string, encoded in Base64 (default), containing
+the HMAC value, the IV vector, and the encrypted text. The encryption mode used
+is <a href="http://en.wikipedia.org/wiki/Block_cipher_modes_of_operation#Cipher-block_chaining_.28CBC.29">CBC</a>
+(with a random <a href="http://en.wikipedia.org/wiki/Initialization_vector">IV</a> by
+default), with the default HMAC hash algorithm of SHA256.  The Mcrypt adapter
+encrypts using the <a href="http://en.wikipedia.org/wiki/Padding_%28cryptography%29">PKCS#7 padding</a>
+mechanism by default. You can specify a different padding method using a special
+adapter (<code>Zend\Crypt\Symmetric\Padding</code>). The encryption and authentication keys
+used by <code>BlockCipher</code> are generated with the <a href="http://en.wikipedia.org/wiki/PBKDF2">PBKDF2</a>
+algorithm, used as the key derivation function from the user's key specified
+using the <code>setKey()</code> method.</p>
+<blockquote>
+<h2 id="key-size">Key size</h2>
+<p>BlockCipher always attempts to use the longest key size for the specified
+cipher. For instance, for the AES algorithm it uses 256 bits, and for the
+<a href="http://en.wikipedia.org/wiki/Blowfish_%28cipher%29">Blowfish</a> algorithm it
+uses 448 bits.</p>
+</blockquote>
+<p>You can change all the default settings by passing the values to the factory
+parameters. For instance, if you want to use the Blowfish algorithm, with the
+CFB mode and the HMAC SHA512 hash function, initialize the class as follows:</p>
+<pre class="codehilite"><code class="language-php">use Zend\Crypt\BlockCipher;
+
+$blockCipher = BlockCipher::factory(
+    'mcrypt',
+    [
+        'algo' =&gt; 'blowfish',
+        'mode' =&gt; 'cfb',
+        'hash' =&gt; 'sha512'
+    ]
+);</code></pre>
+
+
+<blockquote>
+<h2 id="recommendation">Recommendation</h2>
+<p>If you are not familiar with symmetric encryption techniques, we strongly
+suggest using the default values of the <code>BlockCipher</code> class. The default
+values are: AES algorithm, CBC mode, HMAC with SHA256, PKCS#7 padding.</p>
+</blockquote>
+<p>To decrypt a string we can use the <code>decrypt()</code> method. In order to successfully
+decrypt a string, we must configure the <code>BlockCipher</code> with the same parameters
+used during encryption.</p>
+<p>We can also initialize the <code>BlockCipher</code> manually without using the factory method;
+we can inject the symmetric cipher adapter directly via the constructor.
+For instance, we can rewrite the previous example as follows:</p>
+<pre class="codehilite"><code class="language-php">use Zend\Crypt\BlockCipher;
+use Zend\Crypt\Symmetric\Mcrypt;
+
+$blockCipher = new BlockCipher(new Mcrypt(['algo' =&gt; 'aes']));
+$blockCipher-&gt;setKey('encryption key');
+$result = $blockCipher-&gt;encrypt('this is a secret message');
+echo &quot;Encrypted text: $result \n&quot;;</code></pre>
+
+<hr />
+
+<nav>
+  <ul class="pager">
+    <li class="previous">
+      <a rel="prev" href="../intro/"><i class="fa fa-arrow-left"></i> Previous</a>
+    </li>
+    <li class="next">
+      <a rel="next" href="../files/">Next <i class="fa fa-arrow-right"></i></a>
+    </li>
+  </ul>
+</nav></div>
+        
+    </div>
+    <!-- content:end -->
+
+    <footer class="col-md-12 text-center">
+        <hr>
+        <p>
+        <small>Copyright (c) 2016 <a href="http://www.zend.com/">Zend Technologies USA Inc.</a><br></small>
+        </p>
+        <p><small><a href="http://framework.zend.com">Learn more about Zend Framework</a></small></p>
+    </footer>
+
+    <script src="../js/jquery-1.10.2.min.js"></script>
+    <script src="../js/bootstrap-3.0.3.min.js"></script>
+    <script src="../js/prism-zf.js"></script>
+
+    <script>var base_url = '..';</script>
+    <script data-main="../mkdocs/js/search.js" src="../mkdocs/js/require.js"></script>
+    <script src="../js/base.js"></script>
+
+    <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="Search Modal" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">
+                        <span aria-hidden="true">&times;</span>
+                        <span class="sr-only">Close</span>
+                    </button>
+                    <h4 class="modal-title" id="exampleModalLabel">Search</h4>
+                </div>
+                <div class="modal-body">
+                    <p>
+                        From here you can search these documents. Enter your search terms below.
+                    </p>
+                    <form role="form">
+                        <div class="form-group">
+                            <input type="text" class="form-control" placeholder="Search..." id="mkdocs-search-query">
+                        </div>
+                    </form>
+                    <div id="mkdocs-search-results"></div>
+                </div>
+                <div class="modal-footer">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    </body>
+
+</html>

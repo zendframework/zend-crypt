@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">  
+    <link rel="shortcut icon" href="../img/favicon.ico">
+
+    <title>Public Key Cryptography - zend-crypt</title>
+
+    <link href="../css/bootstrap-custom.min.css" rel="stylesheet">
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/font-hack/2.018/css/hack.min.css">
+    <link href="//fonts.googleapis.com/css?family=PT+Sans:400,400italic,700,700italic&subset=latin-ext,latin" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,700italic,400,300,600,700&subset=latin-ext,latin" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Libre+Baskerville:400,400italic,700&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+    <link href="../css/base.css" rel="stylesheet">
+    <link href="../css/zf.css" rel="stylesheet">
+    <link href="../css/prism-zf.css" rel="stylesheet">
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+            <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+            <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+        <![endif]-->
+
+    <script src="https://ajax.googleapis.com/ajax/libs/webfont/1.5.18/webfont.js"></script>
+    <script>
+    WebFont.load({
+        google: {
+            families: ['Open Sans', 'PT Sans']
+        }
+    });
+    </script>
+
+    
+</head>
+
+<body>
+
+    <div class="navbar navbar-default navbar-fixed-top" role="navigation">
+    <div class="container">
+
+        <!-- Collapsed navigation -->
+        <div class="navbar-header">
+            
+            <!-- Expander button -->
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            
+
+            <!-- Main title -->
+            <span class="navbar-brand">
+              <a href="http://framework.zend.com"><img src="../img/zf-logo-mark.png" height="28" alt="Zend Framework" /></a>
+              <a href="..">zend-crypt</a>
+            </span>
+        </div>
+
+        <!-- Expanded navigation -->
+        <div class="navbar-collapse collapse">
+            
+                <!-- Main navigation -->
+                <ul class="nav navbar-nav">
+                
+                
+                    <li >
+                        <a href="..">Home</a>
+                    </li>
+                
+                
+                
+                    <li >
+                        <a href="../intro/">Intro</a>
+                    </li>
+                
+                
+                
+                    <li class="dropdown active">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">Reference <b class="caret"></b></a>
+                        <ul class="dropdown-menu">
+                        
+                            
+<li >
+    <a href="../block-cipher/">Block Ciphers</a>
+</li>
+
+                        
+                            
+<li >
+    <a href="../files/">Encrypting Files</a>
+</li>
+
+                        
+                            
+<li >
+    <a href="../key-derivation/">Key Derivation</a>
+</li>
+
+                        
+                            
+<li >
+    <a href="../password/">Passwords</a>
+</li>
+
+                        
+                            
+<li class="active">
+    <a href="./">Public Key Cryptography</a>
+</li>
+
+                        
+                        </ul>
+                    </li>
+                
+                
+                </ul>
+            
+
+            <ul class="nav navbar-nav navbar-right">
+                <li>
+                    <a href="#" data-toggle="modal" data-target="#mkdocs_search_modal">
+                        <i class="fa fa-search"></i> Search
+                    </a>
+                </li>
+                
+                    <li >
+                        <a rel="prev" href="../password/">
+                            <i class="fa fa-arrow-left"></i> Previous
+                        </a>
+                    </li>
+                    <li class="disabled">
+                        <a rel="next" >
+                            Next <i class="fa fa-arrow-right"></i>
+                        </a>
+                    </li>
+                
+                
+                    <li>
+                        <a href="https://github.com/zendframework/zend-crypt">
+                            
+                                <i class="fa fa-github"></i>
+                            
+                            GitHub
+                        </a>
+                    </li>
+                
+            </ul>
+        </div>
+    </div>
+</div>
+
+    <!-- content:begin -->
+    <div class="container">
+        
+        <div class="col-md-3"><div class="bs-sidebar hidden-print affix well" role="complementary">
+    <ul class="nav bs-sidenav">
+    
+        <li class="main active"><a href="#public-key-cryptography">Public key cryptography</a></li>
+        
+            <li><a href="#diffie-hellman">Diffie-Hellman</a></li>
+        
+            <li><a href="#rsa">RSA</a></li>
+        
+            <li><a href="#openssl_1">Openssl</a></li>
+        
+    
+    </ul>
+</div></div>
+        <div class="col-md-9" role="main">
+
+<ol class="breadcrumb" role="navigation" aria-label="breadcrumbs navigation">
+  <li><a href="..">Docs</a> &raquo;</li>
+  
+    
+      
+        <li>Reference &raquo;</li>
+      
+    
+  
+  <li class="active">Public Key Cryptography</li>
+</ol>
+
+<nav class="hidden-lg">
+  <ul class="pager">
+    <li class="previous">
+      <a rel="prev" href="../password/"><i class="fa fa-arrow-left"></i> Previous</a>
+    </li>
+    <li class="next disabled ">
+      <a rel="next" >Next <i class="fa fa-arrow-right"></i></a>
+    </li>
+  </ul>
+</nav>
+
+<h1 id="public-key-cryptography">Public key cryptography</h1>
+<p>Public-key cryptography refers to a cryptographic system requiring two separate
+keys, one of which is secret and one of which is public. Although different, the
+two parts of the key pair are mathematically linked. One key locks or encrypts
+the plaintext, and the other unlocks or decrypts the cyphertext. Neither key can
+perform both functions. One of these keys is published or public, while the
+other is kept private.</p>
+<p>In zend-crypt, we implement two public key algorithms:</p>
+<ul>
+<li><a href="http://en.wikipedia.org/wiki/Diffie%E2%80%93Hellman_key_exchange">Diffie-Hellman</a>
+  key exchange, and</li>
+<li><a href="http://en.wikipedia.org/wiki/RSA_%28algorithm%29">RSA</a>.</li>
+</ul>
+<h2 id="diffie-hellman">Diffie-Hellman</h2>
+<p>The Diffie-Hellman algorithm is a specific method of exchanging cryptographic
+keys. It is one of the earliest practical examples of key exchange implemented
+within the field of cryptography. The Diffie–Hellman key exchange method allows
+two parties that have no prior knowledge of each other to jointly establish a
+shared secret key over an insecure communications channel. This key can then be
+used to encrypt subsequent communications using a symmetric key cipher.</p>
+<p>The diagram of operation of the Diffie-Hellman algorithm can be defined by the
+following picture (taken from the <a href="http://en.wikipedia.org/wiki/Diffie%E2%80%93Hellman_key_exchange">Diffie-Hellman</a>
+Wikipedia page):</p>
+<p><img alt="Diffie-Hellman algorithm" src="../images/zend.crypt.public-key.diffie-hellman.png" class="img-responsive"/></p>
+<p>The schema's colors represent the parameters of the algorithm.</p>
+<p>Below is an example demonstrating usage of <code>Zend\Crypt\PublicKey\DiffieHellman</code>:</p>
+<pre class="codehilite"><code class="language-php">use Zend\Crypt\PublicKey\DiffieHellman;
+
+$aliceOptions = [
+    'prime' =&gt; '155172898181473697471232257763715539915724801966915404479707795314057629378541917580651227'
+        . '423698188993727816152646631438561595825688188889951272158842675419950341258706556549803580'
+        . '104870537681476726513255747040765857479291291572334510643245094715007229621094194349783925'
+        . '984760375594985848253359305585439638443',
+    'generator'=&gt; '2',
+    'private'  =&gt; '992093140665725952364085695919679885571412495614942674862518080355353963322786201435363176'
+        . '813127128916726230726309951803243888416814918577455156967890911274095150092503589658166661'
+        . '463420498381785213791321533481399080168191962194483101070726325157493390557981225386151351'
+        . '04828702523796951800575031871051678091',
+];
+
+$bobOptions   = [
+    'prime'    =&gt; $aliceOptions['prime'],
+    'generator'=&gt; '2',
+    'private'  =&gt; '334117357926395586257336357178925636125481806504021611510774783148414637079488997861035889'
+        . '123256347304105519467727528801778689728169635518217403867000760342134081539246925625431179'
+        . '634647331566005454845108330724270034742070646507148310833044977371603820970833568760781462'
+        . '31616972608703322302585471319261275664',
+);
+
+$alice = new DiffieHellman(
+    $aliceOptions['prime'],
+    $aliceOptions['generator'],
+    $aliceOptions['private']
+);
+$bob = new DiffieHellman(
+    $bobOptions['prime'],
+    $bobOptions['generator'],
+    $bobOptions['private']
+);
+
+$alice-&gt;generateKeys();
+$bob-&gt;generateKeys();
+
+$aliceSecretKey = $alice-&gt;computeSecretKey(
+    $bob-&gt;getPublicKey(DiffieHellman::FORMAT_BINARY),
+    DiffieHellman::FORMAT_BINARY,
+    DiffieHellman::FORMAT_BINARY
+);
+
+$bobSecretKey = $bob-&gt;computeSecretKey(
+    $alice-&gt;getPublicKey(DiffieHellman::FORMAT_BINARY),
+    DiffieHellman::FORMAT_BINARY,
+    DiffieHellman::FORMAT_BINARY
+);
+
+if ($aliceSecretKey !== $bobSecretKey) {
+    echo &quot;ERROR!\n&quot;;
+} else {
+    printf(&quot;The secret key is: %s\n&quot;, base64_encode($aliceSecretKey));
+}</code></pre>
+
+
+<p>The parameters of the Diffie-Hellman class are:</p>
+<ul>
+<li>a prime number (p),</li>
+<li>a generator (g) that is a primitive root mod p, and</li>
+<li>a private integer number.</li>
+</ul>
+<p>The security of the Diffie-Hellman exchange algorithm is related to the choice
+of these parameters. To know how to choose secure numbers you can read the
+<a href="http://tools.ietf.org/html/rfc3526">RFC 3526</a> document.</p>
+<blockquote>
+<h3 id="openssl">Openssl</h3>
+<p>The <code>Zend\Crypt\PublicKey\DiffieHellman</code> class by default uses the
+<a href="http://php.net/manual/en/book.openssl.php">OpenSSL</a> extension to generate the
+parameters. If you don't want to use the OpenSSL library, call
+<code>DiffieHelmman::useOpensslExtension(false)</code>.</p>
+</blockquote>
+<h2 id="rsa">RSA</h2>
+<p>RSA is an algorithm for public-key cryptography that is based on the presumed
+difficulty of factoring large integers, known as the <a href="http://en.wikipedia.org/wiki/Factoring_problem">factoring
+problem</a>. A user of RSA creates
+and then publishes the product of two large prime numbers, along with an
+auxiliary value, as their public key. The prime factors must be kept secret.
+Anyone can use the public key to encrypt a message, but with currently published
+methods, if the public key is large enough, only someone with knowledge of the
+prime factors can feasibly decode the message. Whether breaking RSA encryption
+is as hard as factoring is an open question.</p>
+<p>The RSA algorithm can be used to encrypt/decrypt messages, and also to provide
+authenticity and integrity by generating a digital signature of a message.</p>
+<p>Suppose that Alice wants to send an encrypted message to Bob. Alice must use the
+public key of Bob to encrypt the message. Bob can decrypt the message using his
+private key. Because Bob is the only one that can access his private key,
+he is the only one that can decrypt the message. If Alice wants to provide
+authenticity and integrity of a message to Bob she can use her private key to
+sign the message. Bob can check the correctness of the digital signature using
+the public key of Alice. Alice can provide encryption, authenticity, and
+integrity of a message to Bob using the previous schemas in sequence, applying
+the encryption first and the digital signature after.</p>
+<p>Below are examples of usage of the <code>Zend\Crypt\PublicKey\Rsa</code> class in order to:</p>
+<ul>
+<li>generate a public key and a private key;</li>
+<li>encrypt/decrypt a string;</li>
+<li>generate a digital signature of a file.</li>
+</ul>
+<h3 id="generate-a-public-key-and-a-private-key">Generate a public key and a private key</h3>
+<p>In order to generate a public and private key, use the following code:</p>
+<pre class="codehilite"><code class="language-php">use Zend\Crypt\PublicKey\RsaOptions;
+
+$rsaOptions = new RsaOptions([
+    'pass_phrase' =&gt; 'test'
+[);
+
+$rsaOptions-&gt;generateKeys([
+    'private_key_bits' =&gt; 2048,
+]);
+
+file_put_contents('private_key.pem', $rsaOptions-&gt;getPrivateKey());
+file_put_contents('public_key.pub', $rsaOptions-&gt;getPublicKey());</code></pre>
+
+
+<p>This example generates a 2048-bit public and private key, storing the keys in two separate files,
+<code>private_key.pem</code> for the private key and <code>public_key.pub</code> for the public key. You can also
+generate the public and private key using OpenSSL from the command line (Unix style syntax):</p>
+<pre class="codehilite"><code class="language-bash">$ ssh-keygen -t rsa</code></pre>
+
+
+<h3 id="encrypt-and-decrypt-a-string">Encrypt and decrypt a string</h3>
+<p>Below is an example demonstrating encryption and decryption of a string using
+the RSA algorithm. You can encrypt only small strings. The maximum size of
+encryption is given by the length of the public/private key - 88 bits. For
+instance, if we use a size of 2048 bit you can encrypt a string with a maximum
+size of 1960 bit (245 characters). This limitation is related to the OpenSSL
+implementation for a security reason related to the nature of the RSA algorithm.</p>
+<p>The normal application of public key encryption algorithm is to store a key or a
+hash of the data you want to encrypt or sign. A hash is typically 128-256 bits
+(the PHP <code>sha1()</code> function returns a 160 bit hash). An AES encryption key is 128
+to 256 bits. Either will comfortably fit inside a single RSA encryption.</p>
+<pre class="codehilite"><code class="language-php">use Zend\Crypt\PublicKey\Rsa;
+
+$rsa = Rsa::factory([
+    'public_key'    =&gt; 'public_key.pub',
+    'private_key'   =&gt; 'private_key.pem',
+    'pass_phrase'   =&gt; 'test',
+    'binary_output' =&gt; false,
+]);
+
+$text = 'This is the message to encrypt';
+
+$encrypt = $rsa-&gt;encrypt($text);
+printf(&quot;Encrypted message:\n%s\n&quot;, $encrypt);
+
+$decrypt = $rsa-&gt;decrypt($encrypt);
+
+if ($text !== $decrypt) {
+    echo &quot;ERROR\n&quot;;
+} else {
+    echo &quot;Encryption and decryption performed successfully!\n&quot;;
+}</code></pre>
+
+
+<h3 id="generate-a-digital-signature-of-a-file">Generate a digital signature of a file</h3>
+<p>Below is an example demonstrating generation of a digital file signature.</p>
+<pre class="codehilite"><code class="language-php">use Zend\Crypt\PublicKey\Rsa;
+
+$rsa = Rsa::factory([
+    'private_key'   =&gt; 'path/to/private_key',
+    'pass_phrase'   =&gt; 'passphrase of the private key',
+    'binary_output' =&gt; false,
+]);
+
+$file = file_get_contents('path/file/to/sign');
+
+$signature = $rsa-&gt;sign($file, $rsa-&gt;getOptions()-&gt;getPrivateKey());
+$verify    = $rsa-&gt;verify($file, $signature, $rsa-&gt;getOptions()-&gt;getPublicKey());
+
+if ($verify) {
+    echo &quot;The signature is OK\n&quot;;
+    file_put_contents($filename . '.sig', $signature);
+    echo &quot;Signature save in $filename.sig\n&quot;;
+} else {
+     echo &quot;The signature is not valid!\n&quot;;
+}</code></pre>
+
+
+<p>In this example, we used the Base64 format to encode the digital signature of the file
+(<code>binary_output</code> is false).</p>
+<blockquote>
+<h2 id="openssl_1">Openssl</h2>
+<p>The implementation of the <code>Zend\Crypt\PublicKey\Rsa</code> algorithm uses PHP's OpenSSL extension.</p>
+</blockquote>
+
+<hr />
+
+<nav>
+  <ul class="pager">
+    <li class="previous">
+      <a rel="prev" href="../password/"><i class="fa fa-arrow-left"></i> Previous</a>
+    </li>
+    <li class="next disabled ">
+      <a rel="next" >Next <i class="fa fa-arrow-right"></i></a>
+    </li>
+  </ul>
+</nav></div>
+        
+    </div>
+    <!-- content:end -->
+
+    <footer class="col-md-12 text-center">
+        <hr>
+        <p>
+        <small>Copyright (c) 2016 <a href="http://www.zend.com/">Zend Technologies USA Inc.</a><br></small>
+        </p>
+        <p><small><a href="http://framework.zend.com">Learn more about Zend Framework</a></small></p>
+    </footer>
+
+    <script src="../js/jquery-1.10.2.min.js"></script>
+    <script src="../js/bootstrap-3.0.3.min.js"></script>
+    <script src="../js/prism-zf.js"></script>
+
+    <script>var base_url = '..';</script>
+    <script data-main="../mkdocs/js/search.js" src="../mkdocs/js/require.js"></script>
+    <script src="../js/base.js"></script>
+
+    <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="Search Modal" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">
+                        <span aria-hidden="true">&times;</span>
+                        <span class="sr-only">Close</span>
+                    </button>
+                    <h4 class="modal-title" id="exampleModalLabel">Search</h4>
+                </div>
+                <div class="modal-body">
+                    <p>
+                        From here you can search these documents. Enter your search terms below.
+                    </p>
+                    <form role="form">
+                        <div class="form-group">
+                            <input type="text" class="form-control" placeholder="Search..." id="mkdocs-search-query">
+                        </div>
+                    </form>
+                    <div id="mkdocs-search-results"></div>
+                </div>
+                <div class="modal-footer">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    </body>
+
+</html>
