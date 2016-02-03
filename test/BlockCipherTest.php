@@ -9,14 +9,14 @@
 
 namespace ZendTest\Crypt;
 
+use Interop\Container\ContainerInterface;
+use PHPUnit_Framework_TestCase as TestCase;
 use Zend\Crypt\BlockCipher;
+use Zend\Crypt\Exception as CryptException;
 use Zend\Crypt\Symmetric\Mcrypt;
-use Zend\Crypt\Symmetric\Exception;
+use Zend\Crypt\Symmetric\Exception as SymmetricException;
 
-/**
- * @group      Zend_Crypt
- */
-class BlockCipherTest extends \PHPUnit_Framework_TestCase
+class BlockCipherTest extends TestCase
 {
     /**
      * @var BlockCipher
@@ -33,7 +33,7 @@ class BlockCipherTest extends \PHPUnit_Framework_TestCase
                 'padding'   => 'pkcs7'
             ]);
             $this->blockCipher = new BlockCipher($cipher);
-        } catch (Exception\RuntimeException $e) {
+        } catch (SymmetricException\RuntimeException $e) {
             $this->markTestSkipped('Mcrypt is not installed, I cannot execute the BlockCipherTest');
         }
         $this->plaintext = file_get_contents(__DIR__ . '/_files/plaintext');
@@ -50,14 +50,14 @@ class BlockCipherTest extends \PHPUnit_Framework_TestCase
     public function testFactory()
     {
         $this->blockCipher = BlockCipher::factory('mcrypt', ['algo' => 'blowfish']);
-        $this->assertInstanceOf('Zend\Crypt\Symmetric\Mcrypt', $this->blockCipher->getCipher());
+        $this->assertInstanceOf(Mcrypt::class, $this->blockCipher->getCipher());
         $this->assertEquals('blowfish', $this->blockCipher->getCipher()->getAlgorithm());
     }
 
     public function testFactoryEmptyOptions()
     {
         $this->blockCipher = BlockCipher::factory('mcrypt');
-        $this->assertInstanceOf('Zend\Crypt\Symmetric\Mcrypt', $this->blockCipher->getCipher());
+        $this->assertInstanceOf(Mcrypt::class, $this->blockCipher->getCipher());
     }
 
     public function testSetKey()
@@ -72,8 +72,10 @@ class BlockCipherTest extends \PHPUnit_Framework_TestCase
         $salt = str_repeat('a', $this->blockCipher->getCipher()->getSaltSize() + 2);
         $result = $this->blockCipher->setSalt($salt);
         $this->assertEquals($result, $this->blockCipher);
-        $this->assertEquals(substr($salt, 0,  $this->blockCipher->getCipher()->getSaltSize()),
-                            $this->blockCipher->getSalt());
+        $this->assertEquals(
+            substr($salt, 0, $this->blockCipher->getCipher()->getSaltSize()),
+            $this->blockCipher->getSalt()
+        );
         $this->assertEquals($salt, $this->blockCipher->getOriginalSalt());
     }
 
@@ -86,8 +88,10 @@ class BlockCipherTest extends \PHPUnit_Framework_TestCase
 
     public function testSetAlgorithmFail()
     {
-        $this->setExpectedException('Zend\Crypt\Exception\InvalidArgumentException',
-                                    'The algorithm unknown is not supported by Zend\Crypt\Symmetric\Mcrypt');
+        $this->setExpectedException(
+            CryptException\InvalidArgumentException::class,
+            'The algorithm unknown is not supported by Zend\Crypt\Symmetric\Mcrypt'
+        );
         $result = $this->blockCipher->setCipherAlgorithm('unknown');
     }
 
@@ -115,16 +119,20 @@ class BlockCipherTest extends \PHPUnit_Framework_TestCase
     public function testEncryptWithoutData()
     {
         $plaintext = '';
-        $this->setExpectedException('Zend\Crypt\Exception\InvalidArgumentException',
-                                    'The data to encrypt cannot be empty');
+        $this->setExpectedException(
+            CryptException\InvalidArgumentException::class,
+            'The data to encrypt cannot be empty'
+        );
         $ciphertext = $this->blockCipher->encrypt($plaintext);
     }
 
     public function testEncryptErrorKey()
     {
         $plaintext = 'test';
-        $this->setExpectedException('Zend\Crypt\Exception\InvalidArgumentException',
-                                    'No key specified for the encryption');
+        $this->setExpectedException(
+            CryptException\InvalidArgumentException::class,
+            'No key specified for the encryption'
+        );
         $ciphertext = $this->blockCipher->encrypt($plaintext);
     }
 
@@ -191,5 +199,13 @@ class BlockCipherTest extends \PHPUnit_Framework_TestCase
         $encrypted = substr($encrypted, -1);
         $decrypted = $this->blockCipher->decrypt($encrypted);
         $this->assertFalse($decrypted);
+    }
+
+    public function testSetSymmetricPluginManager()
+    {
+        $this->blockCipher->setSymmetricPluginManager(
+            $this->getMockBuilder(ContainerInterface::class)->getMock()
+        );
+        $this->assertInstanceOf(ContainerInterface::class, $this->blockCipher->getSymmetricPluginManager());
     }
 }

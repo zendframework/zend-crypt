@@ -10,9 +10,9 @@
 namespace Zend\Crypt\Password;
 
 use Traversable;
+use Zend\Crypt\Utils;
 use Zend\Math\Rand;
 use Zend\Stdlib\ArrayUtils;
-use Zend\Crypt\Utils;
 
 /**
  * Bcrypt algorithm using crypt() function of PHP
