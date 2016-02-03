@@ -9,9 +9,9 @@
 
 namespace ZendTest\Crypt\Password;
 
+use ArrayObject;
 use Zend\Crypt\Password\Bcrypt;
 use Zend\Crypt\Password\BcryptSha;
-use Zend\Config\Config;
 
 /**
  * @group      Zend_Crypt
@@ -48,13 +48,17 @@ class BcryptShaTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($this->salt, $bcrypt->getSalt());
     }
 
+    /**
+     * This test uses ArrayObject to simulate a Zend\Config\Config instance;
+     * the class itself only tests for Traversable.
+     */
     public function testConstructByConfig()
     {
         $options = [
             'cost'       => '15',
             'salt'       => $this->salt
         ];
-        $config  = new Config($options);
+        $config  = new ArrayObject($options);
         $bcrypt  = new BcryptSha($config);
         $this->assertEquals('15', $bcrypt->getCost());
         $this->assertEquals($this->salt, $bcrypt->getSalt());
@@ -62,8 +66,10 @@ class BcryptShaTest extends \PHPUnit_Framework_TestCase
 
     public function testWrongConstruct()
     {
-        $this->setExpectedException('Zend\Crypt\Password\Exception\InvalidArgumentException',
-                                    'The options parameter must be an array or a Traversable');
+        $this->setExpectedException(
+            'Zend\Crypt\Password\Exception\InvalidArgumentException',
+            'The options parameter must be an array or a Traversable'
+        );
         $bcrypt = new BcryptSha('test');
     }
 
@@ -75,8 +81,10 @@ class BcryptShaTest extends \PHPUnit_Framework_TestCase
 
     public function testSetWrongCost()
     {
-        $this->setExpectedException('Zend\Crypt\Password\Exception\InvalidArgumentException',
-                                    'The cost parameter of bcrypt must be in range 04-31');
+        $this->setExpectedException(
+            'Zend\Crypt\Password\Exception\InvalidArgumentException',
+            'The cost parameter of bcrypt must be in range 04-31'
+        );
         $this->bcrypt->setCost('3');
     }
 
@@ -88,8 +96,10 @@ class BcryptShaTest extends \PHPUnit_Framework_TestCase
 
     public function testSetSmallSalt()
     {
-        $this->setExpectedException('Zend\Crypt\Password\Exception\InvalidArgumentException',
-                                    'The length of the salt must be at least ' . Bcrypt::MIN_SALT_SIZE . ' bytes');
+        $this->setExpectedException(
+            'Zend\Crypt\Password\Exception\InvalidArgumentException',
+            'The length of the salt must be at least ' . Bcrypt::MIN_SALT_SIZE . ' bytes'
+        );
         $this->bcrypt->setSalt('small salt');
     }
 
@@ -118,7 +128,9 @@ class BcryptShaTest extends \PHPUnit_Framework_TestCase
         $password = 'test' . chr(128);
         $this->bcrypt->setSalt($this->salt);
 
-        $this->assertEquals('$2y$10$MTIzNDU2Nzg5MDEyMzQ1NetiAf47gp.MSGw.8x1/hESvXYfMep1em',
-                                $this->bcrypt->create($password));
+        $this->assertEquals(
+            '$2y$10$MTIzNDU2Nzg5MDEyMzQ1NetiAf47gp.MSGw.8x1/hESvXYfMep1em',
+            $this->bcrypt->create($password)
+        );
     }
 }
