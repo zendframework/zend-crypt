@@ -2,11 +2,12 @@
 
 All notable changes to this project will be documented in this file, in reverse chronological order by release.
 
-## 3.0.0 - TBD
+## 2.6.0 - 2016-02-03
 
 ### Added
 
-- Nothing.
+- [#18](https://github.com/zendframework/zend-crypt/pull/18) adds documentation,
+  and publishes it to https://zendframework.github.io/zend-crypt/
 
 ### Deprecated
 
