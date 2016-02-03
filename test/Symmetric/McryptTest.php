@@ -9,8 +9,8 @@
 
 namespace ZendTest\Crypt\Symmetric;
 
+use ArrayObject;
 use Interop\Container\ContainerInterface;
-use Zend\Config\Config;
 use Zend\Crypt\Symmetric\Exception;
 use Zend\Crypt\Symmetric\Mcrypt;
 use Zend\Crypt\Symmetric\Padding\NoPadding;
@@ -69,6 +69,10 @@ class McryptTest extends \PHPUnit_Framework_TestCase
         $this->assertInstanceOf(PKCS7::class, $mcrypt->getPadding());
     }
 
+    /**
+     * This test uses ArrayObject to simulate a Zend\Config\Config instance;
+     * the class itself only tests for Traversable.
+     */
     public function testConstructByConfig()
     {
         $options = [
@@ -78,7 +82,7 @@ class McryptTest extends \PHPUnit_Framework_TestCase
             'salt'      => $this->salt,
             'padding'   => 'pkcs7'
         ];
-        $config  = new Config($options);
+        $config  = new ArrayObject($options);
         $mcrypt  = new Mcrypt($config);
         $this->assertEquals($mcrypt->getAlgorithm(), MCRYPT_BLOWFISH);
         $this->assertEquals($mcrypt->getMode(), MCRYPT_MODE_CFB);
