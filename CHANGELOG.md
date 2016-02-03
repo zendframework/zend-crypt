@@ -15,7 +15,9 @@ All notable changes to this project will be documented in this file, in reverse 
 
 ### Removed
 
-- Nothing.
+- Removes the (development) dependency on zend-config; tests that used it
+  previously have been updated to use `ArrayObject`, which implements the same
+  behavior being tested.
 
 ### Fixed
 
