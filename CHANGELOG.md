@@ -24,24 +24,6 @@ All notable changes to this project will be documented in this file, in reverse 
   various plugin managers to implement that interface instead of extending the
   `AbstractPluginManager`.
 
-## 2.5.3 - TBD
-
-### Added
-
-- Nothing.
-
-### Deprecated
-
-- Nothing.
-
-### Removed
-
-- Nothing.
-
-### Fixed
-
-- Nothing.
-
 ## 2.5.2 - 2015-11-23
 
 ### Added
