@@ -154,4 +154,11 @@ class DiffieHellmanTest extends \PHPUnit_Framework_TestCase
         $privateKey = $dh->getPrivateKey();
         $this->assertNotNull($privateKey);
     }
+
+    public function testInitMathBeforeAnyConversion()
+    {
+        // try different format of private key
+        new DiffieHellman('563', '5', '9', DiffieHellman::FORMAT_NUMBER);
+        new DiffieHellman('563', '5', hex2bin('09'), DiffieHellman::FORMAT_BINARY);
+    }
 }
