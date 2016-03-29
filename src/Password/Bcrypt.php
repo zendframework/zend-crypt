@@ -78,14 +78,14 @@ class Bcrypt implements PasswordInterface
         } else {
             $salt = $this->salt;
         }
-        $salt64 = substr(str_replace('+', '.', base64_encode($salt)), 0, 22);
+        $salt64 = mb_substr(str_replace('+', '.', base64_encode($salt)), 0, 22, '8bit');
         /**
          * Check for security flaw in the bcrypt implementation used by crypt()
          * @see http://php.net/security/crypt_blowfish.php
          */
         $prefix = '$2y$';
         $hash = crypt($password, $prefix . $this->cost . '$' . $salt64);
-        if (strlen($hash) < 13) {
+        if (mb_strlen($hash, '8bit') < 13) {
             throw new Exception\RuntimeException('Error during the bcrypt generation');
         }
         return $hash;
@@ -145,7 +145,7 @@ class Bcrypt implements PasswordInterface
      */
     public function setSalt($salt)
     {
-        if (strlen($salt) < self::MIN_SALT_SIZE) {
+        if (mb_strlen($salt, '8bit') < self::MIN_SALT_SIZE) {
             throw new Exception\InvalidArgumentException(
                 'The length of the salt must be at least ' . self::MIN_SALT_SIZE . ' bytes'
             );

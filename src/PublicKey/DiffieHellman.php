@@ -433,6 +433,6 @@ class DiffieHellman
      */
     protected function generatePrivateKey()
     {
-        return Math\Rand::getBytes(strlen($this->getPrime()), true);
+        return Math\Rand::getBytes(mb_strlen($this->getPrime(), '8bit'), true);
     }
 }

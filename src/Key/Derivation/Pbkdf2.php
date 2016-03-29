@@ -44,6 +44,6 @@ class Pbkdf2
             }
             $result .= $mix;
         }
-        return substr($result, 0, $length);
+        return mb_substr($result, 0, $length, '8bit');
     }
 }

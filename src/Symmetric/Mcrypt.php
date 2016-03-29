@@ -237,7 +237,7 @@ class Mcrypt implements SymmetricInterface
      */
     public function setKey($key)
     {
-        $keyLen = strlen($key);
+        $keyLen = mb_strlen($key, '8bit');
 
         if (!$keyLen) {
             throw new Exception\InvalidArgumentException('The key cannot be empty');
@@ -271,7 +271,7 @@ class Mcrypt implements SymmetricInterface
         if (empty($this->key)) {
             return;
         }
-        return substr($this->key, 0, $this->getKeySize());
+        return mb_substr($this->key, 0, $this->getKeySize(), '8bit');
     }
 
     /**
@@ -381,8 +381,8 @@ class Mcrypt implements SymmetricInterface
         if (null === $this->getPadding()) {
             throw new Exception\InvalidArgumentException('You have to specify a padding method');
         }
-        $iv         = substr($data, 0, $this->getSaltSize());
-        $ciphertext = substr($data, $this->getSaltSize());
+        $iv         = mb_substr($data, 0, $this->getSaltSize(), '8bit');
+        $ciphertext = mb_substr($data, $this->getSaltSize(), null, '8bit');
         $result     = mcrypt_decrypt(
             $this->supportedAlgos[$this->algo],
             $this->getKey(),
@@ -426,7 +426,7 @@ class Mcrypt implements SymmetricInterface
         if (empty($salt)) {
             throw new Exception\InvalidArgumentException('The salt (IV) cannot be empty');
         }
-        if (strlen($salt) < $this->getSaltSize()) {
+        if (mb_strlen($salt, '8bit') < $this->getSaltSize()) {
             throw new Exception\InvalidArgumentException(
                 'The size of the salt (IV) must be at least ' . $this->getSaltSize() . ' bytes'
             );
@@ -446,13 +446,13 @@ class Mcrypt implements SymmetricInterface
         if (empty($this->iv)) {
             return;
         }
-        if (strlen($this->iv) < $this->getSaltSize()) {
+        if (mb_strlen($this->iv, '8bit') < $this->getSaltSize()) {
             throw new Exception\RuntimeException(
                 'The size of the salt (IV) must be at least ' . $this->getSaltSize() . ' bytes'
             );
         }
 
-        return substr($this->iv, 0, $this->getSaltSize());
+        return mb_substr($this->iv, 0, $this->getSaltSize(), '8bit');
     }
 
     /**
