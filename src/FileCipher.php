@@ -241,7 +241,7 @@ class FileCipher
         $tot     = filesize($fileIn);
         $padding = $this->cipher->getPadding();
 
-        $this->cipher->setKey(substr($keys, 0, $this->cipher->getKeySize()));
+        $this->cipher->setKey(mb_substr($keys, 0, $this->cipher->getKeySize(), '8bit'));
         $this->cipher->setPadding(new Symmetric\Padding\NoPadding);
         $this->cipher->setSalt($iv);
         $this->cipher->setMode('cbc');
@@ -249,10 +249,10 @@ class FileCipher
         $hashAlgo  = $this->getHashAlgorithm();
         $saltSize  = $this->cipher->getSaltSize();
         $algorithm = $this->cipher->getAlgorithm();
-        $keyHmac   = substr($keys, $this->cipher->getKeySize());
+        $keyHmac   = mb_substr($keys, $this->cipher->getKeySize(), null, '8bit');
 
         while ($data = fread($read, self::BUFFER_SIZE)) {
-            $size += strlen($data);
+            $size += mb_strlen($data, '8bit');
             // Padding if last block
             if ($size == $tot) {
                 $this->cipher->setPadding($padding);
@@ -262,20 +262,20 @@ class FileCipher
                 // Write a placeholder for the HMAC and write the IV
                 fwrite($write, str_repeat(0, Hmac::getOutputSize($hashAlgo)));
             } else {
-                $result = substr($result, $saltSize);
+                $result = mb_substr($result, $saltSize, null, '8bit');
             }
             $hmac = Hmac::compute($keyHmac,
                                   $hashAlgo,
                                   $algorithm . $hmac . $result);
-            $this->cipher->setSalt(substr($result, -1 * $saltSize));
-            if (fwrite($write, $result) !== strlen($result)) {
+            $this->cipher->setSalt(mb_substr($result, -1 * $saltSize, null, '8bit'));
+            if (fwrite($write, $result) !== mb_strlen($result, '8bit')) {
                 return false;
             }
         }
         $result = true;
         // write the HMAC at the beginning of the file
         fseek($write, 0);
-        if (fwrite($write, $hmac) !== strlen($hmac)) {
+        if (fwrite($write, $hmac) !== mb_strlen($hmac, '8bit')) {
             $result = false;
         }
         fclose($write);
@@ -306,7 +306,7 @@ class FileCipher
         $iv       = fread($read, $this->cipher->getSaltSize());
         $tot      = filesize($fileIn);
         $hmac     = $iv;
-        $size     = strlen($iv) + strlen($hmacRead);
+        $size     = mb_strlen($iv, '8bit') + mb_strlen($hmacRead, '8bit');
         $keys     = Pbkdf2::calc($this->getPbkdf2HashAlgorithm(),
                                  $this->getKey(),
                                  $iv,
@@ -314,17 +314,17 @@ class FileCipher
                                  $this->cipher->getKeySize() * 2);
         $padding  = $this->cipher->getPadding();
         $this->cipher->setPadding(new Symmetric\Padding\NoPadding);
-        $this->cipher->setKey(substr($keys, 0, $this->cipher->getKeySize()));
+        $this->cipher->setKey(mb_substr($keys, 0, $this->cipher->getKeySize(), '8bit'));
         $this->cipher->setMode('cbc');
 
         $blockSize = $this->cipher->getBlockSize();
         $hashAlgo  = $this->getHashAlgorithm();
         $algorithm = $this->cipher->getAlgorithm();
         $saltSize  = $this->cipher->getSaltSize();
-        $keyHmac   = substr($keys, $this->cipher->getKeySize());
+        $keyHmac   = mb_substr($keys, $this->cipher->getKeySize(), null, '8bit');
 
         while ($data = fread($read, self::BUFFER_SIZE)) {
-            $size += strlen($data);
+            $size += mb_strlen($data, '8bit');
             // Unpadding if last block
             if ($size + $blockSize >= $tot) {
                 $this->cipher->setPadding($padding);
@@ -334,8 +334,8 @@ class FileCipher
             $hmac   = Hmac::compute($keyHmac,
                                     $hashAlgo,
                                     $algorithm . $hmac . $data);
-            $iv     = substr($data, -1 * $saltSize);
-            if (fwrite($write, $result) !== strlen($result)) {
+            $iv     = mb_substr($data, -1 * $saltSize, null, '8bit');
+            if (fwrite($write, $result) !== mb_strlen($result, '8bit')) {
                 return false;
             }
         }

@@ -36,8 +36,8 @@ class Utils
             return hash_equals($expected, $actual);
         }
 
-        $lenExpected  = strlen($expected);
-        $lenActual    = strlen($actual);
+        $lenExpected  = mb_strlen($expected, '8bit');
+        $lenActual    = mb_strlen($actual, '8bit');
         $len          = min($lenExpected, $lenActual);
 
         $result = 0;
