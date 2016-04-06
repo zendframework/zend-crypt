@@ -6,7 +6,8 @@ All notable changes to this project will be documented in this file, in reverse 
 
 ### Added
 
-- Nothing.
+- [#22](https://github.com/zendframework/zend-crypt/pull/22) adds a requirement
+  on `ext/mbstring` in order to install successfully.
 
 ### Deprecated
 
@@ -15,6 +16,12 @@ All notable changes to this project will be documented in this file, in reverse 
 ### Removed
 
 - Nothing.
+
+### Fixed
+
+- [#22](https://github.com/zendframework/zend-crypt/pull/22) updates all
+  occurrences of `substr()` and `strlen()` to use `mb_substr()` and
+  `mb_strlen()`, respectively. This provides better security with binary values.
 
 ## 2.6.1 - TBD
 
