@@ -14,6 +14,7 @@
     },
     "require": {
         "php": "^5.5 || ^7.0",
+        "ext-mbstring": "*",
         "zendframework/zend-math": "^2.6",
         "zendframework/zend-stdlib": "^2.7 || ^3.0",
         "container-interop/container-interop": "~1.0"

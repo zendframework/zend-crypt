@@ -60,7 +60,7 @@ class Hmac
      */
     public static function getOutputSize($hash, $output = self::OUTPUT_STRING)
     {
-        return strlen(static::compute('key', $hash, 'data', $output));
+        return mb_strlen(static::compute('key', $hash, 'data', $output), '8bit');
     }
 
     /**

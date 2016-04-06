@@ -48,7 +48,7 @@ class Hash
      */
     public static function getOutputSize($hash, $output = self::OUTPUT_STRING)
     {
-        return strlen(static::compute($hash, 'data', $output));
+        return mb_strlen(static::compute($hash, 'data', $output), '8bit');
     }
 
     /**
