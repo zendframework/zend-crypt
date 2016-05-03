@@ -10,6 +10,7 @@
 namespace Zend\Crypt;
 
 use Interop\Container\ContainerInterface;
+use Interop\Container\Exception\NotFoundException;
 use Zend\Crypt\Key\Derivation\Pbkdf2;
 use Zend\Crypt\Symmetric\SymmetricInterface;
 use Zend\Math\Rand;
@@ -95,10 +96,15 @@ class BlockCipher
     public static function factory($adapter, $options = [])
     {
         $plugins = static::getSymmetricPluginManager();
-        $adapter = $plugins->get($adapter);
-        $adapter->setOptions($options);
-
-        return new static($adapter);
+        try {
+            $cipher = $plugins->get($adapter);
+        } catch (NotFoundException $e) {
+            throw new Exception\RuntimeException(
+                sprintf("The symmetric adapter %s does not exist", $adapter)
+            );
+        }
+        $cipher->setOptions($options);
+        return new static($cipher);
     }
 
     /**
@@ -414,7 +420,7 @@ class BlockCipher
         $keySize = $this->cipher->getKeySize();
         // generate a random salt (IV) if the salt has not been set
         if (!$this->saltSetted) {
-            $this->cipher->setSalt(Rand::getBytes($this->cipher->getSaltSize(), true));
+            $this->cipher->setSalt(Rand::getBytes($this->cipher->getSaltSize()));
         }
         // generate the encryption key and the HMAC key for the authentication
         $hash = Pbkdf2::calc(

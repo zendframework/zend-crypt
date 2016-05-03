@@ -30,11 +30,11 @@ class BcryptShaTest extends \PHPUnit_Framework_TestCase
     public function setUp()
     {
         $this->bcrypt   = new BcryptSha();
-        $this->salt     = '1234567890123456';
+        $this->salt     = '1234567890123456789012';
         $this->password = 'test';
         $this->prefix   = '$2y$';
 
-        $this->bcryptPassword = $this->prefix . '10$MTIzNDU2Nzg5MDEyMzQ1NeqZGfIabq2.v6vX10KI4/z0pMoIoDyVa';
+        $this->bcryptPassword = $this->prefix . '10$123456789012345678901uhQoed..kXLQz0DxloSzgbQaEOW4N2Vm';
     }
 
     public function testConstructByOptions()
@@ -129,7 +129,7 @@ class BcryptShaTest extends \PHPUnit_Framework_TestCase
         $this->bcrypt->setSalt($this->salt);
 
         $this->assertEquals(
-            '$2y$10$MTIzNDU2Nzg5MDEyMzQ1NetiAf47gp.MSGw.8x1/hESvXYfMep1em',
+            '$2y$10$123456789012345678901uVgYiYiIUd6NpaVJF/AY/uluM1ED.cUq',
             $this->bcrypt->create($password)
         );
     }

@@ -10,6 +10,7 @@
 namespace Zend\Crypt\Symmetric;
 
 use Interop\Container\ContainerInterface;
+use Interop\Container\Exception\NotFoundException;
 
 /**
  * Plugin manager implementation for the padding adapter instances.
@@ -45,7 +46,12 @@ class PaddingPluginManager implements ContainerInterface
      */
     public function get($id)
     {
+        if (! $this->has($id)) {
+            throw new NotFoundException(
+                'The padding adapter %s does not exist', $id
+            );
+        }
         $class = $this->paddings[$id];
-        return new $class();
+        return new $class;
     }
 }

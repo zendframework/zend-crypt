@@ -29,18 +29,18 @@ class BcryptTest extends \PHPUnit_Framework_TestCase
     public function setUp()
     {
         $this->bcrypt   = new Bcrypt();
-        $this->salt     = '1234567890123456';
+        $this->salt     = '1234567890123456789012';
         $this->password = 'test';
         $this->prefix = '$2y$';
 
-        $this->bcryptPassword = $this->prefix . '10$MTIzNDU2Nzg5MDEyMzQ1Nej0NmcAWSLR.oP7XOR9HD/vjUuOj100y';
+        $this->bcryptPassword = $this->prefix . '10$123456789012345678901uIcehzOq0s9RvVtyXJFIsuuxuE2XZRMq';
     }
 
     public function testConstructByOptions()
     {
         $options = [
-            'cost'       => '15',
-            'salt'       => $this->salt
+            'cost' => '15',
+            'salt' => $this->salt
         ];
         $bcrypt  = new Bcrypt($options);
         $this->assertEquals('15', $bcrypt->getCost());
@@ -54,8 +54,8 @@ class BcryptTest extends \PHPUnit_Framework_TestCase
     public function testConstructByConfig()
     {
         $options = [
-            'cost'       => '15',
-            'salt'       => $this->salt
+            'cost' => '15',
+            'salt' => $this->salt
         ];
         $config  = new ArrayObject($options);
         $bcrypt  = new Bcrypt($config);
@@ -128,8 +128,41 @@ class BcryptTest extends \PHPUnit_Framework_TestCase
         $this->bcrypt->setSalt($this->salt);
 
         $this->assertEquals(
-            '$2y$10$MTIzNDU2Nzg5MDEyMzQ1NemFdU/4JOrNpxMym09Mbp0m4hKTgfQo.',
+            '$2y$10$123456789012345678901uzhRRynEzg8i5sfojdxRRwS90XfVE9vW',
             $this->bcrypt->create($password)
         );
+    }
+
+    public function backwardCompatibilityV2Test()
+    {
+        $hash = $this->oldBcryptImplementation('test', 10);
+        $this->assertTrue($this->bcrypt->verify('test', $hash));
+    }
+
+    /**
+     * This is the Bcrypt::create implementation of ZF 2.*
+     *
+     * @param string $Password
+     * @param integer $cost
+     * @param string $salt
+     * @return string
+     */
+    protected function oldBcryptImplementation($password, $cost = 10, $salt = null)
+    {
+        if (empty($salt)) {
+            $salt = Rand::getBytes(16);
+        }
+
+        $salt64 = mb_substr(str_replace('+', '.', base64_encode($salt)), 0, 22, '8bit');
+        /**
+         * Check for security flaw in the bcrypt implementation used by crypt()
+         * @see http://php.net/security/crypt_blowfish.php
+         */
+        $prefix = '$2y$';
+        $hash = crypt($password, $prefix . (string) $cost . '$' . $salt64);
+        if (mb_strlen($hash, '8bit') < 13) {
+            throw new RuntimeException('Error during the bcrypt generation');
+        }
+        return $hash;
     }
 }

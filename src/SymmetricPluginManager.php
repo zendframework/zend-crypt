@@ -10,6 +10,7 @@
 namespace Zend\Crypt;
 
 use Interop\Container\ContainerInterface;
+use Interop\Container\Exception\NotFoundException;
 
 /**
  * Plugin manager implementation for the symmetric adapter instances.
@@ -26,7 +27,8 @@ class SymmetricPluginManager implements ContainerInterface
      * @var array
      */
     protected $symmetric = [
-        'mcrypt' => Symmetric\Mcrypt::class,
+        'mcrypt'  => Symmetric\Mcrypt::class,
+        'openssl' => Symmetric\Openssl::class
     ];
 
     /**
@@ -48,7 +50,12 @@ class SymmetricPluginManager implements ContainerInterface
      */
     public function get($id)
     {
+        if (! $this->has($id)) {
+            throw new NotFoundException(
+                'The symmetric adapter %s does not exist', $id
+            );
+        }
         $class = $this->symmetric[$id];
-        return new $class();
+        return new $class;
     }
 }

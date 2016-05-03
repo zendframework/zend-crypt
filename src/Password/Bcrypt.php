@@ -19,7 +19,7 @@ use Zend\Stdlib\ArrayUtils;
  */
 class Bcrypt implements PasswordInterface
 {
-    const MIN_SALT_SIZE = 16;
+    const MIN_SALT_SIZE = 22;
 
     /**
      * @var string
@@ -68,27 +68,22 @@ class Bcrypt implements PasswordInterface
      * Bcrypt
      *
      * @param  string $password
+     * @param  boolean $cryptuse
      * @throws Exception\RuntimeException
      * @return string
      */
-    public function create($password)
+    public function create($password, $cryptuse = false)
     {
         if (empty($this->salt)) {
             $salt = Rand::getBytes(self::MIN_SALT_SIZE);
         } else {
             $salt = $this->salt;
         }
-        $salt64 = mb_substr(str_replace('+', '.', base64_encode($salt)), 0, 22, '8bit');
-        /**
-         * Check for security flaw in the bcrypt implementation used by crypt()
-         * @see http://php.net/security/crypt_blowfish.php
-         */
-        $prefix = '$2y$';
-        $hash = crypt($password, $prefix . $this->cost . '$' . $salt64);
-        if (mb_strlen($hash, '8bit') < 13) {
-            throw new Exception\RuntimeException('Error during the bcrypt generation');
-        }
-        return $hash;
+
+        return password_hash($password, PASSWORD_BCRYPT, [
+            'salt' => $salt,
+            'cost' => $this->cost
+        ]);
     }
 
     /**
@@ -96,13 +91,11 @@ class Bcrypt implements PasswordInterface
      *
      * @param  string $password
      * @param  string $hash
-     * @throws Exception\RuntimeException when the hash is unable to be processed
      * @return bool
      */
     public function verify($password, $hash)
     {
-        $result = crypt($password, $hash);
-        return Utils::compareStrings($hash, $result);
+        return password_verify($password, $hash);
     }
 
     /**
@@ -162,28 +155,5 @@ class Bcrypt implements PasswordInterface
     public function getSalt()
     {
         return $this->salt;
-    }
-
-    /**
-     * Set the backward compatibility $2a$ instead of $2y$ for PHP 5.3.7+
-     *
-     * @deprecated since zf 2.3 requires PHP >= 5.3.23
-     * @param bool $value
-     * @return Bcrypt
-     */
-    public function setBackwardCompatibility($value)
-    {
-        return $this;
-    }
-
-    /**
-     * Get the backward compatibility
-     *
-     * @deprecated since zf 2.3 requires PHP >= 5.3.23
-     * @return bool
-     */
-    public function getBackwardCompatibility()
-    {
-        return false;
     }
 }
