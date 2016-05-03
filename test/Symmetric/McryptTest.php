@@ -44,5 +44,4 @@ class McryptTest extends AbstractTest
             }
         }
     }
-
 }

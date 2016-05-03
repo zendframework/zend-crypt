@@ -438,7 +438,7 @@ class Openssl implements SymmetricInterface
         $algos        = [];
         foreach ($this->supportedAlgos as $name => $algo) {
             if (in_array($algo . '-CBC', $opensslAlgos)) {
-               $algos []= $name;
+                $algos []= $name;
             }
         }
         return $algos;
@@ -533,9 +533,9 @@ class Openssl implements SymmetricInterface
         $algorithms = openssl_get_cipher_methods(true);
         $modes      = [];
         foreach ($this->supportedModes as $mode) {
-          if (in_array($this->supportedAlgos[$this->algo] . '-' . $mode, $algorithms)) {
-              $modes []= $mode;
-          }
+            if (in_array($this->supportedAlgos[$this->algo] . '-' . $mode, $algorithms)) {
+                $modes []= $mode;
+            }
         }
         return $modes;
     }

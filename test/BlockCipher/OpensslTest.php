@@ -19,7 +19,7 @@ class OpensslTest extends AbstractBlockCipherTest
         }
         parent::setUp();
     }
-    
+
     public function testSetCipher()
     {
         $mcrypt = new Symmetric\Openssl();
