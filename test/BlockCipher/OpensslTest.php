@@ -15,7 +15,7 @@ class OpensslTest extends AbstractBlockCipherTest
                 'padding'   => 'pkcs7'
             ]);
         } catch (Symmetric\Exception\RuntimeException $e) {
-            $this->markTestSkipped('OpenSSL is not installed, I cannot execute the BlockCipherTest');
+            $this->markTestSkipped($e->getMessage());
         }
         parent::setUp();
     }

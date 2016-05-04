@@ -17,6 +17,15 @@ use Zend\Math\Rand;
 
 class CompatibilityTest extends TestCase
 {
+    public function setUp()
+    {
+        if (! extension_loaded('mcrypt') || ! extension_loaded('mcrypt')) {
+            $this->markTestSkipped(
+                sprintf("I cannot execute %s without Mcrypt and OpenSSL installed", __CLASS__)
+            );
+        }
+    }
+    
     public function getAlgos()
     {
         return [

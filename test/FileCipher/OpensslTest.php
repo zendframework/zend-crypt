@@ -11,6 +11,7 @@ namespace ZendTest\Crypt\FileCipher;
 
 use Zend\Crypt\Symmetric\Openssl;
 use Zend\Crypt\FileCipher;
+use Zend\Crypt\Symmetric;
 
 class OpensslTest extends AbstractFileCipherTest
 {
@@ -18,8 +19,8 @@ class OpensslTest extends AbstractFileCipherTest
     {
         try {
             $this->fileCipher = new FileCipher(new Openssl);
-        } catch (Exception\RuntimeException $e) {
-            $this->markTestSkipped('OpenSSL is not installed, I cannot execute ' . __CLASS__);
+        } catch (Symmetric\Exception\RuntimeException $e) {
+            $this->markTestSkipped($e->getMessage());
         }
         parent::setUp();
     }

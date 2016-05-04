@@ -16,10 +16,12 @@ use Zend\Crypt\Password\BcryptSha;
 /**
  * @group      Zend_Crypt
  */
-class BcryptShaTest extends \PHPUnit_Framework_TestCase
+class BcryptShaSaltTest extends \PHPUnit_Framework_TestCase
 {
     /** @var Bcrypt */
     private $bcrypt;
+    /** @var string */
+    private $salt;
     /** @var string */
     private $bcryptPassword;
     /** @var string */
@@ -27,7 +29,13 @@ class BcryptShaTest extends \PHPUnit_Framework_TestCase
 
     public function setUp()
     {
+        if (PHP_VERSION_ID >= 70000) {
+            $this->markTestSkipped(
+                sprintf("I cannot execute %s with PHP 7+", __CLASS__)
+            );
+        }
         $this->bcrypt   = new BcryptSha();
+        $this->salt     = '1234567890123456789012';
         $this->password = 'test';
         $this->prefix   = '$2y$';
 
@@ -36,9 +44,13 @@ class BcryptShaTest extends \PHPUnit_Framework_TestCase
 
     public function testConstructByOptions()
     {
-        $options = [ 'cost' => '15' ];
+        $options = [
+            'cost'       => '15',
+            'salt'       => $this->salt
+        ];
         $bcrypt  = new BcryptSha($options);
         $this->assertEquals('15', $bcrypt->getCost());
+        $this->assertEquals($this->salt, $bcrypt->getSalt());
     }
 
     /**
@@ -47,41 +59,36 @@ class BcryptShaTest extends \PHPUnit_Framework_TestCase
      */
     public function testConstructByConfig()
     {
-        $options = [ 'cost' => '15' ];
+        $options = [
+            'cost'       => '15',
+            'salt'       => $this->salt
+        ];
         $config  = new ArrayObject($options);
         $bcrypt  = new BcryptSha($config);
         $this->assertEquals('15', $bcrypt->getCost());
+        $this->assertEquals($this->salt, $bcrypt->getSalt());
     }
 
-    public function testWrongConstruct()
+    public function testSetSalt()
+    {
+        $this->bcrypt->setSalt($this->salt);
+        $this->assertEquals($this->salt, $this->bcrypt->getSalt());
+    }
+
+    public function testSetSmallSalt()
     {
         $this->setExpectedException(
             'Zend\Crypt\Password\Exception\InvalidArgumentException',
-            'The options parameter must be an array or a Traversable'
+            'The length of the salt must be at least ' . Bcrypt::MIN_SALT_SIZE . ' bytes'
         );
-        $bcrypt = new BcryptSha('test');
+        $this->bcrypt->setSalt('small salt');
     }
 
-    public function testSetCost()
+    public function testCreateWithSalt()
     {
-        $this->bcrypt->setCost('16');
-        $this->assertEquals('16', $this->bcrypt->getCost());
-    }
-
-    public function testSetWrongCost()
-    {
-        $this->setExpectedException(
-            'Zend\Crypt\Password\Exception\InvalidArgumentException',
-            'The cost parameter of bcrypt must be in range 04-31'
-        );
-        $this->bcrypt->setCost('3');
-    }
-
-    public function testCreateWithBuiltinSalt()
-    {
-        $password = $this->bcrypt->create('test');
-        $this->assertNotEmpty($password);
-        $this->assertEquals(60, strlen($password));
+        $this->bcrypt->setSalt($this->salt);
+        $password = $this->bcrypt->create($this->password);
+        $this->assertEquals($password, $this->bcryptPassword);
     }
 
     public function testVerify()
@@ -93,10 +100,11 @@ class BcryptShaTest extends \PHPUnit_Framework_TestCase
     public function testPasswordWith8bitCharacter()
     {
         $password = 'test' . chr(128);
-        $hash = $this->bcrypt->create($password);
+        $this->bcrypt->setSalt($this->salt);
 
-        $this->assertNotEmpty($hash);
-        $this->assertEquals(60, strlen($hash));
-        $this->assertTrue($this->bcrypt->verify($password, $hash));
+        $this->assertEquals(
+            '$2y$10$123456789012345678901uVgYiYiIUd6NpaVJF/AY/uluM1ED.cUq',
+            $this->bcrypt->create($password)
+        );
     }
 }

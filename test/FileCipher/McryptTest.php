@@ -11,6 +11,7 @@ namespace ZendTest\Crypt\FileCipher;
 
 use Zend\Crypt\Symmetric\Mcrypt;
 use Zend\Crypt\FileCipher;
+use Zend\Crypt\Symmetric;
 
 class McryptTest extends AbstractFileCipherTest
 {
@@ -18,8 +19,8 @@ class McryptTest extends AbstractFileCipherTest
     {
         try {
             $this->fileCipher = new FileCipher(new Mcrypt);
-        } catch (Exception\RuntimeException $e) {
-            $this->markTestSkipped('Mcrypt is not installed, I cannot execute ' . __CLASS__);
+        } catch (Symmetric\Exception\RuntimeException $e) {
+            $this->markTestSkipped($e->getMessage());
         }
         parent::setUp();
     }

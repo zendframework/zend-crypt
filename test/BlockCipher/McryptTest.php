@@ -15,7 +15,7 @@ class MCryptTest extends AbstractBlockCipherTest
                 'padding'   => 'pkcs7'
             ]);
         } catch (Symmetric\Exception\RuntimeException $e) {
-            $this->markTestSkipped('Mcrypt is not installed, I cannot execute the BlockCipherTest');
+            $this->markTestSkipped($e->getMessage());
         }
         parent::setUp();
     }

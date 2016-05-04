@@ -29,8 +29,12 @@ class CompatibilityTest extends TestCase
      */
     public function testMcryptAndOpenssl($algo)
     {
-        $blockCipherMcrypt  = BlockCipher::factory('mcrypt', [ 'algo' => $algo ]);
-        $blockCipherOpenssl = BlockCipher::factory('openssl', [ 'algo' => $algo ]);
+        try {
+            $blockCipherMcrypt  = BlockCipher::factory('mcrypt', [ 'algo' => $algo ]);
+            $blockCipherOpenssl = BlockCipher::factory('openssl', [ 'algo' => $algo ]);
+        } catch (\Exception $e) {
+            $this->markTestSkipped($e->getMessage());
+        }
 
         $key       = Rand::getBytes(32);
         $plaintext = Rand::getBytes(1024);

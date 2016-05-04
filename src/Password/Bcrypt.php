@@ -79,10 +79,11 @@ class Bcrypt implements PasswordInterface
             $salt = $this->salt;
         }
 
-        return password_hash($password, PASSWORD_BCRYPT, [
-            'salt' => $salt,
-            'cost' => $this->cost
-        ]);
+        $options = [ 'cost' => $this->cost ];
+        if (PHP_VERSION_ID < 70000) { // salt is deprecated from PHP 7.0
+            $options['salt'] = $salt;
+        }
+        return password_hash($password, PASSWORD_BCRYPT, $options);
     }
 
     /**
@@ -137,6 +138,9 @@ class Bcrypt implements PasswordInterface
      */
     public function setSalt($salt)
     {
+        if (PHP_VERSION_ID >= 70000) {
+            trigger_error("The salt support is deprecated starting from PHP 7.0.0", E_USER_DEPRECATED);
+        }
         if (mb_strlen($salt, '8bit') < self::MIN_SALT_SIZE) {
             throw new Exception\InvalidArgumentException(
                 'The length of the salt must be at least ' . self::MIN_SALT_SIZE . ' bytes'
@@ -153,6 +157,9 @@ class Bcrypt implements PasswordInterface
      */
     public function getSalt()
     {
+        if (PHP_VERSION_ID >= 70000) {
+            trigger_error("The salt support is deprecated starting from PHP 7.0.0", E_USER_DEPRECATED);
+        } 
         return $this->salt;
     }
 }
