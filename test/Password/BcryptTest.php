@@ -116,37 +116,4 @@ class BcryptTest extends \PHPUnit_Framework_TestCase
     {
         $salt = $this->bcrypt->getSalt();
     }
-
-    public function backwardCompatibilityV2Test()
-    {
-        $hash = $this->oldBcryptImplementation('test', 10);
-        $this->assertTrue($this->bcrypt->verify('test', $hash));
-    }
-
-    /**
-     * This is the Bcrypt::create implementation of ZF 2.*
-     *
-     * @param string $Password
-     * @param integer $cost
-     * @param string $salt
-     * @return string
-     */
-    protected function oldBcryptImplementation($password, $cost = 10, $salt = null)
-    {
-        if (empty($salt)) {
-            $salt = Rand::getBytes(16);
-        }
-
-        $salt64 = mb_substr(str_replace('+', '.', base64_encode($salt)), 0, 22, '8bit');
-        /**
-         * Check for security flaw in the bcrypt implementation used by crypt()
-         * @see http://php.net/security/crypt_blowfish.php
-         */
-        $prefix = '$2y$';
-        $hash = crypt($password, $prefix . (string) $cost . '$' . $salt64);
-        if (mb_strlen($hash, '8bit') < 13) {
-            throw new RuntimeException('Error during the bcrypt generation');
-        }
-        return $hash;
-    }
 }
