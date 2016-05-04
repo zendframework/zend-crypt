@@ -92,7 +92,7 @@ class BcryptSaltTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($this->bcrypt->verify($this->password, $this->bcryptPassword));
         $this->assertFalse($this->bcrypt->verify(substr($this->password, -1), $this->bcryptPassword));
     }
-    
+
     public function testPasswordWith8bitCharacter()
     {
         $password = 'test' . chr(128);

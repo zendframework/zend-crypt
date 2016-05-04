@@ -91,7 +91,6 @@ class BcryptTest extends \PHPUnit_Framework_TestCase
 
     public function testPasswordWith8bitCharacter()
     {
-
         $password = 'test' . chr(128);
         $hash = $this->bcrypt->create($password);
 

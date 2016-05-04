@@ -159,7 +159,7 @@ class Bcrypt implements PasswordInterface
     {
         if (PHP_VERSION_ID >= 70000) {
             trigger_error("The salt support is deprecated starting from PHP 7.0.0", E_USER_DEPRECATED);
-        } 
+        }
         return $this->salt;
     }
 }

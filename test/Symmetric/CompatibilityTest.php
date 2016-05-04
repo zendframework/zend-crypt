@@ -25,7 +25,7 @@ class CompatibilityTest extends TestCase
             );
         }
     }
-    
+
     public function getAlgos()
     {
         return [
