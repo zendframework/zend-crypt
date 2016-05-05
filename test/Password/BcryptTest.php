@@ -3,7 +3,7 @@
  * Zend Framework (http://framework.zend.com/)
  *
  * @link      http://github.com/zendframework/zf2 for the canonical source repository
- * @copyright Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright Copyright (c) 2005-2016 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   http://framework.zend.com/license/new-bsd New BSD License
  */
 
@@ -20,8 +20,6 @@ class BcryptTest extends \PHPUnit_Framework_TestCase
     /** @var Bcrypt */
     public $bcrypt;
     /** @var string */
-    public $salt;
-    /** @var string */
     public $bcryptPassword;
     /** @var string */
     public $password;
@@ -29,22 +27,17 @@ class BcryptTest extends \PHPUnit_Framework_TestCase
     public function setUp()
     {
         $this->bcrypt   = new Bcrypt();
-        $this->salt     = '1234567890123456';
         $this->password = 'test';
         $this->prefix = '$2y$';
 
-        $this->bcryptPassword = $this->prefix . '10$MTIzNDU2Nzg5MDEyMzQ1Nej0NmcAWSLR.oP7XOR9HD/vjUuOj100y';
+        $this->bcryptPassword = $this->prefix . '10$123456789012345678901uIcehzOq0s9RvVtyXJFIsuuxuE2XZRMq';
     }
 
     public function testConstructByOptions()
     {
-        $options = [
-            'cost'       => '15',
-            'salt'       => $this->salt
-        ];
+        $options = [ 'cost' => '15' ];
         $bcrypt  = new Bcrypt($options);
         $this->assertEquals('15', $bcrypt->getCost());
-        $this->assertEquals($this->salt, $bcrypt->getSalt());
     }
 
     /**
@@ -53,14 +46,10 @@ class BcryptTest extends \PHPUnit_Framework_TestCase
      */
     public function testConstructByConfig()
     {
-        $options = [
-            'cost'       => '15',
-            'salt'       => $this->salt
-        ];
+        $options = [ 'cost' => '15' ];
         $config  = new ArrayObject($options);
         $bcrypt  = new Bcrypt($config);
         $this->assertEquals('15', $bcrypt->getCost());
-        $this->assertEquals($this->salt, $bcrypt->getSalt());
     }
 
     public function testWrongConstruct()
@@ -87,33 +76,11 @@ class BcryptTest extends \PHPUnit_Framework_TestCase
         $this->bcrypt->setCost('3');
     }
 
-    public function testSetSalt()
-    {
-        $this->bcrypt->setSalt($this->salt);
-        $this->assertEquals($this->salt, $this->bcrypt->getSalt());
-    }
-
-    public function testSetSmallSalt()
-    {
-        $this->setExpectedException(
-            'Zend\Crypt\Password\Exception\InvalidArgumentException',
-            'The length of the salt must be at least ' . Bcrypt::MIN_SALT_SIZE . ' bytes'
-        );
-        $this->bcrypt->setSalt('small salt');
-    }
-
-    public function testCreateWithRandomSalt()
+    public function testCreateWithBuiltinSalt()
     {
         $password = $this->bcrypt->create('test');
         $this->assertNotEmpty($password);
         $this->assertEquals(60, strlen($password));
-    }
-
-    public function testCreateWithSalt()
-    {
-        $this->bcrypt->setSalt($this->salt);
-        $password = $this->bcrypt->create($this->password);
-        $this->assertEquals($password, $this->bcryptPassword);
     }
 
     public function testVerify()
@@ -125,11 +92,28 @@ class BcryptTest extends \PHPUnit_Framework_TestCase
     public function testPasswordWith8bitCharacter()
     {
         $password = 'test' . chr(128);
-        $this->bcrypt->setSalt($this->salt);
+        $hash = $this->bcrypt->create($password);
 
-        $this->assertEquals(
-            '$2y$10$MTIzNDU2Nzg5MDEyMzQ1NemFdU/4JOrNpxMym09Mbp0m4hKTgfQo.',
-            $this->bcrypt->create($password)
-        );
+        $this->assertNotEmpty($hash);
+        $this->assertEquals(60, strlen($hash));
+        $this->assertTrue($this->bcrypt->verify($password, $hash));
+    }
+
+    /**
+     * @requires PHP 7.0
+     * @expectedException PHPUnit_Framework_Error
+     */
+    public function testSetSaltError()
+    {
+        $this->bcrypt->setSalt('test');
+    }
+
+    /**
+     * @requires PHP 7.0
+     * @expectedException PHPUnit_Framework_Error
+     */
+    public function testGetSaltError()
+    {
+        $salt = $this->bcrypt->getSalt();
     }
 }

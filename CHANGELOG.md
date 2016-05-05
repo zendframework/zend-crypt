@@ -2,16 +2,22 @@
 
 All notable changes to this project will be documented in this file, in reverse chronological order by release.
 
-## 2.7.0 - TBD
+## 3.0.0 - TBD
 
 ### Added
 
 - [#22](https://github.com/zendframework/zend-crypt/pull/22) adds a requirement
   on `ext/mbstring` in order to install successfully.
+- [#25](https://github.com/zendframework/zend-crypt/pull/25) adds a new
+  symmetric encryption adapter for the OpenSSL extension; this is now the
+  default adapter used internally by the component when symmetric encryption is
+  required.
 
 ### Deprecated
 
-- Nothing.
+- [#25](https://github.com/zendframework/zend-crypt/pull/25) deprecates usage of the
+  mcrypt symmetric encryption adapter when used on PHP 7 versions, as PHP 7.1
+  will deprecate the mcrypt extension.
 
 ### Removed
 
@@ -22,6 +28,10 @@ All notable changes to this project will be documented in this file, in reverse 
 - [#22](https://github.com/zendframework/zend-crypt/pull/22) updates all
   occurrences of `substr()` and `strlen()` to use `mb_substr()` and
   `mb_strlen()`, respectively. This provides better security with binary values.
+- [#25](https://github.com/zendframework/zend-crypt/pull/25) updates the
+  `Zend\Crypt\Password\Bcrypt` implementation to use `password_hash()` and
+  `password_verify()` internally, as they are supported in all PHP versions we
+  support.
 
 ## 2.6.1 - TBD
 
