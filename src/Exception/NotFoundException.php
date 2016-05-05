@@ -7,14 +7,13 @@
  * @license   http://framework.zend.com/license/new-bsd New BSD License
  */
 
-namespace Zend\Crypt\Key\Derivation\Exception;
+namespace Zend\Crypt\Exception;
 
-use Zend\Crypt\Exception;
+use Interop\Container\Exception\NotFoundException as InteropNotFoundException;
 
 /**
  * Runtime argument exception
  */
-class RuntimeException extends Exception\RuntimeException implements
-    ExceptionInterface
+class NotFoundException extends \DomainException implements InteropNotFoundException
 {
 }

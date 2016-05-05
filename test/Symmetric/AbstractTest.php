@@ -3,7 +3,7 @@
  * Zend Framework (http://framework.zend.com/)
  *
  * @link      http://github.com/zendframework/zf2 for the canonical source repository
- * @copyright Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright Copyright (c) 2005-2016 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   http://framework.zend.com/license/new-bsd New BSD License
  */
 
@@ -106,7 +106,7 @@ abstract class AbstractTest extends \PHPUnit_Framework_TestCase
         $options = 'test';
         $this->setExpectedException(
             Exception\InvalidArgumentException::class,
-            'The options parameter must be an array, a Zend\Config\Config object or a Traversable'
+            'The options parameter must be an array or a Traversable'
         );
         $crypt = new $this->adapterClass($options);
     }
@@ -188,7 +188,7 @@ abstract class AbstractTest extends \PHPUnit_Framework_TestCase
     {
         $this->setExpectedException(
             Exception\InvalidArgumentException::class,
-            sprintf("The mode xxx is not supported by %s", $this->adapterClass)
+            sprintf("The mode xxx is not supported by %s", $this->crypt->getAlgorithm())
         );
         $this->crypt->setMode('xxx');
     }
@@ -201,7 +201,9 @@ abstract class AbstractTest extends \PHPUnit_Framework_TestCase
                 $this->crypt->setAlgorithm($algo);
                 $this->crypt->setMode($mode);
                 $this->crypt->setKey($this->generateKey());
-                $this->crypt->setSalt($this->generateSalt());
+                if ($this->crypt->getSaltSize() > 0) {
+                    $this->crypt->setSalt($this->generateSalt());
+                }
 
                 $encrypted = $this->crypt->encrypt($this->plaintext);
                 $this->assertNotEmpty($encrypted);
@@ -291,6 +293,8 @@ abstract class AbstractTest extends \PHPUnit_Framework_TestCase
 
     protected function generateSalt()
     {
-        return Rand::getBytes($this->crypt->getSaltSize());
+        if ($this->crypt->getSaltSize() > 0) {
+            return Rand::getBytes($this->crypt->getSaltSize());
+        }
     }
 }

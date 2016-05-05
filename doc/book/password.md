@@ -103,11 +103,11 @@ $bcrypt = new Bcrypt([
 
 > ### Version 3.0
 >
-> Starting from version 3.0 of zend-crypt we used the [password_hash()](http://php.net/manual/en/function.password-hash.php)
-> and [password_verify()](http://php.net/manual/en/function.password-verify.php)
-> functions of PHP 5.5+ to generate the bcrypt hash. We provided some backward
-> compatibility tests to be sure that the previous hash generated with v2 are
-> can be validated using v3.
+> Starting with version 3.0, we now use the [password_hash()](http://php.net/password_hash)
+> and `[password_verify()](http://php.net/password_verify) introduced in PHP 5.5
+> to generate the bcrypt hash. We have provided backwards compatibility tests to
+> ensure that any hashes generated with version 2 releases can still be
+> validated under version 3.
 
 ## Apache
 

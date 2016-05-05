@@ -7,14 +7,14 @@
  * @license   http://framework.zend.com/license/new-bsd New BSD License
  */
 
-namespace Zend\Crypt\Key\Derivation\Exception;
+namespace Zend\Crypt\Symmetric\Exception;
 
 use Zend\Crypt\Exception;
 
 /**
- * Runtime argument exception
+ * Not found exception
  */
-class RuntimeException extends Exception\RuntimeException implements
+class NotFoundException extends Exception\NotFoundException implements
     ExceptionInterface
 {
 }

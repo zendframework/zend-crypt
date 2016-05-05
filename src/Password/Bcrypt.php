@@ -3,7 +3,7 @@
  * Zend Framework (http://framework.zend.com/)
  *
  * @link      http://github.com/zendframework/zf2 for the canonical source repository
- * @copyright Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright Copyright (c) 2005-2016 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   http://framework.zend.com/license/new-bsd New BSD License
  */
 
@@ -22,10 +22,6 @@ class Bcrypt implements PasswordInterface
 
     /**
      * @var string
-     *
-     * Changed from 14 to 10 to prevent possibile DOS attacks
-     * due to the high computational time
-     * @see http://timoh6.github.io/2013/11/26/Aggressive-password-stretching.html
      */
     protected $cost = '10';
 
@@ -67,20 +63,14 @@ class Bcrypt implements PasswordInterface
      * Bcrypt
      *
      * @param  string $password
-     * @param  boolean $cryptuse
      * @throws Exception\RuntimeException
      * @return string
      */
-    public function create($password, $cryptuse = false)
+    public function create($password)
     {
-        if (empty($this->salt)) {
-            $salt = Rand::getBytes(self::MIN_SALT_SIZE);
-        } else {
-            $salt = $this->salt;
-        }
-
-        $options = [ 'cost' => $this->cost ];
+        $options = [ 'cost' => (int) $this->cost ];
         if (PHP_VERSION_ID < 70000) { // salt is deprecated from PHP 7.0
+            $salt = $this->salt ?: Rand::getBytes(self::MIN_SALT_SIZE);
             $options['salt'] = $salt;
         }
         return password_hash($password, PASSWORD_BCRYPT, $options);

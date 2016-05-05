@@ -3,7 +3,7 @@
  * Zend Framework (http://framework.zend.com/)
  *
  * @link      http://github.com/zendframework/zf2 for the canonical source repository
- * @copyright Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright Copyright (c) 2005-2016 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   http://framework.zend.com/license/new-bsd New BSD License
  */
 
@@ -67,29 +67,29 @@ class Openssl implements SymmetricInterface
     protected static $paddingPlugins = null;
 
     /**
-     * Supported cipher algorithms
+     * The encryption algorithms to support
      *
      * @var array
      */
-    protected $supportedAlgos = [
+    protected $encryptionAlgos = [
         'aes'      => 'AES-256',
         'blowfish' => 'BF',
         'des'      => 'DES',
         'camellia' => 'CAMELLIA-256',
         'cast5'    => 'CAST5',
-        'seed'     => 'SEED'
+        'seed'     => 'SEED',
     ];
 
     /**
-     * Supported encryption modes
+     * Encryption modes to support
      *
      * @var array
      */
-    protected $supportedModes = [
+    protected $encryptionModes = [
         'cbc',
         'cfb',
         'ofb',
-        'ecb'
+        'ecb',
     ];
 
     /**
@@ -103,7 +103,7 @@ class Openssl implements SymmetricInterface
         'des'      => 8,
         'camellia' => 16,
         'cast5'    => 8,
-        'seed'     => 16
+        'seed'     => 16,
     ];
 
     /**
@@ -117,13 +117,27 @@ class Openssl implements SymmetricInterface
         'des'      => 8,
         'camellia' => 32,
         'cast5'    => 16,
-        'seed'     => 16
+        'seed'     => 16,
     ];
+
+    /**
+     * The OpenSSL supported encryption algorithms
+     *
+     * @var array
+     */
+    protected $opensslAlgos = [];
+
+    /**
+     * The OpenSSL algorithms available at runtime for this class
+     *
+     * @var array
+     */
+    protected $supportedAlgos = [];
 
     /**
      * Constructor
      *
-     * @param  array|Traversable                  $options
+     * @param  array|Traversable $options
      * @throws Exception\RuntimeException
      * @throws Exception\InvalidArgumentException
      */
@@ -131,7 +145,7 @@ class Openssl implements SymmetricInterface
     {
         if (!extension_loaded('openssl')) {
             throw new Exception\RuntimeException(
-                'You cannot use ' . __CLASS__ . ' without the OpenSSL extension'
+                sprintf('You cannot use %s without the OpenSSL extension', __CLASS__)
             );
         }
         $this->setOptions($options);
@@ -151,15 +165,18 @@ class Openssl implements SymmetricInterface
                 $options = ArrayUtils::iteratorToArray($options);
             } elseif (!is_array($options)) {
                 throw new Exception\InvalidArgumentException(
-                    'The options parameter must be an array, a Zend\Config\Config object or a Traversable'
+                    'The options parameter must be an array or a Traversable'
                 );
+            }
+            // the algorithm case is not included in the switch because must be
+            // set before the others
+            if (isset($options['algo'])) {
+                $this->setAlgorithm($options['algo']);
+            } elseif (isset($options['algorithm'])) {
+                $this->setAlgorithm($options['algorithm']);
             }
             foreach ($options as $key => $value) {
                 switch (strtolower($key)) {
-                    case 'algo':
-                    case 'algorithm':
-                        $this->setAlgorithm($value);
-                        break;
                     case 'mode':
                         $this->setMode($value);
                         break;
@@ -291,9 +308,9 @@ class Openssl implements SymmetricInterface
      */
     public function setAlgorithm($algo)
     {
-        if (!array_key_exists($algo, $this->supportedAlgos)) {
+        if (! in_array($algo, $this->getSupportedAlgorithms())) {
             throw new Exception\InvalidArgumentException(
-                "The algorithm $algo is not supported by " . __CLASS__
+                sprintf("The algorithm %s is not supported by %s", $algo, __CLASS__)
             );
         }
         $this->algo = $algo;
@@ -348,7 +365,7 @@ class Openssl implements SymmetricInterface
         if (null === $this->getKey()) {
             throw new Exception\InvalidArgumentException('No key specified for the encryption');
         }
-        if (null === $this->getSalt()) {
+        if (null === $this->getSalt() && $this->getSaltSize() > 0) {
             throw new Exception\InvalidArgumentException('The salt (IV) cannot be empty');
         }
         if (null === $this->getPadding()) {
@@ -360,7 +377,7 @@ class Openssl implements SymmetricInterface
         // encryption
         $result = openssl_encrypt(
             $data,
-            strtoupper($this->supportedAlgos[$this->algo] . '-' . $this->mode),
+            strtoupper($this->encryptionAlgos[$this->algo] . '-' . $this->mode),
             $this->getKey(),
             OPENSSL_RAW_DATA | OPENSSL_ZERO_PADDING,
             $iv
@@ -399,7 +416,7 @@ class Openssl implements SymmetricInterface
         $ciphertext = mb_substr($data, $this->getSaltSize(), null, '8bit');
         $result     = openssl_decrypt(
             $ciphertext,
-            strtoupper($this->supportedAlgos[$this->algo] . '-' . $this->mode),
+            strtoupper($this->encryptionAlgos[$this->algo] . '-' . $this->mode),
             $this->getKey(),
             OPENSSL_RAW_DATA | OPENSSL_ZERO_PADDING,
             $iv
@@ -424,7 +441,9 @@ class Openssl implements SymmetricInterface
      */
     public function getSaltSize()
     {
-        return openssl_cipher_iv_length($this->supportedAlgos[$this->algo] . '-' . strtoupper($this->mode));
+        return openssl_cipher_iv_length(
+            $this->encryptionAlgos[$this->algo] . '-' . strtoupper($this->mode)
+        );
     }
 
     /**
@@ -434,14 +453,15 @@ class Openssl implements SymmetricInterface
      */
     public function getSupportedAlgorithms()
     {
-        $opensslAlgos = openssl_get_cipher_methods(true);
-        $algos        = [];
-        foreach ($this->supportedAlgos as $name => $algo) {
-            if (in_array($algo . '-CBC', $opensslAlgos)) {
-                $algos []= $name;
+        if (empty($this->supportedAlgos)) {
+            foreach ($this->encryptionAlgos as $name => $algo) {
+                // CBC mode is supported by all the algorithms
+                if (in_array($algo . '-CBC', $this->getOpensslAlgos())) {
+                    $this->supportedAlgos[]= $name;
+                }
             }
         }
-        return $algos;
+        return $this->supportedAlgos;
     }
 
     /**
@@ -453,12 +473,17 @@ class Openssl implements SymmetricInterface
      */
     public function setSalt($salt)
     {
+        if ($this->getSaltSize() <= 0) {
+            throw new Exception\InvalidArgumentException(
+                sprintf("You cannot use a salt (IV) for %s in %s mode", $this->algo, $this->mode)
+            );
+        }
         if (empty($salt)) {
             throw new Exception\InvalidArgumentException('The salt (IV) cannot be empty');
         }
         if (mb_strlen($salt, '8bit') < $this->getSaltSize()) {
             throw new Exception\InvalidArgumentException(
-                'The size of the salt (IV) must be at least ' . $this->getSaltSize() . ' bytes'
+                sprintf("The size of the salt (IV) must be at least %d bytes", $this->getSaltSize())
             );
         }
         $this->iv = $salt;
@@ -477,7 +502,7 @@ class Openssl implements SymmetricInterface
         }
         if (mb_strlen($this->iv, '8bit') < $this->getSaltSize()) {
             throw new Exception\RuntimeException(
-                'The size of the salt (IV) must be at least ' . $this->getSaltSize() . ' bytes'
+                sprintf("The size of the salt (IV) must be at least %d bytes", $this->getSaltSize())
             );
         }
         return mb_substr($this->iv, 0, $this->getSaltSize(), '8bit');
@@ -503,9 +528,9 @@ class Openssl implements SymmetricInterface
     public function setMode($mode)
     {
         if (! empty($mode)) {
-            if (! in_array($this->supportedAlgos[$this->algo] . '-' . strtoupper($mode), openssl_get_cipher_methods(true))) {
+            if (! in_array($mode, $this->getSupportedModes())) {
                 throw new Exception\InvalidArgumentException(
-                    "The mode $mode is not supported by " . __CLASS__
+                    sprintf("The mode %s is not supported by %s", $mode, $this->algo)
                 );
             }
             $this->mode = $mode;
@@ -524,17 +549,30 @@ class Openssl implements SymmetricInterface
     }
 
     /**
-     * Get all supported encryption modes
+     * Return the OpenSSL supported encryption algorithms
+     *
+     * @return array
+     */
+    protected function getOpensslAlgos()
+    {
+        if (empty($this->opensslAlgos)) {
+            $this->opensslAlgos = openssl_get_cipher_methods(true);
+        }
+        return $this->opensslAlgos;
+    }
+
+    /**
+     * Get all supported encryption modes for the selected algorithm
      *
      * @return array
      */
     public function getSupportedModes()
     {
-        $algorithms = openssl_get_cipher_methods(true);
-        $modes      = [];
-        foreach ($this->supportedModes as $mode) {
-            if (in_array($this->supportedAlgos[$this->algo] . '-' . $mode, $algorithms)) {
-                $modes []= $mode;
+        $modes = [];
+        foreach ($this->encryptionModes as $mode) {
+            $algo = $this->encryptionAlgos[$this->algo] . '-' . strtoupper($mode);
+            if (in_array($algo, $this->getOpensslAlgos())) {
+                $modes[]= $mode;
             }
         }
         return $modes;
