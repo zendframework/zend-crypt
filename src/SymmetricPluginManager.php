@@ -51,11 +51,11 @@ class SymmetricPluginManager implements ContainerInterface
     {
         if (! $this->has($id)) {
             throw new Exception\NotFoundException(sprintf(
-                "The symmetric adapter %s does not exist",
+                'The symmetric adapter %s does not exist',
                 $id
             ));
         }
         $class = $this->symmetric[$id];
-        return new $class;
+        return new $class();
     }
 }

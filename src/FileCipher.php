@@ -232,11 +232,13 @@ class FileCipher
         $read    = fopen($fileIn, "r");
         $write   = fopen($fileOut, "w");
         $iv      = Rand::getBytes($this->cipher->getSaltSize());
-        $keys    = Pbkdf2::calc($this->getPbkdf2HashAlgorithm(),
-                                $this->getKey(),
-                                $iv,
-                                $this->getKeyIteration(),
-                                $this->cipher->getKeySize() * 2);
+        $keys    = Pbkdf2::calc(
+            $this->getPbkdf2HashAlgorithm(),
+            $this->getKey(),
+            $iv,
+            $this->getKeyIteration(),
+            $this->cipher->getKeySize() * 2
+        );
         $hmac    = '';
         $size    = 0;
         $tot     = filesize($fileIn);
@@ -265,9 +267,11 @@ class FileCipher
             } else {
                 $result = mb_substr($result, $saltSize, null, '8bit');
             }
-            $hmac = Hmac::compute($keyHmac,
-                                  $hashAlgo,
-                                  $algorithm . $hmac . $result);
+            $hmac = Hmac::compute(
+                $keyHmac,
+                $hashAlgo,
+                $algorithm . $hmac . $result
+            );
             $this->cipher->setSalt(mb_substr($result, -1 * $saltSize, null, '8bit'));
             if (fwrite($write, $result) !== mb_strlen($result, '8bit')) {
                 return false;
@@ -308,11 +312,13 @@ class FileCipher
         $tot      = filesize($fileIn);
         $hmac     = $iv;
         $size     = mb_strlen($iv, '8bit') + mb_strlen($hmacRead, '8bit');
-        $keys     = Pbkdf2::calc($this->getPbkdf2HashAlgorithm(),
-                                 $this->getKey(),
-                                 $iv,
-                                 $this->getKeyIteration(),
-                                 $this->cipher->getKeySize() * 2);
+        $keys     = Pbkdf2::calc(
+            $this->getPbkdf2HashAlgorithm(),
+            $this->getKey(),
+            $iv,
+            $this->getKeyIteration(),
+            $this->cipher->getKeySize() * 2
+        );
         $padding  = $this->cipher->getPadding();
         $this->cipher->setPadding(new Symmetric\Padding\NoPadding);
         $this->cipher->setKey(mb_substr($keys, 0, $this->cipher->getKeySize(), '8bit'));
@@ -332,9 +338,11 @@ class FileCipher
                 $data .= fread($read, $blockSize);
             }
             $result = $this->cipher->decrypt($iv . $data);
-            $hmac   = Hmac::compute($keyHmac,
-                                    $hashAlgo,
-                                    $algorithm . $hmac . $data);
+            $hmac   = Hmac::compute(
+                $keyHmac,
+                $hashAlgo,
+                $algorithm . $hmac . $data
+            );
             $iv     = mb_substr($data, -1 * $saltSize, null, '8bit');
             if (fwrite($write, $result) !== mb_strlen($result, '8bit')) {
                 return false;
@@ -363,12 +371,14 @@ class FileCipher
     {
         if (!file_exists($fileIn)) {
             throw new Exception\InvalidArgumentException(sprintf(
-                "I cannot open the %s file", $fileIn
+                'I cannot open the %s file',
+                $fileIn
             ));
         }
         if (file_exists($fileOut)) {
             throw new Exception\InvalidArgumentException(sprintf(
-                "The file %s already exists", $fileOut
+                'The file %s already exists',
+                $fileOut
             ));
         }
     }

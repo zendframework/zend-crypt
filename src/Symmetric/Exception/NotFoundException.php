@@ -14,7 +14,6 @@ use Zend\Crypt\Exception;
 /**
  * Not found exception
  */
-class NotFoundException extends Exception\NotFoundException implements
-    ExceptionInterface
+class NotFoundException extends Exception\NotFoundException implements ExceptionInterface
 {
 }

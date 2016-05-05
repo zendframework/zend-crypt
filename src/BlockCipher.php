@@ -99,9 +99,10 @@ class BlockCipher
         try {
             $cipher = $plugins->get($adapter);
         } catch (NotFoundException $e) {
-            throw new Exception\RuntimeException(
-                sprintf("The symmetric adapter %s does not exist", $adapter)
-            );
+            throw new Exception\RuntimeException(sprintf(
+                'The symmetric adapter %s does not exist',
+                $adapter
+            ));
         }
         $cipher->setOptions($options);
         return new static($cipher);

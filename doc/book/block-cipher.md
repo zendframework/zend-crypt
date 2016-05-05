@@ -17,11 +17,17 @@ hash function).
 
 > ## Mcrypt
 >
-> The Mcrypt extension is based on the libmcrypt library that is  a dead project,
-> unmaintained for ~8 years, last version 2.5.8 was released in February 2007.
-> Starting from PHP 7.1 the Mcrypt extension will be [considered deprecated](https://wiki.php.net/rfc/mcrypt-viking-funeral).
-> For these reason **we strongly suggest to use only the Openssl adapter** (that
-> is used by default in other crypt components like `Zend\Crypt\FileCipher`).
+> The Mcrypt extension is based on the libmcrypt library. Unfortunately, at the
+> time of writing, the project is dead, having been unmaintained for around 8
+> years, with the last release (version 2.5.8) having occurred in February 2007.
+> 
+> Starting with PHP 7.1, the Mcrypt extension will be
+> [considered deprecated](https://wiki.php.net/rfc/mcrypt-viking-funeral).
+> For these reasons, **we strongly suggest using only the Openssl adapter**.
+> 
+> Starting with zend-crypt 3.0, the Openssl adapter is the default (for example,
+> by `Zend\Crypt\FileCipher`), and all examples now only demonstrate that
+> adapter.
 
 ```php
 use Zend\Crypt\BlockCipher;
@@ -33,7 +39,7 @@ echo "Encrypted text: $result\n";
 ```
 
 The `BlockCipher` instance is initialized using a factory method with the name
-of the cipher adapter to use (openssl) and the parameters to pass to the adapter
+of the cipher adapter to use (e.g., `openssl`) and the parameters to pass to the adapter
 (the AES algorithm). In order to encrypt a string, we need to specify an
 encryption key, which we do via the `setKey()` method. Encryption is performed
 with the `encrypt()` method.

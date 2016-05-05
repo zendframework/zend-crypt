@@ -144,9 +144,10 @@ class Openssl implements SymmetricInterface
     public function __construct($options = [])
     {
         if (!extension_loaded('openssl')) {
-            throw new Exception\RuntimeException(
-                sprintf('You cannot use %s without the OpenSSL extension', __CLASS__)
-            );
+            throw new Exception\RuntimeException(sprintf(
+                'You cannot use %s without the OpenSSL extension',
+                __CLASS__
+            ));
         }
         $this->setOptions($options);
         $this->setDefaultOptions($options);
@@ -160,39 +161,45 @@ class Openssl implements SymmetricInterface
      */
     public function setOptions($options)
     {
-        if (!empty($options)) {
-            if ($options instanceof Traversable) {
-                $options = ArrayUtils::iteratorToArray($options);
-            } elseif (!is_array($options)) {
-                throw new Exception\InvalidArgumentException(
-                    'The options parameter must be an array or a Traversable'
-                );
-            }
-            // the algorithm case is not included in the switch because must be
-            // set before the others
-            if (isset($options['algo'])) {
-                $this->setAlgorithm($options['algo']);
-            } elseif (isset($options['algorithm'])) {
-                $this->setAlgorithm($options['algorithm']);
-            }
-            foreach ($options as $key => $value) {
-                switch (strtolower($key)) {
-                    case 'mode':
-                        $this->setMode($value);
-                        break;
-                    case 'key':
-                        $this->setKey($value);
-                        break;
-                    case 'iv':
-                    case 'salt':
-                        $this->setSalt($value);
-                        break;
-                    case 'padding':
-                        $plugins       = static::getPaddingPluginManager();
-                        $padding       = $plugins->get($value);
-                        $this->padding = $padding;
-                        break;
-                }
+        if (empty($options)) {
+            return;
+        }
+
+        if ($options instanceof Traversable) {
+            $options = ArrayUtils::iteratorToArray($options);
+        }
+
+        if (! is_array($options)) {
+            throw new Exception\InvalidArgumentException(
+                'The options parameter must be an array or a Traversable'
+            );
+        }
+
+        // The algorithm case is not included in the switch because must be
+        // set before the others
+        if (isset($options['algo'])) {
+            $this->setAlgorithm($options['algo']);
+        } elseif (isset($options['algorithm'])) {
+            $this->setAlgorithm($options['algorithm']);
+        }
+
+        foreach ($options as $key => $value) {
+            switch (strtolower($key)) {
+                case 'mode':
+                    $this->setMode($value);
+                    break;
+                case 'key':
+                    $this->setKey($value);
+                    break;
+                case 'iv':
+                case 'salt':
+                    $this->setSalt($value);
+                    break;
+                case 'padding':
+                    $plugins       = static::getPaddingPluginManager();
+                    $padding       = $plugins->get($value);
+                    $this->padding = $padding;
+                    break;
             }
         }
     }
@@ -205,15 +212,19 @@ class Openssl implements SymmetricInterface
      */
     protected function setDefaultOptions($options = [])
     {
-        if (!isset($options['padding'])) {
-            $plugins       = static::getPaddingPluginManager();
-            $padding       = $plugins->get(self::DEFAULT_PADDING);
-            $this->padding = $padding;
+        if (isset($options['padding'])) {
+            return;
         }
+
+        $plugins       = static::getPaddingPluginManager();
+        $padding       = $plugins->get(self::DEFAULT_PADDING);
+        $this->padding = $padding;
     }
 
     /**
-     * Returns the padding plugin manager.  If it doesn't exist it's created.
+     * Returns the padding plugin manager.
+     *
+     * Creates one if none is present.
      *
      * @return ContainerInterface
      */
@@ -238,18 +249,23 @@ class Openssl implements SymmetricInterface
         if (is_string($plugins)) {
             if (! class_exists($plugins) || ! is_subclass_of($plugins, ContainerInterface::class)) {
                 throw new Exception\InvalidArgumentException(sprintf(
-                    'Unable to locate padding plugin manager via class "%s"; class does not exist or does not implement ContainerInterface',
+                    'Unable to locate padding plugin manager via class "%s"; '
+                    . 'class does not exist or does not implement ContainerInterface',
                     $plugins
                 ));
             }
+
             $plugins = new $plugins();
         }
-        if (!$plugins instanceof ContainerInterface) {
+
+        if (! $plugins instanceof ContainerInterface) {
             throw new Exception\InvalidArgumentException(sprintf(
-                'Padding plugins must implements Interop\Container\ContainerInterface; received "%s"',
+                'Padding plugins must implements %s; received "%s"',
+                ContainerInterface::class,
                 (is_object($plugins) ? get_class($plugins) : gettype($plugins))
             ));
         }
+
         static::$paddingPlugins = $plugins;
     }
 
@@ -274,14 +290,18 @@ class Openssl implements SymmetricInterface
     public function setKey($key)
     {
         $keyLen = mb_strlen($key, '8bit');
-        if (!$keyLen) {
+
+        if (! $keyLen) {
             throw new Exception\InvalidArgumentException('The key cannot be empty');
         }
+
         if ($keyLen < $this->getKeySize()) {
-            throw new Exception\InvalidArgumentException(
-                "The size of the key must be at least of " . $this->getKeySize() . " bytes"
-            );
+            throw new Exception\InvalidArgumentException(sprintf(
+                'The size of the key must be at least of %d bytes',
+                $this->getKeySize()
+            ));
         }
+
         $this->key = $key;
         return $this;
     }
@@ -309,9 +329,11 @@ class Openssl implements SymmetricInterface
     public function setAlgorithm($algo)
     {
         if (! in_array($algo, $this->getSupportedAlgorithms())) {
-            throw new Exception\InvalidArgumentException(
-                sprintf("The algorithm %s is not supported by %s", $algo, __CLASS__)
-            );
+            throw new Exception\InvalidArgumentException(sprintf(
+                'The algorithm %s is not supported by %s',
+                $algo,
+                __CLASS__
+            ));
         }
         $this->algo = $algo;
         return $this;
@@ -359,21 +381,26 @@ class Openssl implements SymmetricInterface
     public function encrypt($data)
     {
         // Cannot encrypt empty string
-        if (!is_string($data) || $data === '') {
+        if (! is_string($data) || $data === '') {
             throw new Exception\InvalidArgumentException('The data to encrypt cannot be empty');
         }
+
         if (null === $this->getKey()) {
             throw new Exception\InvalidArgumentException('No key specified for the encryption');
         }
+
         if (null === $this->getSalt() && $this->getSaltSize() > 0) {
             throw new Exception\InvalidArgumentException('The salt (IV) cannot be empty');
         }
+
         if (null === $this->getPadding()) {
-            throw new Exception\InvalidArgumentException('You have to specify a padding method');
+            throw new Exception\InvalidArgumentException('You must specify a padding method');
         }
+
         // padding
         $data = $this->padding->pad($data, $this->getBlockSize());
         $iv   = $this->getSalt();
+
         // encryption
         $result = openssl_encrypt(
             $data,
@@ -382,15 +409,18 @@ class Openssl implements SymmetricInterface
             OPENSSL_RAW_DATA | OPENSSL_ZERO_PADDING,
             $iv
         );
+
         if (false === $result) {
             $errMsg = '';
             while ($msg = openssl_error_string()) {
                 $errMsg .= $msg;
             }
-            throw new Exception\RuntimeException(
-                sprintf("OpenSSL error: %s", $errMsg)
-            );
+            throw new Exception\RuntimeException(sprintf(
+                'OpenSSL error: %s',
+                $errMsg
+            ));
         }
+
         return $iv . $result;
     }
 
@@ -406,12 +436,14 @@ class Openssl implements SymmetricInterface
         if (empty($data)) {
             throw new Exception\InvalidArgumentException('The data to decrypt cannot be empty');
         }
+
         if (null === $this->getKey()) {
-            throw new Exception\InvalidArgumentException('No key specified for the decryption');
+            throw new Exception\InvalidArgumentException('No decryption key specified');
         }
         if (null === $this->getPadding()) {
-            throw new Exception\InvalidArgumentException('You have to specify a padding method');
+            throw new Exception\InvalidArgumentException('You must specify a padding method');
         }
+
         $iv         = mb_substr($data, 0, $this->getSaltSize(), '8bit');
         $ciphertext = mb_substr($data, $this->getSaltSize(), null, '8bit');
         $result     = openssl_decrypt(
@@ -421,15 +453,18 @@ class Openssl implements SymmetricInterface
             OPENSSL_RAW_DATA | OPENSSL_ZERO_PADDING,
             $iv
         );
+
         if (false === $result) {
             $errMsg = '';
             while ($msg = openssl_error_string()) {
                 $errMsg .= $msg;
             }
-            throw new Exception\RuntimeException(
-                sprintf("OpenSSL error: %s", $errMsg)
-            );
+            throw new Exception\RuntimeException(sprintf(
+                'OpenSSL error: %s',
+                $errMsg
+            ));
         }
+
         // unpadding
         return $this->padding->strip($result);
     }
@@ -457,7 +492,7 @@ class Openssl implements SymmetricInterface
             foreach ($this->encryptionAlgos as $name => $algo) {
                 // CBC mode is supported by all the algorithms
                 if (in_array($algo . '-CBC', $this->getOpensslAlgos())) {
-                    $this->supportedAlgos[]= $name;
+                    $this->supportedAlgos[] = $name;
                 }
             }
         }
@@ -474,18 +509,24 @@ class Openssl implements SymmetricInterface
     public function setSalt($salt)
     {
         if ($this->getSaltSize() <= 0) {
-            throw new Exception\InvalidArgumentException(
-                sprintf("You cannot use a salt (IV) for %s in %s mode", $this->algo, $this->mode)
-            );
+            throw new Exception\InvalidArgumentException(sprintf(
+                'You cannot use a salt (IV) for %s in %s mode',
+                $this->algo,
+                $this->mode
+            ));
         }
+
         if (empty($salt)) {
             throw new Exception\InvalidArgumentException('The salt (IV) cannot be empty');
         }
+
         if (mb_strlen($salt, '8bit') < $this->getSaltSize()) {
-            throw new Exception\InvalidArgumentException(
-                sprintf("The size of the salt (IV) must be at least %d bytes", $this->getSaltSize())
-            );
+            throw new Exception\InvalidArgumentException(sprintf(
+                'The size of the salt (IV) must be at least %d bytes',
+                $this->getSaltSize()
+            ));
         }
+
         $this->iv = $salt;
         return $this;
     }
@@ -500,11 +541,14 @@ class Openssl implements SymmetricInterface
         if (empty($this->iv)) {
             return;
         }
+
         if (mb_strlen($this->iv, '8bit') < $this->getSaltSize()) {
-            throw new Exception\RuntimeException(
-                sprintf("The size of the salt (IV) must be at least %d bytes", $this->getSaltSize())
-            );
+            throw new Exception\RuntimeException(sprintf(
+                'The size of the salt (IV) must be at least %d bytes',
+                $this->getSaltSize()
+            ));
         }
+
         return mb_substr($this->iv, 0, $this->getSaltSize(), '8bit');
     }
 
@@ -527,14 +571,19 @@ class Openssl implements SymmetricInterface
      */
     public function setMode($mode)
     {
-        if (! empty($mode)) {
-            if (! in_array($mode, $this->getSupportedModes())) {
-                throw new Exception\InvalidArgumentException(
-                    sprintf("The mode %s is not supported by %s", $mode, $this->algo)
-                );
-            }
-            $this->mode = $mode;
+        if (empty($mode)) {
+            return $this;
         }
+
+        if (! in_array($mode, $this->getSupportedModes())) {
+            throw new Exception\InvalidArgumentException(sprintf(
+                'The mode %s is not supported by %s',
+                $mode,
+                $this->algo
+            ));
+        }
+
+        $this->mode = $mode;
         return $this;
     }
 
@@ -572,7 +621,7 @@ class Openssl implements SymmetricInterface
         foreach ($this->encryptionModes as $mode) {
             $algo = $this->encryptionAlgos[$this->algo] . '-' . strtoupper($mode);
             if (in_array($algo, $this->getOpensslAlgos())) {
-                $modes[]= $mode;
+                $modes[] = $mode;
             }
         }
         return $modes;

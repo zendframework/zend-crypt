@@ -111,9 +111,10 @@ class Mcrypt implements SymmetricInterface
     public function __construct($options = [])
     {
         if (!extension_loaded('mcrypt')) {
-            throw new Exception\RuntimeException(
-                sprintf("You cannot use %s without the Mcrypt extension", __CLASS__)
-            );
+            throw new Exception\RuntimeException(sprintf(
+                'You cannot use %s without the Mcrypt extension',
+                __CLASS__
+            ));
         }
         $this->setOptions($options);
         $this->setDefaultOptions($options);
@@ -252,8 +253,8 @@ class Mcrypt implements SymmetricInterface
         if (!empty($keySizes) && $keyLen < $maxKey) {
             if (!in_array($keyLen, $keySizes)) {
                 throw new Exception\InvalidArgumentException(sprintf(
-                    "The size of the key must be one of %s bytes or longer",
-                    implode(", ", $keySizes)
+                    'The size of the key must be %s bytes or longer',
+                    implode(', ', $keySizes)
                 ));
             }
         }
@@ -286,7 +287,7 @@ class Mcrypt implements SymmetricInterface
     {
         if (!array_key_exists($algo, $this->supportedAlgos)) {
             throw new Exception\InvalidArgumentException(sprintf(
-                "The algorithm %s is not supported by %s",
+                'The algorithm %s is not supported by %s',
                 $algo,
                 __CLASS__
             ));
@@ -483,7 +484,7 @@ class Mcrypt implements SymmetricInterface
             $mode = strtolower($mode);
             if (!array_key_exists($mode, $this->supportedModes)) {
                 throw new Exception\InvalidArgumentException(sprintf(
-                    "The mode %s is not supported by %s",
+                    'The mode %s is not supported by %s',
                     $mode,
                     $this->algo
                 ));
