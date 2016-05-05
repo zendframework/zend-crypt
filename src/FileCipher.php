@@ -3,15 +3,13 @@
  * Zend Framework (http://framework.zend.com/)
  *
  * @link      http://github.com/zendframework/zf2 for the canonical source repository
- * @copyright Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright Copyright (c) 2005-2016 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   http://framework.zend.com/license/new-bsd New BSD License
  */
 
 namespace Zend\Crypt;
 
 use Zend\Crypt\Key\Derivation\Pbkdf2;
-use Zend\Crypt\Symmetric\Mcrypt;
-use Zend\Crypt\Symmetric\SymmetricInterface;
 use Zend\Math\Rand;
 
 /**
@@ -62,9 +60,12 @@ class FileCipher
      *
      * @param SymmetricInterface $cipher
      */
-    public function __construct()
+    public function __construct(Symmetric\SymmetricInterface $cipher = null)
     {
-        $this->cipher = new Mcrypt;
+        if (null === $cipher) {
+            $cipher = new Symmetric\Openssl;
+        }
+        $this->cipher = $cipher;
     }
 
     /**
@@ -72,7 +73,7 @@ class FileCipher
      *
      * @param SymmetricInterface $cipher
      */
-    public function setCipher(SymmetricInterface $cipher)
+    public function setCipher(Symmetric\SymmetricInterface $cipher)
     {
         $this->cipher = $cipher;
     }
@@ -230,7 +231,7 @@ class FileCipher
 
         $read    = fopen($fileIn, "r");
         $write   = fopen($fileOut, "w");
-        $iv      = Rand::getBytes($this->cipher->getSaltSize(), true);
+        $iv      = Rand::getBytes($this->cipher->getSaltSize());
         $keys    = Pbkdf2::calc($this->getPbkdf2HashAlgorithm(),
                                 $this->getKey(),
                                 $iv,

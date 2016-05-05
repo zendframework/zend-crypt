@@ -3,7 +3,7 @@
 In the `Zend\Crypt\Password` namespace you will find a number of password
 formats supported by the zend-crypt component. These currently include:
 
-- bcrypt 
+- bcrypt
 - Apache (htpasswd)
 
 If you need to choose a password format to store a user’s password, we suggest
@@ -12,8 +12,9 @@ attacks (see details below).
 
 ## Bcrypt
 
-The [bcrypt](http://en.wikipedia.org/wiki/Bcrypt) algorithm is a hashing algorithm that is widely used and recommended
-by the security community to store user’s passwords in a secure way.
+The [bcrypt](http://en.wikipedia.org/wiki/Bcrypt) algorithm is a hashing algorithm
+that is widely used and recommended by the security community to store user’s
+passwords in a secure way.
 
 Classic hashing mechanisms like MD5 or SHA, with or without a salt value, are
 not considered secure anymore ([read this post to understand
@@ -31,7 +32,7 @@ around 0.07s using a CPU Intel i5 at 3.3Ghz (the cost parameter is a relative
 value according to the speed of the CPU used). Starting with version 2.3.0, we
 changed the default value of the cost parameter from 14 to 10, in an effort to
 reduce denial-of-service attacks due to too high computational time
-requirements.  (Read this article on [aggressive password
+requirements. (Read this article on [aggressive password
 stretching](http://timoh6.github.io/2013/11/26/Aggressive-password-stretching.html)
 for more information).
 
@@ -58,12 +59,12 @@ then be stored in a repository like a database (the output is a string of 60
 bytes).
 
 > ### Bcrypt truncates input > 72 bytes
-> 
+>
 > The input string of the bcrypt algorithm is limited to 72 bytes. If you use a
 > string with a length more than this limit, bcrypt will consider only the first
-> 72 bytes. If you need to use a longer string, you should pre-hash it using
-> SHA256 prior to passing it to the bcrypt algorithm: `$hashedPassword =
-> \Zend\Crypt\Hash::compute('sha256', $password);`
+> 72 bytes. If you need to use a longer string, you should pre-hash it.
+> We provided a `\Zend\Crypt\Password\BcryptSha` component that provides this
+> pre-hash of the password and can be used to hash input > 72 bytes.
 
 To verify if a given password is valid against a bcrypt value you can use the
 `verify()` method. The example below demonstrates verification:
@@ -99,6 +100,14 @@ $bcrypt = new Bcrypt([
     'cost' => 11
 ]);
 ```
+
+> ### Version 3.0
+>
+> Starting with version 3.0, we now use the [password_hash()](http://php.net/password_hash)
+> and `[password_verify()](http://php.net/password_verify) introduced in PHP 5.5
+> to generate the bcrypt hash. We have provided backwards compatibility tests to
+> ensure that any hashes generated with version 2 releases can still be
+> validated under version 3.
 
 ## Apache
 

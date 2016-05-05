@@ -3,22 +3,20 @@
  * Zend Framework (http://framework.zend.com/)
  *
  * @link      http://github.com/zendframework/zf2 for the canonical source repository
- * @copyright Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright Copyright (c) 2005-2016 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   http://framework.zend.com/license/new-bsd New BSD License
  */
 
-namespace ZendTest\Crypt;
+namespace ZendTest\Crypt\FileCipher;
 
 use Zend\Crypt\FileCipher;
-use Zend\Crypt\Symmetric\Mcrypt;
-use Zend\Crypt\Symmetric\Exception;
 use Zend\Crypt\Hmac;
 use Zend\Math\Rand;
 
 /**
  * @group      Zend_Crypt
  */
-class FileCipherTest extends \PHPUnit_Framework_TestCase
+abstract class AbstractFileCipherTest extends \PHPUnit_Framework_TestCase
 {
     /**
      * @var fileCipher
@@ -37,11 +35,7 @@ class FileCipherTest extends \PHPUnit_Framework_TestCase
 
     public function setUp()
     {
-        try {
-            $this->fileCipher = new FileCipher();
-        } catch (Exception\RuntimeException $e) {
-            $this->markTestSkipped('Mcrypt is not installed, I cannot execute the FileCipherTest');
-        }
+        $this->assertInstanceOf(FileCipher::class, $this->fileCipher);
     }
 
     public function tearDown()
@@ -58,16 +52,6 @@ class FileCipherTest extends \PHPUnit_Framework_TestCase
     {
         // The buffer size must be always the same to be able to decrypt
         $this->assertEquals(1048576, FileCipher::BUFFER_SIZE);
-    }
-
-    public function testSetCipher()
-    {
-        $cipher = new Mcrypt([
-            'algo' => 'blowfish'
-        ]);
-        $this->fileCipher->setCipher($cipher);
-        $this->assertInstanceOf('Zend\Crypt\Symmetric\SymmetricInterface', $this->fileCipher->getCipher());
-        $this->assertEquals($cipher, $this->fileCipher->getCipher());
     }
 
     public function testSetKeyIteration()
@@ -97,8 +81,10 @@ class FileCipherTest extends \PHPUnit_Framework_TestCase
 
     public function testSetCipherAlgorithmFail()
     {
-        $this->setExpectedException('Zend\Crypt\Symmetric\Exception\InvalidArgumentException',
-                                    'The algorithm unknown is not supported by Zend\Crypt\Symmetric\Mcrypt');
+        $this->setExpectedException(
+            'Zend\Crypt\Symmetric\Exception\InvalidArgumentException',
+            sprintf("The algorithm unknown is not supported by %s", get_class($this->fileCipher->getCipher()))
+        );
         $this->fileCipher->setCipherAlgorithm('unknown');
     }
 

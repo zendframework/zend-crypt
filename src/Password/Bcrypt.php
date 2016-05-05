@@ -3,14 +3,13 @@
  * Zend Framework (http://framework.zend.com/)
  *
  * @link      http://github.com/zendframework/zf2 for the canonical source repository
- * @copyright Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright Copyright (c) 2005-2016 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   http://framework.zend.com/license/new-bsd New BSD License
  */
 
 namespace Zend\Crypt\Password;
 
 use Traversable;
-use Zend\Crypt\Utils;
 use Zend\Math\Rand;
 use Zend\Stdlib\ArrayUtils;
 
@@ -19,14 +18,10 @@ use Zend\Stdlib\ArrayUtils;
  */
 class Bcrypt implements PasswordInterface
 {
-    const MIN_SALT_SIZE = 16;
+    const MIN_SALT_SIZE = 22;
 
     /**
      * @var string
-     *
-     * Changed from 14 to 10 to prevent possibile DOS attacks
-     * due to the high computational time
-     * @see http://timoh6.github.io/2013/11/26/Aggressive-password-stretching.html
      */
     protected $cost = '10';
 
@@ -73,22 +68,12 @@ class Bcrypt implements PasswordInterface
      */
     public function create($password)
     {
-        if (empty($this->salt)) {
-            $salt = Rand::getBytes(self::MIN_SALT_SIZE);
-        } else {
-            $salt = $this->salt;
+        $options = [ 'cost' => (int) $this->cost ];
+        if (PHP_VERSION_ID < 70000) { // salt is deprecated from PHP 7.0
+            $salt = $this->salt ?: Rand::getBytes(self::MIN_SALT_SIZE);
+            $options['salt'] = $salt;
         }
-        $salt64 = mb_substr(str_replace('+', '.', base64_encode($salt)), 0, 22, '8bit');
-        /**
-         * Check for security flaw in the bcrypt implementation used by crypt()
-         * @see http://php.net/security/crypt_blowfish.php
-         */
-        $prefix = '$2y$';
-        $hash = crypt($password, $prefix . $this->cost . '$' . $salt64);
-        if (mb_strlen($hash, '8bit') < 13) {
-            throw new Exception\RuntimeException('Error during the bcrypt generation');
-        }
-        return $hash;
+        return password_hash($password, PASSWORD_BCRYPT, $options);
     }
 
     /**
@@ -96,13 +81,11 @@ class Bcrypt implements PasswordInterface
      *
      * @param  string $password
      * @param  string $hash
-     * @throws Exception\RuntimeException when the hash is unable to be processed
      * @return bool
      */
     public function verify($password, $hash)
     {
-        $result = crypt($password, $hash);
-        return Utils::compareStrings($hash, $result);
+        return password_verify($password, $hash);
     }
 
     /**
@@ -145,6 +128,9 @@ class Bcrypt implements PasswordInterface
      */
     public function setSalt($salt)
     {
+        if (PHP_VERSION_ID >= 70000) {
+            trigger_error("The salt support is deprecated starting from PHP 7.0.0", E_USER_DEPRECATED);
+        }
         if (mb_strlen($salt, '8bit') < self::MIN_SALT_SIZE) {
             throw new Exception\InvalidArgumentException(
                 'The length of the salt must be at least ' . self::MIN_SALT_SIZE . ' bytes'
@@ -161,29 +147,9 @@ class Bcrypt implements PasswordInterface
      */
     public function getSalt()
     {
+        if (PHP_VERSION_ID >= 70000) {
+            trigger_error("The salt support is deprecated starting from PHP 7.0.0", E_USER_DEPRECATED);
+        }
         return $this->salt;
-    }
-
-    /**
-     * Set the backward compatibility $2a$ instead of $2y$ for PHP 5.3.7+
-     *
-     * @deprecated since zf 2.3 requires PHP >= 5.3.23
-     * @param bool $value
-     * @return Bcrypt
-     */
-    public function setBackwardCompatibility($value)
-    {
-        return $this;
-    }
-
-    /**
-     * Get the backward compatibility
-     *
-     * @deprecated since zf 2.3 requires PHP >= 5.3.23
-     * @return bool
-     */
-    public function getBackwardCompatibility()
-    {
-        return false;
     }
 }
