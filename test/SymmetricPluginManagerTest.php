@@ -44,10 +44,10 @@ class SymmetricPluginManagerTest extends \PHPUnit_Framework_TestCase
      */
     public function testGet($symmetric)
     {
-        $plugin = new SymmetricPluginManager();
         if (! extension_loaded($symmetric)) {
             $this->setExpectedException(Exception\RuntimeException::class);
         }
+        $plugin = new SymmetricPluginManager();
         $this->assertInstanceof(SymmetricInterface::class, $plugin->get($symmetric));
     }
 
