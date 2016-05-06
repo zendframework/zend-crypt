@@ -121,6 +121,6 @@ class BcryptTest extends \PHPUnit_Framework_TestCase
     {
         $cost = $this->bcrypt->benchmarkCost();
         $this->assertInternalType("int", $cost);
-        $this->assertTrue($cost > 8 && $cost < 40);
+        $this->assertTrue($cost > 8 && $cost < 32);
     }
 }
