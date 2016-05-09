@@ -12,6 +12,7 @@ namespace ZendTest\Crypt;
 use Interop\Container\ContainerInterface;
 use Zend\Crypt\SymmetricPluginManager;
 use Zend\Crypt\Symmetric\SymmetricInterface;
+use Zend\Crypt\Symmetric\Exception;
 
 class SymmetricPluginManagerTest extends \PHPUnit_Framework_TestCase
 {
@@ -43,6 +44,9 @@ class SymmetricPluginManagerTest extends \PHPUnit_Framework_TestCase
      */
     public function testGet($symmetric)
     {
+        if (! extension_loaded($symmetric)) {
+            $this->setExpectedException(Exception\RuntimeException::class);
+        }
         $plugin = new SymmetricPluginManager();
         $this->assertInstanceof(SymmetricInterface::class, $plugin->get($symmetric));
     }

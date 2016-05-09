@@ -155,4 +155,25 @@ class Bcrypt implements PasswordInterface
 
         return $this->salt;
     }
+
+    /**
+     * Benchmark the bcrypt hash generation to determine the cost parameter
+     * based on time to target. The default time to test is 50 milliseconds
+     * which is a good baseline for systems handling interactive logins.
+     * If you increase the time you will get high cost with better security but
+     * you need to be careful because you can expose your system to DoS attacks.
+     *
+     * @see php.net/manual/en/function.password-hash.php#refsect1-function.password-hash-examples
+     */
+    public function benchmarkCost($timeTarget = 0.05)
+    {
+        $cost = 8;
+        do {
+            $cost++;
+            $start = microtime(true);
+            password_hash("test", PASSWORD_BCRYPT, [ 'cost' => $cost ]);
+            $end = microtime(true);
+        } while (($end - $start) < $timeTarget);
+        return $cost;
+    }
 }
