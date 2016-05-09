@@ -12,6 +12,9 @@ All notable changes to this project will be documented in this file, in reverse 
   symmetric encryption adapter for the OpenSSL extension; this is now the
   default adapter used internally by the component when symmetric encryption is
   required.
+- [#26](https://github.com/zendframework/zend-crypt/pull/26) adds
+  `Zend\Crypt\Password\Bcrypt::benchmarkCost()`, which allows you to find the
+  maximum cost value possible for your hardware within a 50ms timeframe.
 
 ### Deprecated
 
