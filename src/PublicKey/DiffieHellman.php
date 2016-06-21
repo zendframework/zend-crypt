@@ -98,14 +98,14 @@ class DiffieHellman
      */
     public function __construct($prime, $generator, $privateKey = null, $privateKeyFormat = self::FORMAT_NUMBER)
     {
+        // set up BigInteger adapter
+        $this->math = Math\BigInteger\BigInteger::factory();
+
         $this->setPrime($prime);
         $this->setGenerator($generator);
         if ($privateKey !== null) {
             $this->setPrivateKey($privateKey, $privateKeyFormat);
         }
-
-        // set up BigInteger adapter
-        $this->math = Math\BigInteger\BigInteger::factory();
     }
 
     /**

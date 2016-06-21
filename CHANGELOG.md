@@ -44,6 +44,10 @@ All notable changes to this project will be documented in this file, in reverse 
   `Zend\Crypt\Password\Bcrypt` implementation to use `password_hash()` and
   `password_verify()` internally, as they are supported in all PHP versions we
   support.
+- [#19](https://github.com/zendframework/zend-crypt/pull/19) fixes the
+  `DiffieHellman` publickey implementation to initialize the `BigInteger`
+  adapter from zend-math as the first operation of its constructor, fixing a
+  fatal error that occurs when binary data is provided.
 
 ## 2.6.1 - TBD
 
