@@ -2,7 +2,7 @@
 
 All notable changes to this project will be documented in this file, in reverse chronological order by release.
 
-## 3.0.0 - TBD
+## 3.0.0 - 2016-06-21
 
 ### Added
 
@@ -54,24 +54,6 @@ All notable changes to this project will be documented in this file, in reverse 
   `DiffieHellman` publickey implementation to initialize the `BigInteger`
   adapter from zend-math as the first operation of its constructor, fixing a
   fatal error that occurs when binary data is provided.
-
-## 2.6.1 - TBD
-
-### Added
-
-- Nothing.
-
-### Deprecated
-
-- Nothing.
-
-### Removed
-
-- Nothing.
-
-### Fixed
-
-- Nothing.
 
 ## 2.6.0 - 2016-02-03
 
