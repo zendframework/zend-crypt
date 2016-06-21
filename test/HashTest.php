@@ -3,7 +3,7 @@
  * Zend Framework (http://framework.zend.com/)
  *
  * @link      http://github.com/zendframework/zf2 for the canonical source repository
- * @copyright Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright Copyright (c) 2005-2016 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   http://framework.zend.com/license/new-bsd New BSD License
  */
 
@@ -121,15 +121,19 @@ class HashTest extends \PHPUnit_Framework_TestCase
     public function testNullHashAlgorithm()
     {
         Hash::clearLastAlgorithmCache();
-        $this->setExpectedException('Zend\Crypt\Exception\InvalidArgumentException',
-                                    'Hash algorithm provided is not supported on this PHP installation');
+        $this->setExpectedException(
+            'Zend\Crypt\Exception\InvalidArgumentException',
+            'Hash algorithm provided is not supported on this PHP installation'
+        );
         Hash::compute(null, 'test');
     }
 
     public function testWrongHashAlgorithm()
     {
-        $this->setExpectedException('Zend\Crypt\Exception\InvalidArgumentException',
-                                    'Hash algorithm provided is not supported on this PHP installation');
+        $this->setExpectedException(
+            'Zend\Crypt\Exception\InvalidArgumentException',
+            'Hash algorithm provided is not supported on this PHP installation'
+        );
         Hash::compute('wrong', 'test');
     }
 

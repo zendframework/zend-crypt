@@ -3,7 +3,7 @@
  * Zend Framework (http://framework.zend.com/)
  *
  * @link      http://github.com/zendframework/zf2 for the canonical source repository
- * @copyright Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright Copyright (c) 2005-2016 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   http://framework.zend.com/license/new-bsd New BSD License
  */
 
@@ -98,14 +98,14 @@ class DiffieHellman
      */
     public function __construct($prime, $generator, $privateKey = null, $privateKeyFormat = self::FORMAT_NUMBER)
     {
+        // set up BigInteger adapter
+        $this->math = Math\BigInteger\BigInteger::factory();
+
         $this->setPrime($prime);
         $this->setGenerator($generator);
         if ($privateKey !== null) {
             $this->setPrivateKey($privateKey, $privateKeyFormat);
         }
-
-        // set up BigInteger adapter
-        $this->math = Math\BigInteger\BigInteger::factory();
     }
 
     /**
@@ -433,6 +433,6 @@ class DiffieHellman
      */
     protected function generatePrivateKey()
     {
-        return Math\Rand::getBytes(strlen($this->getPrime()), true);
+        return Math\Rand::getBytes(mb_strlen($this->getPrime(), '8bit'));
     }
 }

@@ -3,13 +3,14 @@
  * Zend Framework (http://framework.zend.com/)
  *
  * @link      http://github.com/zendframework/zf2 for the canonical source repository
- * @copyright Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright Copyright (c) 2005-2016 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   http://framework.zend.com/license/new-bsd New BSD License
  */
 
 namespace Zend\Crypt;
 
 use Interop\Container\ContainerInterface;
+use Interop\Container\Exception\NotFoundException;
 use Zend\Crypt\Key\Derivation\Pbkdf2;
 use Zend\Crypt\Symmetric\SymmetricInterface;
 use Zend\Math\Rand;
@@ -95,10 +96,16 @@ class BlockCipher
     public static function factory($adapter, $options = [])
     {
         $plugins = static::getSymmetricPluginManager();
-        $adapter = $plugins->get($adapter);
-        $adapter->setOptions($options);
-
-        return new static($adapter);
+        try {
+            $cipher = $plugins->get($adapter);
+        } catch (NotFoundException $e) {
+            throw new Exception\RuntimeException(sprintf(
+                'The symmetric adapter %s does not exist',
+                $adapter
+            ));
+        }
+        $cipher->setOptions($options);
+        return new static($cipher);
     }
 
     /**
@@ -126,7 +133,8 @@ class BlockCipher
         if (is_string($plugins)) {
             if (!class_exists($plugins) || ! is_subclass_of($plugins, ContainerInterface::class)) {
                 throw new Exception\InvalidArgumentException(sprintf(
-                    'Unable to locate symmetric cipher plugins using class "%s"; class does not exist or does not implement ContainerInterface',
+                    'Unable to locate symmetric cipher plugins using class "%s"; '
+                    . 'class does not exist or does not implement ContainerInterface',
                     $plugins
                 ));
             }
@@ -414,7 +422,7 @@ class BlockCipher
         $keySize = $this->cipher->getKeySize();
         // generate a random salt (IV) if the salt has not been set
         if (!$this->saltSetted) {
-            $this->cipher->setSalt(Rand::getBytes($this->cipher->getSaltSize(), true));
+            $this->cipher->setSalt(Rand::getBytes($this->cipher->getSaltSize()));
         }
         // generate the encryption key and the HMAC key for the authentication
         $hash = Pbkdf2::calc(
@@ -425,9 +433,9 @@ class BlockCipher
             $keySize * 2
         );
         // set the encryption key
-        $this->cipher->setKey(substr($hash, 0, $keySize));
+        $this->cipher->setKey(mb_substr($hash, 0, $keySize, '8bit'));
         // set the key for HMAC
-        $keyHmac = substr($hash, $keySize);
+        $keyHmac = mb_substr($hash, $keySize, null, '8bit');
         // encryption
         $ciphertext = $this->cipher->encrypt($data);
         // HMAC
@@ -461,12 +469,12 @@ class BlockCipher
             throw new Exception\InvalidArgumentException('No symmetric cipher specified');
         }
         $hmacSize   = Hmac::getOutputSize($this->hash);
-        $hmac       = substr($data, 0, $hmacSize);
-        $ciphertext = substr($data, $hmacSize) ?: '';
+        $hmac       = mb_substr($data, 0, $hmacSize, '8bit');
+        $ciphertext = mb_substr($data, $hmacSize, null, '8bit') ?: '';
         if (!$this->binaryOutput) {
             $ciphertext = base64_decode($ciphertext);
         }
-        $iv      = substr($ciphertext, 0, $this->cipher->getSaltSize());
+        $iv      = mb_substr($ciphertext, 0, $this->cipher->getSaltSize(), '8bit');
         $keySize = $this->cipher->getKeySize();
         // generate the encryption key and the HMAC key for the authentication
         $hash = Pbkdf2::calc(
@@ -477,9 +485,9 @@ class BlockCipher
             $keySize * 2
         );
         // set the decryption key
-        $this->cipher->setKey(substr($hash, 0, $keySize));
+        $this->cipher->setKey(mb_substr($hash, 0, $keySize, '8bit'));
         // set the key for HMAC
-        $keyHmac = substr($hash, $keySize);
+        $keyHmac = mb_substr($hash, $keySize, null, '8bit');
         $hmacNew = Hmac::compute($keyHmac, $this->hash, $this->cipher->getAlgorithm() . $ciphertext);
         if (!Utils::compareStrings($hmacNew, $hmac)) {
             return false;

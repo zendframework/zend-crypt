@@ -13,7 +13,8 @@ files. For instance, in CBC mode you must be sure to handle the
 block. For large files, that means that you need to use a buffer and use the
 last block of the buffer as the new IV for the next encryption step.
 
-The `FileCipher` uses a symmetric cipher, with the `Zend\Crypt\Symmetric\Mcrypt` component.
+`FileCipher` uses a `Zend\Crypt\Symmetric` cipher to encrypt and decrypt a file.
+The default cipher is `Zend\Crypt\Symmetric\Openssl`.
 
 The usage of this component is very simple; create an instance of `FileCipher`,
 specify the key, and you are ready to encrypt/decrypt any file:

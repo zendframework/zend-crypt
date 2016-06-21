@@ -3,7 +3,7 @@
  * Zend Framework (http://framework.zend.com/)
  *
  * @link      http://github.com/zendframework/zf2 for the canonical source repository
- * @copyright Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright Copyright (c) 2005-2016 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   http://framework.zend.com/license/new-bsd New BSD License
  */
 
@@ -50,6 +50,13 @@ class RsaOptions extends AbstractOptions
      * @var bool
      */
     protected $binaryOutput = true;
+
+    /**
+     * OPENSSL padding
+     *
+     * @var int|null
+     */
+    protected $opensslPadding;
 
     /**
      * Set private key
@@ -178,6 +185,28 @@ class RsaOptions extends AbstractOptions
     public function getBinaryOutput()
     {
         return $this->binaryOutput;
+    }
+
+    /**
+     * Get the OPENSSL padding
+     *
+     * @return int|null
+     */
+    public function getOpensslPadding()
+    {
+        return $this->opensslPadding;
+    }
+
+    /**
+     * Set the OPENSSL padding
+     *
+     * @param int|null $opensslPadding
+     * @return $this
+     */
+    public function setOpensslPadding($opensslPadding)
+    {
+        $this->opensslPadding = (int) $opensslPadding;
+        return $this;
     }
 
     /**

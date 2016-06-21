@@ -3,61 +3,44 @@
  * Zend Framework (http://framework.zend.com/)
  *
  * @link      http://github.com/zendframework/zf2 for the canonical source repository
- * @copyright Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright Copyright (c) 2005-2016 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   http://framework.zend.com/license/new-bsd New BSD License
  */
 
-namespace ZendTest\Crypt;
+namespace ZendTest\Crypt\BlockCipher;
 
 use Interop\Container\ContainerInterface;
 use PHPUnit_Framework_TestCase as TestCase;
 use Zend\Crypt\BlockCipher;
 use Zend\Crypt\Exception as CryptException;
-use Zend\Crypt\Symmetric\Mcrypt;
-use Zend\Crypt\Symmetric\Exception as SymmetricException;
+use Zend\Crypt\Symmetric;
 
-class BlockCipherTest extends TestCase
+abstract class AbstractBlockCipherTest extends TestCase
 {
+    /**
+     * @var Symmetric\SymmetricInterface
+     */
+    protected $cipher;
+
     /**
      * @var BlockCipher
      */
     protected $blockCipher;
+
+    /**
+     * @var string
+     */
     protected $plaintext;
 
     public function setUp()
     {
-        try {
-            $cipher = new Mcrypt([
-                'algorithm' => 'aes',
-                'mode'      => 'cbc',
-                'padding'   => 'pkcs7'
-            ]);
-            $this->blockCipher = new BlockCipher($cipher);
-        } catch (SymmetricException\RuntimeException $e) {
-            $this->markTestSkipped('Mcrypt is not installed, I cannot execute the BlockCipherTest');
-        }
-        $this->plaintext = file_get_contents(__DIR__ . '/_files/plaintext');
-    }
-
-    public function testSetCipher()
-    {
-        $mcrypt = new Mcrypt();
-        $result = $this->blockCipher->setCipher($mcrypt);
-        $this->assertEquals($result, $this->blockCipher);
-        $this->assertEquals($mcrypt, $this->blockCipher->getCipher());
-    }
-
-    public function testFactory()
-    {
-        $this->blockCipher = BlockCipher::factory('mcrypt', ['algo' => 'blowfish']);
-        $this->assertInstanceOf(Mcrypt::class, $this->blockCipher->getCipher());
-        $this->assertEquals('blowfish', $this->blockCipher->getCipher()->getAlgorithm());
-    }
-
-    public function testFactoryEmptyOptions()
-    {
-        $this->blockCipher = BlockCipher::factory('mcrypt');
-        $this->assertInstanceOf(Mcrypt::class, $this->blockCipher->getCipher());
+        $this->assertInstanceOf(
+            Symmetric\SymmetricInterface::class,
+            $this->cipher,
+            'Symmetric adapter instance is needed for tests'
+        );
+        $this->blockCipher = new BlockCipher($this->cipher);
+        $this->plaintext = file_get_contents(__DIR__ . '/../_files/plaintext');
     }
 
     public function testSetKey()
@@ -90,7 +73,7 @@ class BlockCipherTest extends TestCase
     {
         $this->setExpectedException(
             CryptException\InvalidArgumentException::class,
-            'The algorithm unknown is not supported by Zend\Crypt\Symmetric\Mcrypt'
+            sprintf('The algorithm unknown is not supported by %s', get_class($this->cipher))
         );
         $result = $this->blockCipher->setCipherAlgorithm('unknown');
     }
@@ -203,9 +186,13 @@ class BlockCipherTest extends TestCase
 
     public function testSetSymmetricPluginManager()
     {
+        $old = $this->blockCipher->getSymmetricPluginManager();
+
         $this->blockCipher->setSymmetricPluginManager(
             $this->getMockBuilder(ContainerInterface::class)->getMock()
         );
         $this->assertInstanceOf(ContainerInterface::class, $this->blockCipher->getSymmetricPluginManager());
+
+        $this->blockCipher->setSymmetricPluginManager($old);
     }
 }

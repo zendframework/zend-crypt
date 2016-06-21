@@ -3,7 +3,7 @@
  * Zend Framework (http://framework.zend.com/)
  *
  * @link      http://github.com/zendframework/zf2 for the canonical source repository
- * @copyright Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright Copyright (c) 2005-2016 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   http://framework.zend.com/license/new-bsd New BSD License
  */
 
@@ -64,7 +64,7 @@ class SaltedS2k
         if (!in_array($hash, array_keys(static::$supportedMhashAlgos))) {
             throw new Exception\InvalidArgumentException("The hash algorithm $hash is not supported by " . __CLASS__);
         }
-        if (strlen($salt)<8) {
+        if (mb_strlen($salt, '8bit') < 8) {
             throw new Exception\InvalidArgumentException('The salt size must be at least of 8 bytes');
         }
         return mhash_keygen_s2k(static::$supportedMhashAlgos[$hash], $password, $salt, $bytes);

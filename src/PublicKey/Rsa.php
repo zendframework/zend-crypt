@@ -3,7 +3,7 @@
  * Zend Framework (http://framework.zend.com/)
  *
  * @link      http://github.com/zendframework/zf2 for the canonical source repository
- * @copyright Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright Copyright (c) 2005-2016 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   http://framework.zend.com/license/new-bsd New BSD License
  */
 
@@ -249,7 +249,7 @@ class Rsa
      * @return string
      * @throws Rsa\Exception\InvalidArgumentException
      */
-    public function encrypt($data, Rsa\AbstractKey $key = null, $padding = null)
+    public function encrypt($data, Rsa\AbstractKey $key = null)
     {
         if (null === $key) {
             $key = $this->options->getPublicKey();
@@ -259,6 +259,7 @@ class Rsa
             throw new Exception\InvalidArgumentException('No key specified for the decryption');
         }
 
+        $padding = $this->getOptions()->getOpensslPadding();
         if (null === $padding) {
             $encrypted = $key->encrypt($data);
         } else {
@@ -292,8 +293,7 @@ class Rsa
     public function decrypt(
         $data,
         Rsa\AbstractKey $key = null,
-        $mode = self::MODE_AUTO,
-        $padding = null
+        $mode = self::MODE_AUTO
     ) {
         if (null === $key) {
             $key = $this->options->getPrivateKey();
@@ -319,6 +319,7 @@ class Rsa
                 break;
         }
 
+        $padding = $this->getOptions()->getOpensslPadding();
         if (null === $padding) {
             return $key->decrypt($data);
         } else {
