@@ -198,7 +198,8 @@ files. For instance, in CBC mode you must be sure to handle the
 <a href="http://en.wikipedia.org/wiki/Initialization_vector">IV</a> correctly for each
 block. For large files, that means that you need to use a buffer and use the
 last block of the buffer as the new IV for the next encryption step.</p>
-<p>The <code>FileCipher</code> uses a symmetric cipher, with the <code>Zend\Crypt\Symmetric\Mcrypt</code> component.</p>
+<p><code>FileCipher</code> uses a <code>Zend\Crypt\Symmetric</code> cipher to encrypt and decrypt a file.
+The default cipher is <code>Zend\Crypt\Symmetric\Openssl</code>.</p>
 <p>The usage of this component is very simple; create an instance of <code>FileCipher</code>,
 specify the key, and you are ready to encrypt/decrypt any file:</p>
 <pre class="codehilite"><code class="language-php">use Zend\Crypt\FileCipher;
