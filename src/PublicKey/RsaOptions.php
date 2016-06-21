@@ -52,6 +52,13 @@ class RsaOptions extends AbstractOptions
     protected $binaryOutput = true;
 
     /**
+     * OPENSSL padding
+     *
+     * @var int|null
+     */
+    protected $opensslPadding;
+
+    /**
      * Set private key
      *
      * @param  Rsa\PrivateKey $key
@@ -178,6 +185,28 @@ class RsaOptions extends AbstractOptions
     public function getBinaryOutput()
     {
         return $this->binaryOutput;
+    }
+
+    /**
+     * Get the OPENSSL padding
+     *
+     * @return int|null
+     */
+    public function getOpensslPadding()
+    {
+        return $this->opensslPadding;
+    }
+
+    /**
+     * Set the OPENSSL padding
+     *
+     * @param int|null $opensslPadding
+     * @return $this
+     */
+    public function setOpensslPadding($opensslPadding)
+    {
+        $this->opensslPadding = (int) $opensslPadding;
+        return $this;
     }
 
     /**

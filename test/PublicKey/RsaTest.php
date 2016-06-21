@@ -130,18 +130,19 @@ CERT;
         $this->rsaBase64Out = new Rsa($rsaOptions);
     }
 
-    public function testFacrotyCreatesInstance()
+    public function testFactoryCreatesInstance()
     {
         $rsa = Rsa::factory([
-            'hash_algorithm' => 'sha1',
-            'binary_output'  => false,
-            'private_key'    => $this->testPemString
+            'hash_algorithm'  => 'sha1',
+            'binary_output'   => false,
+            'private_key'     => $this->testPemString,
+            'openssl_padding' => OPENSSL_PKCS1_OAEP_PADDING
         ]);
         $this->assertInstanceOf('Zend\Crypt\PublicKey\Rsa', $rsa);
         $this->assertInstanceOf('Zend\Crypt\PublicKey\RsaOptions', $rsa->getOptions());
     }
 
-    public function testFacrotyCreatesKeys()
+    public function testFactoryCreatesKeys()
     {
         $rsa = Rsa::factory([
             'private_key'    => $this->testPemString,
@@ -151,7 +152,7 @@ CERT;
         $this->assertInstanceOf('Zend\Crypt\PublicKey\Rsa\PublicKey', $rsa->getOptions()->getPublicKey());
     }
 
-    public function testFacrotyCreatesKeysFromFiles()
+    public function testFactoryCreatesKeysFromFiles()
     {
         $rsa = Rsa::factory([
             'private_key'    => $this->testPemFile,
@@ -160,7 +161,7 @@ CERT;
         $this->assertInstanceOf('Zend\Crypt\PublicKey\Rsa\PublicKey', $rsa->getOptions()->getPublicKey());
     }
 
-    public function testFacrotyCreatesJustPublicKey()
+    public function testFactoryCreatesJustPublicKey()
     {
         $rsa = Rsa::factory([
             'public_key'     => $this->testCertificateString,
@@ -415,7 +416,8 @@ CERT;
     public function testZf3492Base64DetectDecrypt()
     {
         $data = 'vNKINbWV6qUKGsmawN8ii0mak7PPNoVQPC7fwXJOgMNfCgdT+9W4PUte4fic6U4A6fMra4gv7NCTESxap2qpBQ==';
-        $this->assertEquals('1234567890', $this->rsa->decrypt($data, null, Rsa::MODE_AUTO, OPENSSL_PKCS1_PADDING));
+        $this->rsa->getOptions()->setOpensslPadding(OPENSSL_PKCS1_PADDING);
+        $this->assertEquals('1234567890', $this->rsa->decrypt($data));
     }
 
     public function testZf3492Base64DetectVerify()
@@ -427,7 +429,8 @@ CERT;
     public function testDecryptBase64()
     {
         $data = 'vNKINbWV6qUKGsmawN8ii0mak7PPNoVQPC7fwXJOgMNfCgdT+9W4PUte4fic6U4A6fMra4gv7NCTESxap2qpBQ==';
-        $this->assertEquals('1234567890', $this->rsa->decrypt($data, null, Rsa::MODE_BASE64, OPENSSL_PKCS1_PADDING));
+        $this->rsa->getOptions()->setOpensslPadding(OPENSSL_PKCS1_PADDING);
+        $this->assertEquals('1234567890', $this->rsa->decrypt($data, null, Rsa::MODE_BASE64));
     }
 
     public function testDecryptCorruptBase64()
@@ -440,7 +443,8 @@ CERT;
     public function testDecryptRaw()
     {
         $data = 'vNKINbWV6qUKGsmawN8ii0mak7PPNoVQPC7fwXJOgMNfCgdT+9W4PUte4fic6U4A6fMra4gv7NCTESxap2qpBQ==';
-        $this->assertEquals('1234567890', $this->rsa->decrypt(base64_decode($data), null, Rsa::MODE_RAW, OPENSSL_PKCS1_PADDING));
+        $this->rsa->getOptions()->setOpensslPadding(OPENSSL_PKCS1_PADDING);
+        $this->assertEquals('1234567890', $this->rsa->decrypt(base64_decode($data), null, Rsa::MODE_RAW));
     }
 
     public function testDecryptCorruptRaw()
