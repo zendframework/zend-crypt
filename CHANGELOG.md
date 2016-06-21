@@ -15,6 +15,12 @@ All notable changes to this project will be documented in this file, in reverse 
 - [#26](https://github.com/zendframework/zend-crypt/pull/26) adds
   `Zend\Crypt\Password\Bcrypt::benchmarkCost()`, which allows you to find the
   maximum cost value possible for your hardware within a 50ms timeframe.
+- [#11](https://github.com/zendframework/zend-crypt/pull/11) adds a new option
+  to the `Zend\Crypt\PublicKey\RsaOptions` class, `openssl_padding` (or
+  `setOpensslPadding()`; this is now consumed in
+  `Zend\Crypt\PublicKey\Rsa::encrypt()` and
+  `Zend\Crypt\PublicKey\Rsa::decrypt()`, instead of the optional `$padding`
+  argument.
 
 ### Deprecated
 
@@ -24,7 +30,10 @@ All notable changes to this project will be documented in this file, in reverse 
 
 ### Removed
 
-- Nothing.
+- [#11](https://github.com/zendframework/zend-crypt/pull/11) removes the
+  optional `$padding` argument from each of `Zend\Crypt\PublicKey\Rsa`'s
+  `encrypt()` and `decrypt()` methods; you can now specify the value via the
+  `RsaOptions`.
 
 ### Fixed
 
