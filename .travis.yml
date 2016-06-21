@@ -15,25 +15,47 @@ cache:
 
 env:
   global:
-    - SITE_URL: https://zendframework.github.io/zend-crypt
-    - GH_USER_NAME: "Matthew Weier O'Phinney"
-    - GH_USER_EMAIL: matthew@weierophinney.net
-    - GH_REF: github.com/zendframework/zend-crypt.git
+    - COMPOSER_ARGS="--no-interaction --ignore-platform-reqs"
+    - SITE_URL=https://zendframework.github.io/zend-crypt
+    - GH_USER_NAME="Matthew Weier O'Phinney"
+    - GH_USER_EMAIL=matthew@weierophinney.net
+    - GH_REF=github.com/zendframework/zend-crypt.git
     - secure: "S4hlQtCjH094XjRhWlOCX0yVjn+9LpJaSkO6XjzkR3JwYs28x232FPk7U2Ji12kKkT/db+0C6jed8WDFtPyUaxbfbk/Lq+TLfReMWNXqJEkbh2UBSIfZX8OruyYSOOn9nPY3+X0yNIy28muES6Kxr1tVj8AZFfhEiNLJgQ79Hpo0JdhBd8038CiWbr9US8jDvtuA96xQkuqYOUDUuJNmvtfNXrUpL5waQAzdtkrjTEP35UfQPU4rwJCx1ItqdNRex8wQycQgIXZcpGz/Uq9ID7brh56wLvQm0NbrZ8rhrOfyDkvdf34Jcn462svmAzF7xbc3IgO5+ilVHapooBjdO+wbNrHNcdTelxRIRWvQ2+rQByvFglyw38fn9AIrrqRoZiBfJnyee8j1T6XJt/YOS3nOmAbwJQelkRyCMeNJfugS5RgEzrcBZ4RItjNDXKBaFsSZkZROQul1e1Db9p5KG1MUyPZKTpjcWr8fB9grB+Bfd2IxL7gAc+DYbMIofpZpwhc2mrIRRg9jwFIcFxZI8qNzP3U3U2n6A7f35rNprtR//k6gOiPTndgQuYALpetBAcwDMc3v63mKgvpWsxdQjLgN+iHDidQN+lEJcFK2+d//ZiBUNAi59uFeLBrYj56HaXJaTKOCv7CB3xw32TpjjvVNPX6hl4lTwCBskhWHbSc="
 
 matrix:
   fast_finish: true
   include:
-    - php: 5.5
-      env:
-        - EXECUTE_CS_CHECK=true
     - php: 5.6
       env:
-        - EXECUTE_TEST_COVERALLS=true
+        - DEPS=lowest
+    - php: 5.6
+      env:
+        - DEPS=locked
+        - TEST_COVERAGE=true
         - DEPLOY_DOCS="$(if [[ $TRAVIS_BRANCH == 'master' && $TRAVIS_PULL_REQUEST == 'false' ]]; then echo -n 'true' ; else echo -n 'false' ; fi)"
         - PATH="$HOME/.local/bin:$PATH"
+    - php: 5.6
+      env:
+        - DEPS=latest
     - php: 7
+      env:
+        - DEPS=lowest
+    - php: 7
+      env:
+        - DEPS=locked
+        - CS_CHECK=true
+    - php: 7
+      env:
+        - DEPS=latest
     - php: hhvm 
+      env:
+        - DEPS=lowest
+    - php: hhvm 
+      env:
+        - DEPS=locked
+    - php: hhvm 
+      env:
+        - DEPS=latest
   allow_failures:
     - php: hhvm
 
@@ -42,21 +64,24 @@ notifications:
   email: false
 
 before_install:
-  - if [[ $EXECUTE_TEST_COVERALLS != 'true' ]]; then phpenv config-rm xdebug.ini || return 0 ; fi
-  - composer self-update
-  - if [[ $EXECUTE_TEST_COVERALLS == 'true' ]]; then composer require --dev --no-update satooshi/php-coveralls ; fi
+  - if [[ $TEST_COVERAGE != 'true' ]]; then phpenv config-rm xdebug.ini || return 0 ; fi
+  - travis_retry composer self-update
 
 install:
-  - travis_retry composer install --no-interaction --ignore-platform-reqs
+  - if [[ $DEPS == 'latest' ]]; then travis_retry composer update $COMPOSER_ARGS ; fi
+  - if [[ $DEPS == 'lowest' ]]; then travis_retry composer update --prefer-lowest --prefer-stable $COMPOSER_ARGS ; fi
+  - if [[ $TEST_COVERAGE == 'true' ]]; then composer require --dev $COMPOSER_ARGS satooshi/php-coveralls:^1.0 ; fi
+  - travis_retry composer install $COMPOSER_ARGS
+  - composer show
 
 script:
-  - if [[ $EXECUTE_TEST_COVERALLS == 'true' ]]; then ./vendor/bin/phpunit --coverage-clover clover.xml ; fi
-  - if [[ $EXECUTE_TEST_COVERALLS != 'true' ]]; then ./vendor/bin/phpunit ; fi
-  - if [[ $EXECUTE_CS_CHECK == 'true' ]]; then ./vendor/bin/php-cs-fixer fix -v --diff --dry-run ; fi
+  - if [[ $TEST_COVERAGE == 'true' ]]; then ./vendor/bin/phpunit --coverage-clover clover.xml ; fi
+  - if [[ $TEST_COVERAGE != 'true' ]]; then ./vendor/bin/phpunit ; fi
+  - if [[ $CS_CHECK == 'true' ]]; then ./vendor/bin/phpcs ; fi
   - if [[ $DEPLOY_DOCS == "true" && "$TRAVIS_TEST_RESULT" == "0" ]]; then wget -O theme-installer.sh "https://raw.githubusercontent.com/zendframework/zf-mkdoc-theme/master/theme-installer.sh" ; chmod 755 theme-installer.sh ; ./theme-installer.sh ; fi
 
 after_success:
   - if [[ $DEPLOY_DOCS == "true" ]]; then echo "Preparing to build and deploy documentation" ; ./zf-mkdoc-theme/deploy.sh ; echo "Completed deploying documentation" ; fi
 
 after_script:
-  - if [[ $EXECUTE_TEST_COVERALLS == 'true' ]]; then ./vendor/bin/coveralls ; fi
+  - if [[ $TEST_COVERAGE == 'true' ]]; then ./vendor/bin/coveralls ; fi
