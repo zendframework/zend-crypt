@@ -64,6 +64,7 @@ class DiffieHellmanTest extends \PHPUnit_Framework_TestCase
 
     public function testWithBinaryFormsAndLargeIntegers()
     {
+        // @codingStandardsIgnoreStart
         $aliceOptions = [
             'prime'    => '155172898181473697471232257763715539915724801966915404479707795314057629378541917580651227423698188993727816152646631438561595825688188889951272158842675419950341258706556549803580104870537681476726513255747040765857479291291572334510643245094715007229621094194349783925984760375594985848253359305585439638443',
             'generator'=> '2',
@@ -84,27 +85,40 @@ class DiffieHellmanTest extends \PHPUnit_Framework_TestCase
         $bob->generateKeys();
 
         //ANA5iVHvXa9NqQLVaBsix3Qvq3wVN5gwnpShj10QxR6H8ephXzdoHGQpqf2m+Hsw136SATmraVXW59n0zVBqOuA7ShNlhk7GQpfdEYKxlL/F1v+Fgz13hO4ObuylhwRvywhOfl7IpROT+fxiMqq/YLIrnU5pPh/4YmGZfUpmq/ZN
-        $this->assertEquals('0DmJUe9dr02pAtVoGyLHdC+rfBU3mDCelKGPXRDFHofx6mFfN2gcZCmp/ab4ezDXfpIBOatpVdbn2fTNUGo64DtKE2WGTsZCl90RgrGUv8XW/4WDPXeE7g5u7KWHBG/LCE5+XsilE5P5/GIyqr9gsiudTmk+H/hiYZl9Smar9k0=',
-                            base64_encode($alice->getPublicKey(DiffieHellman::FORMAT_BINARY)));
+        $this->assertEquals(
+            '0DmJUe9dr02pAtVoGyLHdC+rfBU3mDCelKGPXRDFHofx6mFfN2gcZCmp/ab4ezDXfpIBOatpVdbn2fTNUGo64DtKE2WGTsZCl90RgrGUv8XW/4WDPXeE7g5u7KWHBG/LCE5+XsilE5P5/GIyqr9gsiudTmk+H/hiYZl9Smar9k0=',
+            base64_encode($alice->getPublicKey(DiffieHellman::FORMAT_BINARY))
+        );
 
         //AL/KbggWh3XIdLLcZpMkv7Gb2R8geX9AFZKKQEOcCkmSMhBx3Bp+w11x9ruFnQi/pDK/AXEacUQSdEw8H2T6bud5xTRI1HfNVpX2ipPeXuGvwwuHYZXwZEDHm5XqG4XnUDxQKOxfUpBze7ky2v4JcRvt0/Q02/opHDlT6B9wNRuo
-        $this->assertEquals('v8puCBaHdch0stxmkyS/sZvZHyB5f0AVkopAQ5wKSZIyEHHcGn7DXXH2u4WdCL+kMr8BcRpxRBJ0TDwfZPpu53nFNEjUd81WlfaKk95e4a/DC4dhlfBkQMebleobhedQPFAo7F9SkHN7uTLa/glxG+3T9DTb+ikcOVPoH3A1G6g=',
-                            base64_encode($bob->getPublicKey(DiffieHellman::FORMAT_BINARY)));
+        $this->assertEquals(
+            'v8puCBaHdch0stxmkyS/sZvZHyB5f0AVkopAQ5wKSZIyEHHcGn7DXXH2u4WdCL+kMr8BcRpxRBJ0TDwfZPpu53nFNEjUd81WlfaKk95e4a/DC4dhlfBkQMebleobhedQPFAo7F9SkHN7uTLa/glxG+3T9DTb+ikcOVPoH3A1G6g=',
+            base64_encode($bob->getPublicKey(DiffieHellman::FORMAT_BINARY))
+        );
 
-        $aliceSecretKey = $alice->computeSecretKey($bob->getPublicKey(DiffieHellman::FORMAT_BINARY), DiffieHellman::FORMAT_BINARY,
-                                                   DiffieHellman::FORMAT_BINARY);
-        $bobSecretKey   = $bob->computeSecretKey($alice->getPublicKey(DiffieHellman::FORMAT_BINARY), DiffieHellman::FORMAT_BINARY,
-                                                 DiffieHellman::FORMAT_BINARY);
+        $aliceSecretKey = $alice->computeSecretKey(
+            $bob->getPublicKey(DiffieHellman::FORMAT_BINARY),
+            DiffieHellman::FORMAT_BINARY,
+            DiffieHellman::FORMAT_BINARY
+        );
+        $bobSecretKey   = $bob->computeSecretKey(
+            $alice->getPublicKey(DiffieHellman::FORMAT_BINARY),
+            DiffieHellman::FORMAT_BINARY,
+            DiffieHellman::FORMAT_BINARY
+        );
 
         // both Alice and Bob should now have the same secret key
         $expectedSharedSecret = base64_decode('FAAkw7NN1+raX9K1+dR3nqX2LZcDYYuZH13lpasaDIM4/ZXqbzdgiHZ86SILN27BjmJObtNQG/SNHfhxMalLMtLv+v0JFte/6+pIvMG9tAoPFsVh2BAvBuNpLY5W5gusgQ2p4pvJK0wz9YJ8iFdOHEOnhzYuN7LS/YXx2rBOz0Q=');
 
         $this->assertEquals($expectedSharedSecret, $aliceSecretKey);
         $this->assertEquals($expectedSharedSecret, $bobSecretKey);
+
+        // @codingStandardsIgnoreEnd
     }
 
     public function testWithBinaryFormsAndLargeIntegersAndOpenssl()
     {
+        // @codingStandardsIgnoreStart
         // skip this test if openssl DH support is not available
         if (!function_exists('openssl_dh_compute_key')) {
             $this->markTestSkipped(
@@ -131,20 +145,32 @@ class DiffieHellmanTest extends \PHPUnit_Framework_TestCase
         $alice->generateKeys();
         $bob->generateKeys();
 
-        $this->assertEquals('0DmJUe9dr02pAtVoGyLHdC+rfBU3mDCelKGPXRDFHofx6mFfN2gcZCmp/ab4ezDXfpIBOatpVdbn2fTNUGo64DtKE2WGTsZCl90RgrGUv8XW/4WDPXeE7g5u7KWHBG/LCE5+XsilE5P5/GIyqr9gsiudTmk+H/hiYZl9Smar9k0=',
-                            base64_encode($alice->getPublicKey(DiffieHellman::FORMAT_BINARY)));
-        $this->assertEquals('v8puCBaHdch0stxmkyS/sZvZHyB5f0AVkopAQ5wKSZIyEHHcGn7DXXH2u4WdCL+kMr8BcRpxRBJ0TDwfZPpu53nFNEjUd81WlfaKk95e4a/DC4dhlfBkQMebleobhedQPFAo7F9SkHN7uTLa/glxG+3T9DTb+ikcOVPoH3A1G6g=',
-                            base64_encode($bob->getPublicKey(DiffieHellman::FORMAT_BINARY)));
+        $this->assertEquals(
+            '0DmJUe9dr02pAtVoGyLHdC+rfBU3mDCelKGPXRDFHofx6mFfN2gcZCmp/ab4ezDXfpIBOatpVdbn2fTNUGo64DtKE2WGTsZCl90RgrGUv8XW/4WDPXeE7g5u7KWHBG/LCE5+XsilE5P5/GIyqr9gsiudTmk+H/hiYZl9Smar9k0=',
+            base64_encode($alice->getPublicKey(DiffieHellman::FORMAT_BINARY))
+        );
+        $this->assertEquals(
+            'v8puCBaHdch0stxmkyS/sZvZHyB5f0AVkopAQ5wKSZIyEHHcGn7DXXH2u4WdCL+kMr8BcRpxRBJ0TDwfZPpu53nFNEjUd81WlfaKk95e4a/DC4dhlfBkQMebleobhedQPFAo7F9SkHN7uTLa/glxG+3T9DTb+ikcOVPoH3A1G6g=',
+            base64_encode($bob->getPublicKey(DiffieHellman::FORMAT_BINARY))
+        );
 
-        $aliceSecretKey = $alice->computeSecretKey($bob->getPublicKey(DiffieHellman::FORMAT_BINARY), DiffieHellman::FORMAT_BINARY,
-                                                   DiffieHellman::FORMAT_BINARY);
-        $bobSecretKey   = $bob->computeSecretKey($alice->getPublicKey(DiffieHellman::FORMAT_BINARY), DiffieHellman::FORMAT_BINARY,
-                                                 DiffieHellman::FORMAT_BINARY);
+        $aliceSecretKey = $alice->computeSecretKey(
+            $bob->getPublicKey(DiffieHellman::FORMAT_BINARY),
+            DiffieHellman::FORMAT_BINARY,
+            DiffieHellman::FORMAT_BINARY
+        );
+        $bobSecretKey   = $bob->computeSecretKey(
+            $alice->getPublicKey(DiffieHellman::FORMAT_BINARY),
+            DiffieHellman::FORMAT_BINARY,
+            DiffieHellman::FORMAT_BINARY
+        );
 
         // both Alice and Bob should now have the same secret key
         $expectedSharedSecret = base64_decode('FAAkw7NN1+raX9K1+dR3nqX2LZcDYYuZH13lpasaDIM4/ZXqbzdgiHZ86SILN27BjmJObtNQG/SNHfhxMalLMtLv+v0JFte/6+pIvMG9tAoPFsVh2BAvBuNpLY5W5gusgQ2p4pvJK0wz9YJ8iFdOHEOnhzYuN7LS/YXx2rBOz0Q=');
         $this->assertEquals($expectedSharedSecret, $aliceSecretKey);
         $this->assertEquals($expectedSharedSecret, $bobSecretKey);
+
+        // @codingStandardsIgnoreEnd
     }
 
     public function testGenerateKeysWithUnsetPrivateKey()

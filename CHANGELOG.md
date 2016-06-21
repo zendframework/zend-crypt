@@ -12,6 +12,8 @@ All notable changes to this project will be documented in this file, in reverse 
   symmetric encryption adapter for the OpenSSL extension; this is now the
   default adapter used internally by the component when symmetric encryption is
   required.
+- [#25](https://github.com/zendframework/zend-crypt/pull/25) adds support for
+  zend-math v3.
 - [#26](https://github.com/zendframework/zend-crypt/pull/26) adds
   `Zend\Crypt\Password\Bcrypt::benchmarkCost()`, which allows you to find the
   maximum cost value possible for your hardware within a 50ms timeframe.
@@ -34,6 +36,10 @@ All notable changes to this project will be documented in this file, in reverse 
   optional `$padding` argument from each of `Zend\Crypt\PublicKey\Rsa`'s
   `encrypt()` and `decrypt()` methods; you can now specify the value via the
   `RsaOptions`.
+- [#25](https://github.com/zendframework/zend-crypt/pull/25) removes support for
+  zend-math v2 versions.
+- [#29](https://github.com/zendframework/zend-crypt/pull/29) removes support for
+  PHP 5.5.
 
 ### Fixed
 
