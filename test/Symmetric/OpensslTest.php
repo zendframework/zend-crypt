@@ -11,7 +11,6 @@ namespace ZendTest\Crypt\Symmetric;
 
 use Zend\Crypt\Symmetric\Openssl;
 
-
 /**
  * @group      Zend_Crypt
  */

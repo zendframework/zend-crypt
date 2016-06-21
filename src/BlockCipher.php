@@ -133,7 +133,8 @@ class BlockCipher
         if (is_string($plugins)) {
             if (!class_exists($plugins) || ! is_subclass_of($plugins, ContainerInterface::class)) {
                 throw new Exception\InvalidArgumentException(sprintf(
-                    'Unable to locate symmetric cipher plugins using class "%s"; class does not exist or does not implement ContainerInterface',
+                    'Unable to locate symmetric cipher plugins using class "%s"; '
+                    . 'class does not exist or does not implement ContainerInterface',
                     $plugins
                 ));
             }

@@ -68,8 +68,10 @@ abstract class AbstractFileCipherTest extends \PHPUnit_Framework_TestCase
 
     public function testSetEmptyKey()
     {
-        $this->setExpectedException('Zend\Crypt\Exception\InvalidArgumentException',
-                                    'The key cannot be empty');
+        $this->setExpectedException(
+            'Zend\Crypt\Exception\InvalidArgumentException',
+            'The key cannot be empty'
+        );
         $this->fileCipher->setKey('');
     }
 
@@ -101,8 +103,10 @@ abstract class AbstractFileCipherTest extends \PHPUnit_Framework_TestCase
 
     public function testSetWrongHashAlgorithm()
     {
-        $this->setExpectedException('Zend\Crypt\Exception\InvalidArgumentException',
-                                     'The specified hash algorithm \'unknown\' is not supported by Zend\Crypt\Hash');
+        $this->setExpectedException(
+            'Zend\Crypt\Exception\InvalidArgumentException',
+            'The specified hash algorithm \'unknown\' is not supported by Zend\Crypt\Hash'
+        );
         $this->fileCipher->setHashAlgorithm('unknown');
     }
 
@@ -114,8 +118,10 @@ abstract class AbstractFileCipherTest extends \PHPUnit_Framework_TestCase
 
     public function testSetWrongPbkdf2HashAlgorithm()
     {
-        $this->setExpectedException('Zend\Crypt\Exception\InvalidArgumentException',
-                                    'The specified hash algorithm \'unknown\' is not supported by Zend\Crypt\Hash');
+        $this->setExpectedException(
+            'Zend\Crypt\Exception\InvalidArgumentException',
+            'The specified hash algorithm \'unknown\' is not supported by Zend\Crypt\Hash'
+        );
         $this->fileCipher->setPbkdf2HashAlgorithm('unknown');
     }
 
@@ -132,11 +138,13 @@ abstract class AbstractFileCipherTest extends \PHPUnit_Framework_TestCase
             $this->assertTrue($this->fileCipher->encrypt($fileIn, $fileOut, false));
 
             $paddingSize = $this->fileCipher->getCipher()->getBlockSize();
-            $this->assertEquals(filesize($fileOut),
-                                filesize($fileIn) +
+            $this->assertEquals(
+                filesize($fileOut),
+                filesize($fileIn) +
                                 $this->fileCipher->getCipher()->getSaltSize() +
                                 Hmac::getOutputSize($this->fileCipher->getHashAlgorithm()) +
-                                $paddingSize - filesize($fileIn) % $paddingSize);
+                $paddingSize - filesize($fileIn) % $paddingSize
+            );
 
             $decryptFile = $fileOut . '.dec';
             // decrypt
@@ -176,8 +184,10 @@ abstract class AbstractFileCipherTest extends \PHPUnit_Framework_TestCase
         $this->fileIn  = $this->generateTmpFile(1048576, Rand::getBytes(1));
         $this->fileOut = $this->fileIn . '.enc';
 
-        $this->setExpectedException('Zend\Crypt\Exception\InvalidArgumentException',
-                                    'No key specified for encryption');
+        $this->setExpectedException(
+            'Zend\Crypt\Exception\InvalidArgumentException',
+            'No key specified for encryption'
+        );
         $this->fileCipher->encrypt($this->fileIn, $this->fileOut);
     }
 
@@ -186,16 +196,20 @@ abstract class AbstractFileCipherTest extends \PHPUnit_Framework_TestCase
         $this->fileIn  = $this->generateTmpFile(1048576, Rand::getBytes(1));
         $this->fileOut = $this->fileIn . '.enc';
 
-        $this->setExpectedException('Zend\Crypt\Exception\InvalidArgumentException',
-                                    'No key specified for decryption');
+        $this->setExpectedException(
+            'Zend\Crypt\Exception\InvalidArgumentException',
+            'No key specified for decryption'
+        );
         $this->fileCipher->decrypt($this->fileIn, $this->fileOut);
     }
 
     public function testEncryptFileInvalidInputFile()
     {
         $randomFile = uniqid('Invalid_File');
-        $this->setExpectedException('Zend\Crypt\Exception\InvalidArgumentException',
-                                    "I cannot open the $randomFile file");
+        $this->setExpectedException(
+            'Zend\Crypt\Exception\InvalidArgumentException',
+            "I cannot open the $randomFile file"
+        );
         $this->fileCipher->setKey('test');
         $this->fileCipher->encrypt($randomFile, '');
     }
@@ -203,8 +217,10 @@ abstract class AbstractFileCipherTest extends \PHPUnit_Framework_TestCase
     public function testDecryptFileInvalidInputFile()
     {
         $randomFile = uniqid('Invalid_File');
-        $this->setExpectedException('Zend\Crypt\Exception\InvalidArgumentException',
-                                    "I cannot open the $randomFile file");
+        $this->setExpectedException(
+            'Zend\Crypt\Exception\InvalidArgumentException',
+            "I cannot open the $randomFile file"
+        );
         $this->fileCipher->setKey('test');
         $this->fileCipher->decrypt($randomFile, '');
     }
@@ -214,8 +230,10 @@ abstract class AbstractFileCipherTest extends \PHPUnit_Framework_TestCase
         $this->fileIn  = $this->generateTmpFile(1024);
         $this->fileOut = $this->generateTmpFile(1024);
 
-        $this->setExpectedException('Zend\Crypt\Exception\InvalidArgumentException',
-                                    "The file {$this->fileOut} already exists");
+        $this->setExpectedException(
+            'Zend\Crypt\Exception\InvalidArgumentException',
+            "The file {$this->fileOut} already exists"
+        );
         $this->fileCipher->setKey('test');
         $this->fileCipher->encrypt($this->fileIn, $this->fileOut);
     }
@@ -225,8 +243,10 @@ abstract class AbstractFileCipherTest extends \PHPUnit_Framework_TestCase
         $this->fileIn  = $this->generateTmpFile(1024);
         $this->fileOut = $this->generateTmpFile(1024);
 
-        $this->setExpectedException('Zend\Crypt\Exception\InvalidArgumentException',
-                                    "The file {$this->fileOut} already exists");
+        $this->setExpectedException(
+            'Zend\Crypt\Exception\InvalidArgumentException',
+            "The file {$this->fileOut} already exists"
+        );
         $this->fileCipher->setKey('test');
         $this->fileCipher->decrypt($this->fileIn, $this->fileOut);
     }

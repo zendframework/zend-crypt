@@ -121,15 +121,19 @@ class HashTest extends \PHPUnit_Framework_TestCase
     public function testNullHashAlgorithm()
     {
         Hash::clearLastAlgorithmCache();
-        $this->setExpectedException('Zend\Crypt\Exception\InvalidArgumentException',
-                                    'Hash algorithm provided is not supported on this PHP installation');
+        $this->setExpectedException(
+            'Zend\Crypt\Exception\InvalidArgumentException',
+            'Hash algorithm provided is not supported on this PHP installation'
+        );
         Hash::compute(null, 'test');
     }
 
     public function testWrongHashAlgorithm()
     {
-        $this->setExpectedException('Zend\Crypt\Exception\InvalidArgumentException',
-                                    'Hash algorithm provided is not supported on this PHP installation');
+        $this->setExpectedException(
+            'Zend\Crypt\Exception\InvalidArgumentException',
+            'Hash algorithm provided is not supported on this PHP installation'
+        );
         Hash::compute('wrong', 'test');
     }
 

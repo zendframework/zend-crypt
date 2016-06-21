@@ -52,6 +52,7 @@ class HmacTest extends \PHPUnit_Framework_TestCase
     // MD5 tests taken from RFC 2202
     public function provideMd5Data()
     {
+        // @codingStandardsIgnoreStart
         return [
             ['Hi There', str_repeat("\x0b", 16), '9294727a3638bb1c13f48ef8158bfc9d'],
             ['what do ya want for nothing?', 'Jefe', '750c783e6ab0b503eaa86e310a5db738'],
@@ -65,6 +66,7 @@ class HmacTest extends \PHPUnit_Framework_TestCase
             ['Test Using Larger Than Block-Size Key and Larger Than One Block-Size Data',
                   str_repeat("\xaa", 80), '6f630fad67cda0ee1fb1f562db3aa53e'],
         ];
+        // @codingStandardsIgnoreEnd
     }
 
     /**
@@ -80,6 +82,7 @@ class HmacTest extends \PHPUnit_Framework_TestCase
     // SHA1 tests taken from RFC 2202
     public function provideSha1Data()
     {
+        // @codingStandardsIgnoreStart
         return [
             ['Hi There', str_repeat("\x0b", 20), 'b617318655057264e28bc0b6fb378c8ef146be00'],
             ['what do ya want for nothing?', 'Jefe', 'effcdf6ae5eb2fa2d27416d5f184df9c259a7c79'],
@@ -93,6 +96,7 @@ class HmacTest extends \PHPUnit_Framework_TestCase
             ['Test Using Larger Than Block-Size Key and Larger Than One Block-Size Data',
                   str_repeat("\xaa", 80), 'e8e99d0f45237d786d6bbaa7965c7808bbff1a91'],
         ];
+        // @codingStandardsIgnoreEnd
     }
 
     /**
@@ -107,6 +111,7 @@ class HmacTest extends \PHPUnit_Framework_TestCase
     // RIPEMD160 tests taken from RFC 2286
     public function provideRipemd160Data()
     {
+        // @codingStandardsIgnoreStart
         return [
             ['Hi There', str_repeat("\x0b", 20), '24cb4bd67d20fc1a5d2ed7732dcc39377f0a5668'],
             ['what do ya want for nothing?', 'Jefe', 'dda6c0213a485a9e24f4742064a7f033b43c4069'],
@@ -120,6 +125,7 @@ class HmacTest extends \PHPUnit_Framework_TestCase
             ['Test Using Larger Than Block-Size Key and Larger Than One Block-Size Data',
                   str_repeat("\xaa", 80), '69ea60798d71616cce5fd0871e23754cd75d5a0a'],
         ];
+        // @codingStandardsIgnoreEnd
     }
 
     /**
@@ -134,22 +140,28 @@ class HmacTest extends \PHPUnit_Framework_TestCase
     public function testEmptyKey()
     {
         Hmac::clearLastAlgorithmCache();
-        $this->setExpectedException('Zend\Crypt\Exception\InvalidArgumentException',
-                                    'Provided key is null or empty');
+        $this->setExpectedException(
+            'Zend\Crypt\Exception\InvalidArgumentException',
+            'Provided key is null or empty'
+        );
         Hmac::compute(null, 'md5', 'test');
     }
 
     public function testNullHashAlgorithm()
     {
-        $this->setExpectedException('Zend\Crypt\Exception\InvalidArgumentException',
-                                    'Hash algorithm is not supported on this PHP installation');
+        $this->setExpectedException(
+            'Zend\Crypt\Exception\InvalidArgumentException',
+            'Hash algorithm is not supported on this PHP installation'
+        );
         Hmac::compute('key', null, 'test');
     }
 
     public function testWrongHashAlgorithm()
     {
-        $this->setExpectedException('Zend\Crypt\Exception\InvalidArgumentException',
-                                    'Hash algorithm is not supported on this PHP installation');
+        $this->setExpectedException(
+            'Zend\Crypt\Exception\InvalidArgumentException',
+            'Hash algorithm is not supported on this PHP installation'
+        );
         Hmac::compute('key', 'wrong', 'test');
     }
 

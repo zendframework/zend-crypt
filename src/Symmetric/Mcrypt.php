@@ -203,7 +203,8 @@ class Mcrypt implements SymmetricInterface
         if (is_string($plugins)) {
             if (! class_exists($plugins) || ! is_subclass_of($plugins, ContainerInterface::class)) {
                 throw new Exception\InvalidArgumentException(sprintf(
-                    'Unable to locate padding plugin manager via class "%s"; class does not exist or does not implement ContainerInterface',
+                    'Unable to locate padding plugin manager via class "%s"; '
+                    . 'class does not exist or does not implement ContainerInterface',
                     $plugins
                 ));
             }
