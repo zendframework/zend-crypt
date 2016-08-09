@@ -5,7 +5,14 @@ use Zend\Math\Rand;
 use Zend\Crypt\PublicKey\Rsa\PublicKey as PubKey;
 use Zend\Crypt\PublicKey\Rsa\PrivateKey as PriKey;
 
-
+/**
+ * Hybrid encryption (OpenPGP like)
+ *
+ * The data are encrypted using a BlockCipher with a random session key
+ * that is encrypted using RSA with the public key of the receiver.
+ * The decryption process retrieves the session key using RSA with the private
+ * key of the receiver and decrypt the data using the BlockCipher.
+ */
 class Hybrid
 {
     /**
@@ -38,7 +45,7 @@ class Hybrid
      * @return string
      * @throws RuntimeException
      */
-    public function encrypt(string $plaintext, $keys = null)
+    public function encrypt($plaintext, $keys = null)
     {
         // generate a random session key
         $sessionKey = Rand::getBytes($this->bCipher->getCipher()->getKeySize());
@@ -79,7 +86,7 @@ class Hybrid
      * @return string
      * @throws RuntimeException
      */
-    public function decrypt(string $msg, string $privateKey = null, string $id = '')
+    public function decrypt( $msg,  $privateKey = null,  $id = null)
     {
         // get the session key
         list($encKeys, $ciphertext) = explode(';', $msg, 2);
