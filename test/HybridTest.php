@@ -46,23 +46,154 @@ class HybridTest extends \PHPUnit_Framework_TestCase
         $this->assertInstanceOf(Rsa::class, $rsa);
     }
 
-    public function testEncryptDecryptWithOneKey()
+    public function testEncryptDecryptWithOneStringKey()
     {
-        $keys = openssl_pkey_new([
+        $opensslKeys = openssl_pkey_new([
             "private_key_bits" => 1024,
             "private_key_type" => OPENSSL_KEYTYPE_RSA,
         ]);
 
         // Get the public and private key as string (PEM format)
-        $details   = openssl_pkey_get_details($keys);
+        $details   = openssl_pkey_get_details($opensslKeys);
         $publicKey = $details['key'];
-        openssl_pkey_export($keys, $privateKey);
+        openssl_pkey_export($opensslKeys, $privateKey);
 
-        $result = $this->hybrid->encrypt('test', $publicKey);
-        $this->assertEquals('test', $this->hybrid->decrypt($result, $privateKey));
+        $encrypted = $this->hybrid->encrypt('test', $publicKey);
+        $plaintext = $this->hybrid->decrypt($encrypted, $privateKey);
+        $this->assertEquals('test', $plaintext);
     }
 
-    public function testEncryptWithMultipleKeys()
+    public function testEncryptWithMultipleStringKeys()
     {
+        $publicKeys  = [];
+        $privateKeys = [];
+        for ($id = 0; $id < 5; $id++) {
+            $opensslKeys = openssl_pkey_new([
+                "private_key_bits" => 1024,
+                "private_key_type" => OPENSSL_KEYTYPE_RSA,
+            ]);
+            $details = openssl_pkey_get_details($opensslKeys);
+            $publicKeys[$id] = $details['key'];
+            openssl_pkey_export($opensslKeys, $privateKeys[$id]);
+        }
+
+        $encrypted = $this->hybrid->encrypt('test', $publicKeys);
+        for ($id = 0; $id < 5; $id++) {
+            $plaintext = $this->hybrid->decrypt($encrypted, $privateKeys[$id], $id);
+            $this->assertEquals('test', $plaintext);
+        }
+    }
+
+    public function testEncryptDecryptWithOneObjectKey()
+    {
+        $opensslKeys = openssl_pkey_new([
+            "private_key_bits" => 1024,
+            "private_key_type" => OPENSSL_KEYTYPE_RSA,
+        ]);
+
+        // Get the public and private key as Zend\Crypt\PublicKey\Rsa objects
+        $details   = openssl_pkey_get_details($opensslKeys);
+        $publicKey = new Rsa\PublicKey($details['key']);
+        openssl_pkey_export($opensslKeys, $privateKey);
+        $privateKey = new Rsa\PrivateKey($privateKey);
+
+        $encrypted = $this->hybrid->encrypt('test', $publicKey);
+        $plaintext = $this->hybrid->decrypt($encrypted, $privateKey);
+        $this->assertEquals('test', $plaintext);
+    }
+
+    public function testEncryptWithMultipleObjectKeys()
+    {
+        $publicKeys  = [];
+        $privateKeys = [];
+        for ($id = 0; $id < 5; $id++) {
+            $opensslKeys = openssl_pkey_new([
+                "private_key_bits" => 1024,
+                "private_key_type" => OPENSSL_KEYTYPE_RSA,
+            ]);
+            $details = openssl_pkey_get_details($opensslKeys);
+            $publicKeys[$id] = new Rsa\PublicKey($details['key']);
+            openssl_pkey_export($opensslKeys, $privateKey);
+            $privateKeys[$id] = new Rsa\PrivateKey($privateKey);
+        }
+
+        $encrypted = $this->hybrid->encrypt('test', $publicKeys);
+        for ($id = 0; $id < 5; $id++) {
+            $plaintext = $this->hybrid->decrypt($encrypted, $privateKeys[$id], $id);
+            $this->assertEquals('test', $plaintext);
+        }
+    }
+
+    /**
+     * @expectedException Zend\Crypt\Exception\RuntimeException
+     */
+    public function testFailToDecryptWithOneKey()
+    {
+        $opensslKeys = openssl_pkey_new([
+            "private_key_bits" => 1024,
+            "private_key_type" => OPENSSL_KEYTYPE_RSA,
+        ]);
+
+        // Get the public and private key as string (PEM format)
+        $details   = openssl_pkey_get_details($opensslKeys);
+        $publicKey = $details['key'];
+
+        // Generate a new public/private key
+        $opensslKeys = openssl_pkey_new([
+            "private_key_bits" => 1024,
+            "private_key_type" => OPENSSL_KEYTYPE_RSA,
+        ]);
+        openssl_pkey_export($opensslKeys, $privateKey);
+
+        // encrypt using a single key
+        $encrypted = $this->hybrid->encrypt('test', $publicKey);
+        // try to decrypt using a different private key throws an exception
+        $plaintext = $this->hybrid->decrypt($encrypted, $privateKey);
+    }
+
+    /**
+     * @expectedException Zend\Crypt\Exception\RuntimeException
+     */
+    public function testFailToDecryptWithMultipleKeys()
+    {
+        $publicKeys  = [];
+        $privateKeys = [];
+        for ($id = 0; $id < 5; $id++) {
+            $opensslKeys = openssl_pkey_new([
+                "private_key_bits" => 1024,
+                "private_key_type" => OPENSSL_KEYTYPE_RSA,
+            ]);
+            $details = openssl_pkey_get_details($opensslKeys);
+            $publicKeys[$id] = $details['key'];
+            openssl_pkey_export($opensslKeys, $privateKeys[$id]);
+        }
+
+        // Generate a new public/private key
+        $opensslKeys = openssl_pkey_new([
+            "private_key_bits" => 1024,
+            "private_key_type" => OPENSSL_KEYTYPE_RSA,
+        ]);
+        openssl_pkey_export($opensslKeys, $privateKey);
+
+        // encrypt using a keyrings
+        $encrypted = $this->hybrid->encrypt('test', $publicKeys);
+        // try to decrypt using a different private key throws an exception
+        $plaintext = $this->hybrid->decrypt($encrypted, $privateKeys, $id);
+    }
+
+    /**
+     * @expectedException Zend\Crypt\Exception\RuntimeException
+     */
+    public function testFailToEncryptUsingPrivateKey()
+    {
+        $opensslKeys = openssl_pkey_new([
+            "private_key_bits" => 1024,
+            "private_key_type" => OPENSSL_KEYTYPE_RSA,
+        ]);
+        openssl_pkey_export($opensslKeys, $privateKey);
+        $privateKey = new Rsa\PrivateKey($privateKey);
+
+        // encrypt using a PrivateKey object throws an exception
+        $encrypted = $this->hybrid->encrypt('test', $privateKey);
     }
 }

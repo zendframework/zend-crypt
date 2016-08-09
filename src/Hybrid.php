@@ -3,7 +3,7 @@ namespace Zend\Crypt;
 
 use Zend\Math\Rand;
 use Zend\Crypt\PublicKey\Rsa\PublicKey as PubKey;
-use Zend\Crypt\PublicKey\Rsa\PrivateKey as PriKey;
+use Zend\Crypt\PublicKey\Rsa\PrivateKey;
 
 /**
  * Hybrid encryption (OpenPGP like)
@@ -54,7 +54,7 @@ class Hybrid
         $this->bCipher->setKey($sessionKey);
         $ciphertext = $this->bCipher->encrypt($plaintext);
 
-        if (null === $keys || is_string($keys)) {
+        if (!is_array($keys)) {
             $keys = [ '' => $keys ];
         }
 
@@ -65,7 +65,7 @@ class Hybrid
                 $pubkey = new PubKey($pubkey);
             } elseif (!($pubkey instanceof PubKey)) {
                 throw new Exception\RuntimeException(sprintf(
-                    "The public key must be an instance of %s",
+                    "The public key must be a string in PEM format or an instance of %s",
                     PubKey::class
                 ));
             }
@@ -96,11 +96,11 @@ class Hybrid
         $pos  = array_search(base64_encode($id), $keys);
         if (false === $pos) {
             throw new Exception\RuntimeException(
-                "The private key is not valid"
+                "This private key cannot be used for decryption"
             );
         }
 
-        $privKey = new PriKey($privateKey);
+        $privKey = new PrivateKey($privateKey);
         // decrypt the session key with privateKey
         $sessionKey = $this->rsa->decrypt(base64_decode($keys[$pos + 1]), $privKey);
 
