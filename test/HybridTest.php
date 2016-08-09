@@ -23,7 +23,7 @@ class HybridTest extends \PHPUnit_Framework_TestCase
     public function setUp()
     {
         if (!extension_loaded('openssl')) {
-          $this->markTestSkipped('The OpenSSL extension is required');
+            $this->markTestSkipped('The OpenSSL extension is required');
         }
         $this->hybrid = new Hybrid();
     }
@@ -48,10 +48,10 @@ class HybridTest extends \PHPUnit_Framework_TestCase
 
     public function testEncryptDecryptWithOneKey()
     {
-        $keys = openssl_pkey_new(array(
+        $keys = openssl_pkey_new([
             "private_key_bits" => 1024,
             "private_key_type" => OPENSSL_KEYTYPE_RSA,
-        ));
+        ]);
 
         // Get the public and private key as string (PEM format)
         $details   = openssl_pkey_get_details($keys);
@@ -64,7 +64,5 @@ class HybridTest extends \PHPUnit_Framework_TestCase
 
     public function testEncryptWithMultipleKeys()
     {
-
     }
-
 }

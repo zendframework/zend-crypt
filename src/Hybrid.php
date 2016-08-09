@@ -55,7 +55,7 @@ class Hybrid
         $ciphertext = $this->bCipher->encrypt($plaintext);
 
         if (null === $keys || is_string($keys)) {
-          $keys = [ '' => $keys ];
+            $keys = [ '' => $keys ];
         }
 
         $encKeys = '';
@@ -65,7 +65,8 @@ class Hybrid
                 $pubkey = new PubKey($pubkey);
             } elseif (!($pubkey instanceof PubKey)) {
                 throw new Exception\RuntimeException(sprintf(
-                    "The public key must be an instance of %s", PubKey::class
+                    "The public key must be an instance of %s",
+                    PubKey::class
                 ));
             }
             $encKeys .= sprintf(
@@ -86,7 +87,7 @@ class Hybrid
      * @return string
      * @throws RuntimeException
      */
-    public function decrypt( $msg,  $privateKey = null,  $id = null)
+    public function decrypt($msg, $privateKey = null, $id = null)
     {
         // get the session key
         list($encKeys, $ciphertext) = explode(';', $msg, 2);
