@@ -6,6 +6,7 @@ pages:
     - Reference:
       - { 'Block Ciphers': block-cipher.md }
       - { 'Encrypting Files': files.md }
+      - { 'Hybrid Cryptosystem': hybrid.md }
       - { 'Key Derivation': key-derivation.md }
       - { Passwords: password.md }
       - { 'Public Key Cryptography': public-key.md }
