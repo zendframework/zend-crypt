@@ -4,21 +4,20 @@
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Zend\Crypt">  
-    <link rel="shortcut icon" href="./img/favicon.ico">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">  
+    <link rel="shortcut icon" href="../img/favicon.ico">
 
-    <title>zend-crypt</title>
+    <title>Hybrid Cryptosystem - zend-crypt</title>
 
-    <link href="./css/bootstrap-custom.min.css" rel="stylesheet">
+    <link href="../css/bootstrap-custom.min.css" rel="stylesheet">
     <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css" rel="stylesheet">
     <link rel="stylesheet" href="//cdn.jsdelivr.net/font-hack/2.018/css/hack.min.css">
     <link href="//fonts.googleapis.com/css?family=PT+Sans:400,400italic,700,700italic&subset=latin-ext,latin" rel="stylesheet" type="text/css">
     <link href="//fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,700italic,400,300,600,700&subset=latin-ext,latin" rel="stylesheet" type="text/css">
     <link href="//fonts.googleapis.com/css?family=Libre+Baskerville:400,400italic,700&subset=latin,latin-ext" rel="stylesheet" type="text/css">
-    <link href="./css/base.css" rel="stylesheet">
-    <link href="./css/zf.css" rel="stylesheet">
-    <link href="./css/prism-zf.css" rel="stylesheet">
+    <link href="../css/base.css" rel="stylesheet">
+    <link href="../css/zf.css" rel="stylesheet">
+    <link href="../css/prism-zf.css" rel="stylesheet">
 
     <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
@@ -57,8 +56,8 @@
 
             <!-- Main title -->
             <span class="navbar-brand">
-              <a class="logo-link" href="http://framework.zend.com" data-toggle="tooltip" data-placement="bottom" title="Zend Framework"><img src="./img/zf-logo-mark.png" height="28" alt="Zend Framework" /></a>
-              <a href=".">zend-crypt</a>
+              <a class="logo-link" href="http://framework.zend.com" data-toggle="tooltip" data-placement="bottom" title="Zend Framework"><img src="../img/zf-logo-mark.png" height="28" alt="Zend Framework" /></a>
+              <a href="..">zend-crypt</a>
             </span>
         </div>
 
@@ -70,54 +69,54 @@
                 
                 
                     <li >
-                        <a href=".">Home</a>
+                        <a href="..">Home</a>
                     </li>
                 
                 
                 
                     <li >
-                        <a href="intro/">Intro</a>
+                        <a href="../intro/">Intro</a>
                     </li>
                 
                 
                 
-                    <li class="dropdown">
+                    <li class="dropdown active">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown">Reference <b class="caret"></b></a>
                         <ul class="dropdown-menu">
                         
                             
 <li >
-    <a href="block-cipher/">Block Ciphers</a>
+    <a href="../block-cipher/">Block Ciphers</a>
 </li>
 
                         
                             
 <li >
-    <a href="files/">Encrypting Files</a>
+    <a href="../files/">Encrypting Files</a>
+</li>
+
+                        
+                            
+<li class="active">
+    <a href="./">Hybrid Cryptosystem</a>
 </li>
 
                         
                             
 <li >
-    <a href="hybrid/">Hybrid Cryptosystem</a>
+    <a href="../key-derivation/">Key Derivation</a>
 </li>
 
                         
                             
 <li >
-    <a href="key-derivation/">Key Derivation</a>
+    <a href="../password/">Passwords</a>
 </li>
 
                         
                             
 <li >
-    <a href="password/">Passwords</a>
-</li>
-
-                        
-                            
-<li >
-    <a href="public-key/">Public Key Cryptography</a>
+    <a href="../public-key/">Public Key Cryptography</a>
 </li>
 
                         
@@ -158,16 +157,164 @@
     <!-- content:begin -->
     <div class="container">
         
+        <div class="col-md-3"><div class="bs-sidebar hidden-print affix well" role="complementary">
+    <ul class="nav bs-sidenav">
+    
+        <li class="main active"><a href="#encrypt-and-decrypt-using-hybrid-cryptosystem-since-310">Encrypt and decrypt using hybrid cryptosystem - Since 3.1.0</a></li>
+        
+            <li><a href="#how-it-works">How it works</a></li>
+        
+            <li><a href="#example-of-usage">Example of usage</a></li>
+        
+            <li><a href="#encrypt-with-multiple-keys">Encrypt with multiple keys</a></li>
+        
+    
+    </ul>
 
-    <div class="row-fluid">
-      <div id="main-content" class="span12">
-        <h1 id="404-page-not-found" style="text-align: center">404</h1>
-        <p style="text-align: center"><strong>Page not found</strong></p>
-        <p style="text-align: center"><a href=".">Home</a></p>
-      </div>
-    </div>
+    
+    <ul class="pager hidden-print">
+      <li class="previous">
+        <a rel="prev" href="../files/"><i class="fa fa-arrow-left"></i> Previous</a>
+      </li>
+      <li class="next">
+        <a rel="next" href="../key-derivation/">Next <i class="fa fa-arrow-right"></i></a>
+      </li>
+    </ul>
+    
+</div></div>
+        <div class="col-md-9" role="main">
+
+<ol class="breadcrumb" role="navigation" aria-label="breadcrumbs navigation">
+  <li><a href="..">Docs</a> &raquo;</li>
+  
+    
+      
+        <li>Reference &raquo;</li>
+      
+    
+  
+  <li class="active">Hybrid Cryptosystem</li>
+</ol>
+
+<h1 id="encrypt-and-decrypt-using-hybrid-cryptosystem-since-310">Encrypt and decrypt using hybrid cryptosystem - Since 3.1.0</h1>
+<p>Hybrid is an encryption mode that uses symmetric and public key ciphers together.
+The approach takes advantage of public key cryptography for sharing keys and
+symmetric encryption speed for encrypting messages.</p>
+<p>Hybrid mode allows you to encrypt a message for one or more receivers, and can
+be used in multi-user scenarios where you wish to limit decryption to specific
+users.</p>
+<h2 id="how-it-works">How it works</h2>
+<p>Suppose we have two users: <em>Alice</em> and <em>Bob</em>. <em>Alice</em> wants to send a message to <em>Bob</em>
+using a hybrid cryptosystem, she needs to:</p>
+<ul>
+<li>Obtain <em>Bob</em>'s public key;</li>
+<li>Generates a random session key (one-time pad);</li>
+<li>Encrypts message using a symmetric cipher with the previous session key;</li>
+<li>Encrypts session key using the <em>Bob</em>'s public key;</li>
+<li>Sends both the encrypted message and encrypted session key to <em>Bob</em>.</li>
+</ul>
+<p>A schema of the encryption is reported in the image below:</p>
+<p><img alt="Encryption schema" src="../images/zend.crypt.hybrid.png" class="img-responsive"/></p>
+<p>To decrypt the message, <em>Bob</em> needs to:</p>
+<ul>
+<li>Uses his private key to decrypt the session key;</li>
+<li>Uses this session key to decrypt the message.</li>
+</ul>
+<h2 id="example-of-usage">Example of usage</h2>
+<p>In order to use the <code>Zend\Crypt\Hybrid</code> component, you need to have a keyring of
+public and private keys. To encrypt a message, use the following code:</p>
+<pre class="codehilite"><code class="language-php">use Zend\Crypt\Hybrid;
+use Zend\Crypt\PublicKey\RsaOptions;
+
+// Generate public and private key
+$rsaOptions = new RsaOptions([
+    'pass_phrase' =&gt; 'test'
+]);
+$rsaOptions-&gt;generateKeys([
+    'private_key_bits' =&gt; 4096
+]);
+$publicKey  = $rsaOptions-&gt;getPublicKey();  
+$privateKey = $rsaOptions-&gt;getPrivateKey();
+
+$hybrid     = new Hybrid();
+$ciphertext = $hybrid-&gt;encrypt('message', $publicKey);
+$plaintext  = $hybrid-&gt;decrypt($ciphertext, $privateKey);
+
+printf($plaintext === 'message' ? &quot;Success\n&quot; : &quot;Error\n&quot;);</code></pre>
 
 
+<p>We generated the keys using the <a href="../public-key/">Zend\Crypt\PublicKey\RsaOptions</a>
+component. You can also use a <a href="https://en.wikipedia.org/wiki/Privacy-enhanced_Electronic_Mail">PEM</a>
+string for the keys. If you use a string for the private key, you need to pass
+the pass phrase to use when decrypting, if present, like in the following example:</p>
+<pre class="codehilite"><code class="language-php">use Zend\Crypt\Hybrid;
+use Zend\Crypt\PublicKey\RsaOptions;
+
+// Generate public and private key
+$rsaOptions = new RsaOptions([
+    'pass_phrase' =&gt; 'test'
+]);
+$rsaOptions-&gt;generateKeys([
+    'private_key_bits' =&gt; 4096
+]);
+// Strings in PEM format
+$publicKey  = $rsaOptions-&gt;getPublicKey()-&gt;toString();
+$privateKey = $rsaOptions-&gt;getPrivateKey()-&gt;toString();
+
+$hybrid     = new Hybrid();
+$ciphertext = $hybrid-&gt;encrypt('message', $publicKey);
+$plaintext  = $hybrid-&gt;decrypt($ciphertext, $privateKey, 'test'); // pass-phrase
+
+printf($plaintext === 'message' ? &quot;Success\n&quot; : &quot;Error\n&quot;);</code></pre>
+
+
+<p>The <code>Hybrid</code> component uses <code>Zend\Crypt\BlockCipher</code> for the symmetric
+cipher and <code>Zend\Crypt\Rsa</code> for the public-key cipher.</p>
+<h2 id="encrypt-with-multiple-keys">Encrypt with multiple keys</h2>
+<p>The <code>Zend\Crypt\Hybrid</code> component can be used to encrypt a message for multiple
+users, using a keyring of identifiers and public keys. This keyring can be
+specified using an array of <code>[ 'id' =&gt; 'publickey' ]</code>, where <code>publickey</code> can be
+a string (PEM) or an instance of <code>Zend\Crypt\PublicKey\Rsa\PublicKey</code>. The <code>id</code>
+can be any string, for example, a receipient email address.</p>
+<p>The following details encryption using a keyring with 4 keys:</p>
+<pre class="codehilite"><code class="language-php">use Zend\Crypt\Hybrid;
+use Zend\Crypt\PublicKey\RsaOptions;
+
+$publicKeys  = [];
+$privateKeys = [];
+for ($id = 0; $id &lt; 4; $id++) {
+    $rsaOptions = new RsaOptions([
+        'pass_phrase' =&gt; &quot;test-$id&quot;
+    ]);
+    $rsaOptions-&gt;generateKeys([
+        'private_key_bits' =&gt; 4096
+    ]);
+    $publicKeys[$id]  = $rsaOptions-&gt;getPublicKey();
+    $privateKeys[$id] = $rsaOptions-&gt;getPrivateKey();
+}
+
+$hybrid    = new Hybrid();
+$encrypted = $hybrid-&gt;encrypt('message', $publicKeys);
+for ($id = 0; $id &lt; 4; $id++) {
+    $plaintext = $hybrid-&gt;decrypt($encrypted, $privateKeys[$id], null, $id);
+    printf($plaintext === 'message' ? &quot;Success on %d\n&quot; : &quot;Error on %d\n&quot;, $id);
+}</code></pre>
+
+<hr />
+
+
+<nav>
+  <ul class="pager hidden-print">
+    <li class="previous">
+      <a rel="prev" href="../files/"><i class="fa fa-arrow-left"></i> Previous</a>
+    </li>
+    <li class="next">
+      <a rel="next" href="../key-derivation/">Next <i class="fa fa-arrow-right"></i></a>
+    </li>
+  </ul>
+</nav>
+</div>
+        
     </div>
     <!-- content:end -->
 
@@ -179,13 +326,13 @@
         <p><small><a href="http://framework.zend.com">Learn more about Zend Framework</a></small></p>
     </footer>
 
-    <script src="./js/jquery-1.10.2.min.js"></script>
-    <script src="./js/bootstrap-3.0.3.min.js"></script>
-    <script src="./js/prism-zf.js"></script>
+    <script src="../js/jquery-1.10.2.min.js"></script>
+    <script src="../js/bootstrap-3.0.3.min.js"></script>
+    <script src="../js/prism-zf.js"></script>
 
-    <script>var base_url = '.';</script>
-    <script data-main="./mkdocs/js/search.js" src="./mkdocs/js/require.js"></script>
-    <script src="./js/base.js"></script>
+    <script>var base_url = '..';</script>
+    <script data-main="../mkdocs/js/search.js" src="../mkdocs/js/require.js"></script>
+    <script src="../js/base.js"></script>
 
     <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="Search Modal" aria-hidden="true">
         <div class="modal-dialog">
