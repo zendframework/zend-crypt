@@ -115,7 +115,7 @@ class Hybrid
             ));
         }
         $privateKey = is_string($privateKey) ? new PrivateKey($privateKey, $passPhrase) : $privateKey;
-        
+
         // decrypt the session key with privateKey
         $sessionKey = $this->rsa->decrypt(base64_decode($keys[$pos + 1]), $privateKey);
 
