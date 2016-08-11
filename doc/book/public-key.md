@@ -146,7 +146,7 @@ use Zend\Crypt\PublicKey\RsaOptions;
 
 $rsaOptions = new RsaOptions([
     'pass_phrase' => 'test'
-[);
+]);
 
 $rsaOptions->generateKeys([
     'private_key_bits' => 2048,
