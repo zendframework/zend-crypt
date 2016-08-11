@@ -2,13 +2,11 @@
 
 All notable changes to this project will be documented in this file, in reverse chronological order by release.
 
-## 3.1.0 - TBD
+## 3.2.0 - TBD
 
 ### Added
 
-- [#32](https://github.com/zendframework/zend-crypt/pull/32) adds a new Hybrid
-  encryption utility, to allow OpenPGP-like encryption/decryption of messages
-  using OpenSSL. See the documentation for details.
+- Nothing.
 
 ### Deprecated
 
@@ -22,11 +20,13 @@ All notable changes to this project will be documented in this file, in reverse 
 
 - Nothing.
 
-## 3.0.1 - TBD
+## 3.1.0 - 2016-08-11
 
 ### Added
 
-- Nothing.
+- [#32](https://github.com/zendframework/zend-crypt/pull/32) adds a new Hybrid
+  encryption utility, to allow OpenPGP-like encryption/decryption of messages
+  using OpenSSL. See the documentation for details.
 
 ### Deprecated
 
