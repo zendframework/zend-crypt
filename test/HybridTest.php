@@ -14,16 +14,13 @@ use Zend\Crypt\BlockCipher;
 use Zend\Crypt\PublicKey\Rsa;
 use Zend\Crypt\PublicKey\RsaOptions;
 
-/**
- * @group      Zend_Crypt
- */
 class HybridTest extends \PHPUnit_Framework_TestCase
 {
     protected $hybrid;
 
     public function setUp()
     {
-        if (!extension_loaded('openssl')) {
+        if (! extension_loaded('openssl')) {
             $this->markTestSkipped('The OpenSSL extension is required');
         }
         $this->hybrid = new Hybrid();

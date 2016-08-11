@@ -9,7 +9,7 @@ Some of the available features are:
 - encrypt-then-authenticate using symmetric ciphers (the authentication step
   is provided using HMAC);
 - encrypt/decrypt using symmetric and public key algorithm (e.g. RSA algorithm);
-- encrypt/decrypt using hybrid mode (OpenPHP like);
+- encrypt/decrypt using hybrid mode (OpenPGP like);
 - generate digital sign using public key algorithm (e.g. RSA algorithm);
 - key exchange using the Diffie-Hellman method;
 - key derivation function (e.g. using PBKDF2 algorithm);
