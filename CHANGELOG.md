@@ -6,7 +6,9 @@ All notable changes to this project will be documented in this file, in reverse 
 
 ### Added
 
-- Nothing.
+- [#32](https://github.com/zendframework/zend-crypt/pull/32) adds a new Hybrid
+  encryption utility, to allow OpenPGP-like encryption/decryption of messages
+  using OpenSSL. See the documentation for details.
 
 ### Deprecated
 
