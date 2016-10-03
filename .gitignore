@@ -9,7 +9,6 @@ nbproject
 doc/html/
 tmp/
 zf-mkdoc-theme/
-
 clover.xml
 coveralls-upload.json
 phpunit.xml
