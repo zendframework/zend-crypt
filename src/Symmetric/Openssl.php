@@ -284,8 +284,8 @@ class Openssl implements SymmetricInterface
      * If the key is longer than maximum supported, it will be truncated by getKey().
      *
      * @param  string $key
+     * @return Openssl Provides a fluent interface
      * @throws Exception\InvalidArgumentException
-     * @return self
      */
     public function setKey($key)
     {
@@ -323,8 +323,8 @@ class Openssl implements SymmetricInterface
      * Set the encryption algorithm (cipher)
      *
      * @param  string $algo
+     * @return Openssl Provides a fluent interface
      * @throws Exception\InvalidArgumentException
-     * @return self
      */
     public function setAlgorithm($algo)
     {
@@ -353,7 +353,7 @@ class Openssl implements SymmetricInterface
      * Set the padding object
      *
      * @param  Padding\PaddingInterface $padding
-     * @return self
+     * @return Openssl Provides a fluent interface
      */
     public function setPadding(Padding\PaddingInterface $padding)
     {
@@ -503,8 +503,8 @@ class Openssl implements SymmetricInterface
      * Set the salt (IV)
      *
      * @param  string $salt
+     * @return Openssl Provides a fluent interface
      * @throws Exception\InvalidArgumentException
-     * @return self
      */
     public function setSalt($salt)
     {
@@ -566,8 +566,8 @@ class Openssl implements SymmetricInterface
      * Set the cipher mode
      *
      * @param  string $mode
+     * @return Openssl Provides a fluent interface
      * @throws Exception\InvalidArgumentException
-     * @return self
      */
     public function setMode($mode)
     {
