@@ -199,7 +199,12 @@ abstract class AbstractTest extends \PHPUnit_Framework_TestCase
         foreach ($this->crypt->getSupportedAlgorithms() as $algo) {
             foreach ($this->crypt->getSupportedModes() as $mode) {
                 $this->crypt->setAlgorithm($algo);
-                $this->crypt->setMode($mode);
+                try {
+                    $this->crypt->setMode($mode);
+                } catch (\Exception $e) {
+                    // Continue if the encryption mode is not supported for the algorithm
+                    continue;
+                }
                 $this->crypt->setKey($this->generateKey());
                 if ($this->crypt->getSaltSize() > 0) {
                     $this->crypt->setSalt($this->generateSalt());
