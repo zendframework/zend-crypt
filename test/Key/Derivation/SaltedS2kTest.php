@@ -26,7 +26,7 @@ class SaltedS2kTest extends \PHPUnit_Framework_TestCase
 
     public function testCalc()
     {
-        if (!extension_loaded('mhash')) {
+        if (! extension_loaded('mhash')) {
             $this->markTestSkipped('The mhash extension is not available');
             return;
         }
@@ -37,7 +37,7 @@ class SaltedS2kTest extends \PHPUnit_Framework_TestCase
 
     public function testCalcWithWrongHash()
     {
-        if (!extension_loaded('mhash')) {
+        if (! extension_loaded('mhash')) {
             $this->markTestSkipped('The mhash extension is not available');
             return;
         }
@@ -50,7 +50,7 @@ class SaltedS2kTest extends \PHPUnit_Framework_TestCase
 
     public function testCalcWithWrongSalt()
     {
-        if (!extension_loaded('mhash')) {
+        if (! extension_loaded('mhash')) {
             $this->markTestSkipped('The mhash extension is not available');
             return;
         }

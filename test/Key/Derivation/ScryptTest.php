@@ -184,7 +184,7 @@ class ScryptTest extends \PHPUnit_Framework_TestCase
         $len    = strlen($hex);
         $result = '';
         for ($i = 0; $i < $len; $i += 2) {
-            $result .=  chr(hexdec($hex[$i] . $hex[$i+1]));
+            $result .= chr(hexdec($hex[$i] . $hex[$i + 1]));
         }
         return $result;
     }

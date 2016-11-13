@@ -130,7 +130,7 @@ abstract class AbstractFileCipherTest extends \PHPUnit_Framework_TestCase
         $this->fileCipher->setKey('test');
 
         // Test 5 files with a random size between 1 Kb and 5 Mb
-        for ($i=1; $i <= 5; $i++) {
+        for ($i = 1; $i <= 5; $i++) {
             $fileIn  = $this->generateTmpFile(Rand::getInteger(1024, 1048576 * 5), Rand::getBytes(1));
             $fileOut = $fileIn . '.enc';
 

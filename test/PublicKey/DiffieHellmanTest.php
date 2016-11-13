@@ -35,12 +35,12 @@ class DiffieHellmanTest extends \PHPUnit_Framework_TestCase
     {
         $aliceOptions = [
             'prime'    => '563',
-            'generator'=> '5',
+            'generator' => '5',
             'private'  => '9'
         ];
         $bobOptions   = [
             'prime'    => '563',
-            'generator'=> '5',
+            'generator' => '5',
             'private'  => '14'
         ];
 

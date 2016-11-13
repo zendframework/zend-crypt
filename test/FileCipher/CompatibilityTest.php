@@ -53,7 +53,7 @@ class CompatibilityTest extends TestCase
         $tmpIn   = sys_get_temp_dir() . DIRECTORY_SEPARATOR . uniqid('zend-crypt-test-in-');
         $tmpOut  = sys_get_temp_dir() . DIRECTORY_SEPARATOR . uniqid('zend-crypt-test-out-');
         $tmpOut2 = sys_get_temp_dir() . DIRECTORY_SEPARATOR . uniqid('zend-crypt-test-out-');
-        $plaintext =  Rand::getBytes(1048576); // 1 Mb
+        $plaintext = Rand::getBytes(1048576); // 1 Mb
         file_put_contents($tmpIn, $plaintext);
 
         $fileCipherMcrypt->encrypt($tmpIn, $tmpOut);

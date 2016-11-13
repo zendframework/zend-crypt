@@ -329,7 +329,6 @@ class BlockCipher
      */
     public function getCipherSupportedAlgorithms()
     {
-        return $this->cipher->getSupportedAlgorithms();
     }
 
     /**
@@ -341,7 +340,7 @@ class BlockCipher
      */
     public function setHashAlgorithm($hash)
     {
-        if (!Hash::isSupported($hash)) {
+        if (! Hash::isSupported($hash)) {
             throw new Exception\InvalidArgumentException(
                 "The specified hash algorithm '{$hash}' is not supported by Zend\Crypt\Hash"
             );
@@ -370,7 +369,7 @@ class BlockCipher
      */
     public function setPbkdf2HashAlgorithm($hash)
     {
-        if (!Hash::isSupported($hash)) {
+        if (! Hash::isSupported($hash)) {
             throw new Exception\InvalidArgumentException(
                 "The specified hash algorithm '{$hash}' is not supported by Zend\Crypt\Hash"
             );
@@ -418,7 +417,7 @@ class BlockCipher
         }
         $keySize = $this->cipher->getKeySize();
         // generate a random salt (IV) if the salt has not been set
-        if (!$this->saltSetted) {
+        if (! $this->saltSetted) {
             $this->cipher->setSalt(Rand::getBytes($this->cipher->getSaltSize()));
         }
 
@@ -491,7 +490,7 @@ class BlockCipher
         // set the key for HMAC
         $keyHmac = mb_substr($hash, $keySize, null, '8bit');
         $hmacNew = Hmac::compute($keyHmac, $this->hash, $this->cipher->getAlgorithm() . $ciphertext);
-        if (!Utils::compareStrings($hmacNew, $hmac)) {
+        if (! Utils::compareStrings($hmacNew, $hmac)) {
             return false;
         }
 

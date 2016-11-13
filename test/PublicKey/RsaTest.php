@@ -354,7 +354,7 @@ CERT;
 
     public function testKeyGenerationWithDefaults()
     {
-        if (!$this->openSslConf) {
+        if (! $this->openSslConf) {
             $this->markTestSkipped('No openssl.cnf found or defined; cannot generate keys');
         }
 
