@@ -165,8 +165,7 @@ class Openssl implements SymmetricInterface
         }
         // Add the GCM and CCM modes for PHP 7.1+
         if (PHP_VERSION_ID >= 70100) {
-            $this->encryptionModes[] = 'gcm';
-            $this->encryptionModes[] = 'ccm';
+            array_push($this->encryptionModes, 'gcm', 'ccm');
         }
         $this->setOptions($options);
         $this->setDefaultOptions($options);
@@ -411,7 +410,7 @@ class Openssl implements SymmetricInterface
         }
         if ($this->getMode() !== 'gcm' && $this->getMode() !== 'ccm') {
             throw new Exception\RuntimeException(
-                'You can set the Tag Size only for CCM or GCM mode'
+                'You can set Additional Authentication Data (AAD) only for CCM or GCM mode'
             );
         }
         $this->aad = $aad;

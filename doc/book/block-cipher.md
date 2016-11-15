@@ -116,7 +116,7 @@ For more information on the usage of this encryption modes in PHP we suggest to
 read [this blog post](http://www.zimuel.it/authenticated-encrypt-with-openssl-and-php-7-1/).
 
 If you want to use the GCM or CCM mode with `BlockCipher` you can just specify
-the mode in the factory. For instance, here is reported an example that uses
+the mode in the factory. For instance, the following is an example of
 `aes-256-gcm` encryption with OpenSSL:
 
 ```php
@@ -131,7 +131,7 @@ $blockCipher = BlockCipher::factory(
 );
 ```
 
-And here is repoted the factory for `aes-256-ccm` algorithm:
+And below is an example demonstrating the factory for `aes-256-ccm` algorithm:
 
 ```php
 use Zend\Crypt\BlockCipher;
@@ -147,5 +147,5 @@ $blockCipher = BlockCipher::factory(
 
 > ## Recommendation
 >
-> **GCM mode is about 3x faster than CCM**, we suggest to use it if you do not
-> have specific requirements.
+> **GCM mode is about 3x faster than CCM**, we recommend using GCM unless
+> you have requirements that dictate CCM.

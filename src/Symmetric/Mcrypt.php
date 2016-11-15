@@ -112,8 +112,8 @@ class Mcrypt implements SymmetricInterface
     {
         if (PHP_VERSION_ID >= 70100) {
             trigger_error(
-                'The Mcrypt extension is deprecated from PHP 7.1+. ' .
-                'We suggest to use Zend\Crypt\Symmetric\Openssl.',
+                'The Mcrypt extension is deprecated from PHP 7.1+. '
+                . 'We suggest to use Zend\Crypt\Symmetric\Openssl.',
                 E_USER_DEPRECATED
             );
         }
