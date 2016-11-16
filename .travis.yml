@@ -53,6 +53,7 @@ matrix:
     - php: 7.1
       env:
         - DEPS=locked
+        - TEST_COVERAGE=true
     - php: 7.1
       env:
         - DEPS=latest

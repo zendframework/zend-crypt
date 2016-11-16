@@ -27,6 +27,22 @@ class OpensslAeadTest extends \PHPUnit_Framework_TestCase
         }
     }
 
+    public function testConstructByParams()
+    {
+        $params = [
+            'algo'     => 'aes',
+            'mode'     => 'gcm',
+            'aad'      => 'foo@bar.com',
+            'tag_size' => 14
+        ];
+        $crypt = new Openssl($params);
+
+        $this->assertEquals($params['algo'], $crypt->getAlgorithm());
+        $this->assertEquals($params['mode'], $crypt->getMode());
+        $this->assertEquals($params['aad'], $crypt->getAad());
+        $this->assertEquals($params['tag_size'], $crypt->getTagSize());
+    }
+
     public function testSetGetAad()
     {
         $this->crypt->setMode('gcm');

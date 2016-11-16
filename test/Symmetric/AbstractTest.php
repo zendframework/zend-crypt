@@ -291,6 +291,26 @@ abstract class AbstractTest extends \PHPUnit_Framework_TestCase
         $this->assertInstanceOf(ContainerInterface::class, $this->crypt->getPaddingPluginManager());
     }
 
+    /**
+     * @expectedException Zend\Crypt\Symmetric\Exception\InvalidArgumentException
+     */
+    public function testSetWrongPaddingPluginManager()
+    {
+        $this->crypt->setPaddingPluginManager(
+            stdClass::class
+        );
+    }
+
+    /**
+     * @expectedException Zend\Crypt\Symmetric\Exception\InvalidArgumentException
+     */
+    public function testSetNotExistingPaddingPluginManager()
+    {
+        $this->crypt->setPaddingPluginManager(
+            'Foo'
+        );
+    }
+
     protected function generateKey()
     {
         return Rand::getBytes($this->crypt->getKeySize());

@@ -239,4 +239,58 @@ class DiffieHellmanTest extends \PHPUnit_Framework_TestCase
         new DiffieHellman('563', '5', '9', DiffieHellman::FORMAT_NUMBER);
         new DiffieHellman('563', '5', hex2bin('09'), DiffieHellman::FORMAT_BINARY);
     }
+
+    /**
+     * @expectedException Zend\Crypt\Exception\InvalidArgumentException
+     */
+    public function testGetPublicKeyWithoutGenerated()
+    {
+        $dh = new DiffieHellman(563, 5);
+        $pubKey = $dh->getPublicKey();
+    }
+
+    /**
+     * @expectedException Zend\Crypt\Exception\InvalidArgumentException
+     */
+    public function testSetWrongPublicKey()
+    {
+        $dh = new DiffieHellman(563, 5);
+        $dh->setPublicKey(-2);
+    }
+
+    /**
+     * @expectedException Zend\Crypt\Exception\InvalidArgumentException
+     */
+    public function testGetSharedSecretKeyWihoutCompute()
+    {
+        $dh = new DiffieHellman(563, 5);
+        $skey = $dh->getSharedSecretKey();
+    }
+
+    /**
+     * @expectedException Zend\Crypt\Exception\InvalidArgumentException
+     */
+    public function testSetWrongPrime()
+    {
+        $dh = new DiffieHellman(563, 5);
+        $dh->setPrime(-2);
+    }
+
+    /**
+     * @expectedException Zend\Crypt\Exception\InvalidArgumentException
+     */
+    public function testSetWrongGenerator()
+    {
+        $dh = new DiffieHellman(563, 5);
+        $dh->setGenerator(-2);
+    }
+
+    /**
+     * @expectedException Zend\Crypt\Exception\InvalidArgumentException
+     */
+    public function testSetWrongPrivateKey()
+    {
+        $dh = new DiffieHellman(563, 5);
+        $privKey = $dh->setPrivateKey(-2);
+    }
 }

@@ -292,9 +292,6 @@ class BlockCipher
      */
     public function setCipherAlgorithm($algo)
     {
-        if (empty($this->cipher)) {
-            throw new Exception\InvalidArgumentException('No symmetric cipher specified');
-        }
         try {
             $this->cipher->setAlgorithm($algo);
         } catch (Symmetric\Exception\InvalidArgumentException $e) {
@@ -311,11 +308,7 @@ class BlockCipher
      */
     public function getCipherAlgorithm()
     {
-        if (!empty($this->cipher)) {
-            return $this->cipher->getAlgorithm();
-        }
-
-        return false;
+        return $this->cipher->getAlgorithm();
     }
 
     /**
@@ -325,11 +318,7 @@ class BlockCipher
      */
     public function getCipherSupportedAlgorithms()
     {
-        if (!empty($this->cipher)) {
-            return $this->cipher->getSupportedAlgorithms();
-        }
-
-        return [];
+        return $this->cipher->getSupportedAlgorithms();
     }
 
     /**
@@ -413,9 +402,6 @@ class BlockCipher
             $data = (string) $data;
         }
 
-        if (empty($this->cipher)) {
-            throw new Exception\InvalidArgumentException('No symmetric cipher specified');
-        }
         if (empty($this->key)) {
             throw new Exception\InvalidArgumentException('No key specified for the encryption');
         }
@@ -477,9 +463,7 @@ class BlockCipher
         if (empty($this->key)) {
             throw new Exception\InvalidArgumentException('No key specified for the decryption');
         }
-        if (empty($this->cipher)) {
-            throw new Exception\InvalidArgumentException('No symmetric cipher specified');
-        }
+
         $keySize = $this->cipher->getKeySize();
         // CCM and GCM modes do not need HMAC
         if (in_array($this->cipher->getMode(), [ 'ccm', 'gcm' ])) {
