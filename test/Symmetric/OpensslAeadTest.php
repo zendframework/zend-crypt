@@ -112,7 +112,7 @@ class OpensslAeadTest extends \PHPUnit_Framework_TestCase
         $encrypt = $this->crypt->encrypt($plaintext);
         $tag = $this->crypt->getTag();
 
-        $this->assertEquals($this->crypt->getTagSize(), strlen($tag));
+        $this->assertEquals($this->crypt->getTagSize(), mb_strlen($tag, '8bit'));
         $this->assertEquals(mb_substr($encrypt, 0, $this->crypt->getTagSize(), '8bit'), $tag);
 
         $decrypt = $this->crypt->decrypt($encrypt);
@@ -151,7 +151,7 @@ class OpensslAeadTest extends \PHPUnit_Framework_TestCase
         $plaintext = Rand::getBytes(1024);
         $encrypt = $this->crypt->encrypt($plaintext);
         $this->assertEquals(14, $this->crypt->getTagSize());
-        $this->assertEquals($this->crypt->getTagSize(), strlen($this->crypt->getTag()));
+        $this->assertEquals($this->crypt->getTagSize(), mb_strlen($this->crypt->getTag(), '8bit'));
     }
 
     public function testCcmEncryptWithTagSize()
@@ -164,7 +164,7 @@ class OpensslAeadTest extends \PHPUnit_Framework_TestCase
         $plaintext = Rand::getBytes(1024);
         $encrypt = $this->crypt->encrypt($plaintext);
         $this->assertEquals(24, $this->crypt->getTagSize());
-        $this->assertEquals($this->crypt->getTagSize(), strlen($this->crypt->getTag()));
+        $this->assertEquals($this->crypt->getTagSize(), mb_strlen($this->crypt->getTag(), '8bit'));
     }
 
     /**
@@ -181,7 +181,7 @@ class OpensslAeadTest extends \PHPUnit_Framework_TestCase
         $encrypt = $this->crypt->encrypt($plaintext);
         $tag = $this->crypt->getTag();
 
-        $this->assertEquals($this->crypt->getTagSize(), strlen($tag));
+        $this->assertEquals($this->crypt->getTagSize(), mb_strlen($tag, '8bit'));
         $this->assertEquals(mb_substr($encrypt, 0, $this->crypt->getTagSize(), '8bit'), $tag);
 
         $decrypt = $this->crypt->decrypt($encrypt);

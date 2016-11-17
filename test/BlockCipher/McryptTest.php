@@ -12,7 +12,6 @@ use Zend\Crypt\BlockCipher;
 
 class MCryptTest extends AbstractBlockCipherTest
 {
-
     public function setUp()
     {
         if (PHP_VERSION_ID >= 70100) {
