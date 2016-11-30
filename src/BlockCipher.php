@@ -411,18 +411,8 @@ class BlockCipher
             $this->cipher->setSalt(Rand::getBytes($this->cipher->getSaltSize()));
         }
 
-        // CCM and GCM modes do not need HMAC
         if (in_array($this->cipher->getMode(), [ 'ccm', 'gcm' ])) {
-            $this->cipher->setKey(Pbkdf2::calc(
-                $this->getPbkdf2HashAlgorithm(),
-                $this->getKey(),
-                $this->getSalt(),
-                $this->keyIteration,
-                $keySize
-            ));
-            $ciphertext = $this->cipher->encrypt($data);
-
-            return $this->binaryOutput ? $ciphertext : base64_encode($ciphertext);
+            return $this->encryptViaCcmOrGcm($data, $keySize);
         }
 
         // generate the encryption key and the HMAC key for the authentication
@@ -504,5 +494,30 @@ class BlockCipher
         }
 
         return $this->cipher->decrypt($ciphertext);
+    }
+
+    /**
+     * Note: CCM and GCM modes do not need HMAC
+     *
+     * @param string $data
+     * @param int    $keySize
+     *
+     * @return string
+     *
+     * @throws Exception\InvalidArgumentException
+     */
+    private function encryptViaCcmOrGcm($data, $keySize)
+    {
+        $this->cipher->setKey(Pbkdf2::calc(
+            $this->getPbkdf2HashAlgorithm(),
+            $this->getKey(),
+            $this->getSalt(),
+            $this->keyIteration,
+            $keySize
+        ));
+
+        $cipherText = $this->cipher->encrypt($data);
+
+        return $this->binaryOutput ? $cipherText : base64_encode($cipherText);
     }
 }
