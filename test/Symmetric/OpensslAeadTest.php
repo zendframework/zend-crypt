@@ -51,6 +51,19 @@ class OpensslAeadTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($params['tag_size'], $crypt->getTagSize());
     }
 
+    public function testRejectsNonStringAadMode()
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('The provided $aad must be a string, integer given');
+
+        new Openssl([
+            'algo'     => 'aes',
+            'mode'     => 'gcm',
+            'aad'      => 123, // invalid, on purpose
+            'tag_size' => 14
+        ]);
+    }
+
     public function testSetGetAad()
     {
         $this->crypt->setMode('gcm');
