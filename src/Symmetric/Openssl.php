@@ -415,7 +415,7 @@ class Openssl implements SymmetricInterface
             );
         }
 
-        if ($this->getMode() !== 'gcm' && $this->getMode() !== 'ccm') {
+        if (! $this->isCcmOrGcm()) {
             throw new Exception\RuntimeException(
                 'You can set Additional Authentication Data (AAD) only for CCM or GCM mode'
             );
@@ -477,7 +477,7 @@ class Openssl implements SymmetricInterface
             );
         }
 
-        if (! in_array($this->getMode(), ['gcm', 'ccm'], true)) {
+        if (! $this->isCcmOrGcm()) {
             throw new Exception\RuntimeException(
                 'You can set the Tag Size only for CCM or GCM mode'
             );
@@ -535,7 +535,7 @@ class Openssl implements SymmetricInterface
         $iv   = $this->getSalt();
 
         // encryption with GCM or CCM
-        if (in_array(strtolower($this->mode), ['gcm', 'ccm'])) {
+        if ($this->isCcmOrGcm()) {
             $result = openssl_encrypt(
                 $data,
                 strtolower($this->encryptionAlgos[$this->algo] . '-' . $this->mode),
@@ -568,9 +568,10 @@ class Openssl implements SymmetricInterface
             ));
         }
 
-        if (in_array(strtolower($this->mode), ['gcm', 'ccm'])) {
+        if ($this->isCcmOrGcm()) {
             return $tag . $iv . $result;
         }
+
         return $iv . $result;
     }
 
@@ -594,7 +595,7 @@ class Openssl implements SymmetricInterface
             throw new Exception\InvalidArgumentException('You must specify a padding method');
         }
 
-        if (in_array(strtolower($this->mode), ['gcm', 'ccm'])) {
+        if ($this->isCcmOrGcm()) {
             $tag  = mb_substr($data, 0, $this->getTagSize(), '8bit');
             $data = mb_substr($data, $this->getTagSize(), null, '8bit');
             $this->tag = $tag;
@@ -602,7 +603,7 @@ class Openssl implements SymmetricInterface
         $iv         = mb_substr($data, 0, $this->getSaltSize(), '8bit');
         $ciphertext = mb_substr($data, $this->getSaltSize(), null, '8bit');
 
-        if (in_array(strtolower($this->mode), ['gcm', 'ccm'])) {
+        if ($this->isCcmOrGcm()) {
             $result = openssl_decrypt(
                 $ciphertext,
                 strtolower($this->encryptionAlgos[$this->algo] . '-' . $this->mode),
@@ -817,5 +818,13 @@ class Openssl implements SymmetricInterface
         $gcm = in_array('aes-256-gcm', $this->getOpensslAlgos());
 
         return PHP_VERSION_ID >= 70100 && ($ccm || $gcm);
+    }
+
+    /**
+     * @return bool
+     */
+    private function isCcmOrGcm()
+    {
+        return in_array(strtolower($this->mode), ['gcm', 'ccm'], true);
     }
 }
