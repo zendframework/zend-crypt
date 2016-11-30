@@ -19,9 +19,15 @@ use Zend\Math\Rand;
  */
 class OpensslAeadTest extends \PHPUnit_Framework_TestCase
 {
+    /**
+     * @var Openssl
+     */
+    private $crypt;
+
     public function setUp()
     {
         $this->crypt = new Openssl();
+
         if (! $this->crypt->isAuthEncAvailable()) {
             $this->markTestSkipped('Authenticated encryption is not available on this platform');
         }
