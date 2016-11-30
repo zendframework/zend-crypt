@@ -9,6 +9,8 @@
 
 namespace ZendTest\Crypt\Symmetric;
 
+use Zend\Crypt\Symmetric\Exception\InvalidArgumentException;
+use Zend\Crypt\Symmetric\Exception\RuntimeException;
 use Zend\Crypt\Symmetric\Openssl;
 use Zend\Math\Rand;
 
@@ -56,12 +58,11 @@ class OpensslAeadTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('foo@bar.com', $this->crypt->getAad());
     }
 
-    /**
-     * @expectedException Zend\Crypt\Symmetric\Exception\RuntimeException
-     */
     public function testSetAadException()
     {
         $this->crypt->setMode('cbc');
+
+        $this->expectException(RuntimeException::class);
         $this->crypt->setAad('foo@bar.com');
     }
 
@@ -79,21 +80,19 @@ class OpensslAeadTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(28, $this->crypt->getTagSize());
     }
 
-    /**
-     * @expectedException Zend\Crypt\Symmetric\Exception\RuntimeException
-     */
     public function testSetTagSizeException()
     {
         $this->crypt->setMode('cbc');
+
+        $this->expectException(RuntimeException::class);
         $this->crypt->setTagSize(10);
     }
 
-    /**
-     * @expectedException Zend\Crypt\Symmetric\Exception\InvalidArgumentException
-     */
     public function testSetInvalidGcmTagSize()
     {
         $this->crypt->setMode('gcm');
+
+        $this->expectException(InvalidArgumentException::class);
         $this->crypt->setTagSize(18); // gcm supports tag size between 4 and 16
     }
 
@@ -129,7 +128,7 @@ class OpensslAeadTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @dataProvider getAuthEncryptionMode
-     * @expectedException Zend\Crypt\Symmetric\Exception\RuntimeException
+     * @expectedException
      */
     public function testAuthenticationError($mode)
     {
@@ -144,7 +143,9 @@ class OpensslAeadTest extends \PHPUnit_Framework_TestCase
         $i = rand(0, mb_strlen($encrypt, '8bit') - 1);
         $encrypt[$i] = $encrypt[$i] ^ chr(1);
 
-        $decrypt = $this->crypt->decrypt($encrypt);
+        $this->expectException(RuntimeException::class);
+
+        $this->crypt->decrypt($encrypt);
     }
 
     public function testGcmEncryptWithTagSize()
@@ -198,7 +199,6 @@ class OpensslAeadTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @dataProvider getAuthEncryptionMode
-     * @expectedException Zend\Crypt\Symmetric\Exception\RuntimeException
      */
     public function testAuthenticationErrorOnAdditionalData($mode)
     {
@@ -212,6 +212,9 @@ class OpensslAeadTest extends \PHPUnit_Framework_TestCase
 
         // Alter the additional authentication data
         $this->crypt->setAad('foo@baz.com');
-        $decrypt = $this->crypt->decrypt($encrypt);
+
+        $this->expectException(RuntimeException::class);
+
+        $this->crypt->decrypt($encrypt);
     }
 }
