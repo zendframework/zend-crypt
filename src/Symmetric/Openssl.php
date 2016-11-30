@@ -458,26 +458,39 @@ class Openssl implements SymmetricInterface
      *
      * @param int $size
      * @return self
+     *
+     * @throws Exception\InvalidArgumentException
+     * @throws Exception\RuntimeException
      */
     public function setTagSize($size)
     {
-        $size = (int) $size;
+        if (! is_int($size)) {
+            throw new Exception\InvalidArgumentException(sprintf(
+                'The provided $size must be an integer, %s given',
+                gettype($size)
+            ));
+        }
+
         if (! $this->isAuthEncAvailable()) {
             throw new Exception\RuntimeException(
                 'You need PHP 7.1+ and OpenSSL with CCM or GCM mode to set the Tag Size'
             );
         }
-        if ($this->getMode() !== 'gcm' && $this->getMode() !== 'ccm') {
+
+        if (! in_array($this->getMode(), ['gcm', 'ccm'], true)) {
             throw new Exception\RuntimeException(
                 'You can set the Tag Size only for CCM or GCM mode'
             );
         }
+
         if ($this->getMode() === 'gcm' && ($size < 4 || $size > 16)) {
             throw new Exception\InvalidArgumentException(
                 'The Tag Size must be between 4 to 16 for GCM mode'
             );
         }
+
         $this->tagSize = $size;
+
         return $this;
     }
 
