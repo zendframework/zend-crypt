@@ -408,12 +408,22 @@ class Openssl implements SymmetricInterface
                 'You need PHP 7.1+ and OpenSSL with CCM or GCM mode to use AAD'
             );
         }
+
         if ($this->getMode() !== 'gcm' && $this->getMode() !== 'ccm') {
             throw new Exception\RuntimeException(
                 'You can set Additional Authentication Data (AAD) only for CCM or GCM mode'
             );
         }
+
+        if (! is_string($aad)) {
+            throw new Exception\InvalidArgumentException(sprintf(
+                'The provided $aad must be a string, %s given',
+                gettype($aad)
+            ));
+        }
+
         $this->aad = $aad;
+
         return $this;
     }
 
