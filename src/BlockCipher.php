@@ -457,17 +457,7 @@ class BlockCipher
         $keySize = $this->cipher->getKeySize();
         // CCM and GCM modes do not need HMAC
         if (in_array($this->cipher->getMode(), [ 'ccm', 'gcm' ])) {
-            $ciphertext = $this->binaryOutput ? $data : base64_decode($data);
-            $iv = mb_substr($ciphertext, $this->cipher->getTagSize(), $this->cipher->getSaltSize(), '8bit');
-            $this->cipher->setKey(Pbkdf2::calc(
-                $this->getPbkdf2HashAlgorithm(),
-                $this->getKey(),
-                $iv,
-                $this->keyIteration,
-                $keySize
-            ));
-
-            return $this->cipher->decrypt($ciphertext);
+            return $this->decryptViaCcmOrGcm($data, $keySize);
         }
         $hmacSize   = Hmac::getOutputSize($this->hash);
         $hmac       = mb_substr($data, 0, $hmacSize, '8bit');
@@ -519,5 +509,29 @@ class BlockCipher
         $cipherText = $this->cipher->encrypt($data);
 
         return $this->binaryOutput ? $cipherText : base64_encode($cipherText);
+    }
+
+    /**
+     * @param string $data
+     * @param int    $keySize
+     *
+     * @return string
+     *
+     * @throws Exception\InvalidArgumentException
+     */
+    private function decryptViaCcmOrGcm($data, $keySize)
+    {
+        $cipherText = $this->binaryOutput ? $data : base64_decode($data);
+        $iv         = mb_substr($cipherText, $this->cipher->getTagSize(), $this->cipher->getSaltSize(), '8bit');
+
+        $this->cipher->setKey(Pbkdf2::calc(
+            $this->getPbkdf2HashAlgorithm(),
+            $this->getKey(),
+            $iv,
+            $this->keyIteration,
+            $keySize
+        ));
+
+        return $this->cipher->decrypt($cipherText);
     }
 }
