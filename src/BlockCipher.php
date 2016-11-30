@@ -455,10 +455,11 @@ class BlockCipher
         }
 
         $keySize = $this->cipher->getKeySize();
-        // CCM and GCM modes do not need HMAC
-        if (in_array($this->cipher->getMode(), [ 'ccm', 'gcm' ])) {
+
+        if (in_array($this->cipher->getMode(), ['ccm', 'gcm'], true)) {
             return $this->decryptViaCcmOrGcm($data, $keySize);
         }
+
         $hmacSize   = Hmac::getOutputSize($this->hash);
         $hmac       = mb_substr($data, 0, $hmacSize, '8bit');
         $ciphertext = mb_substr($data, $hmacSize, null, '8bit') ?: '';
@@ -512,6 +513,8 @@ class BlockCipher
     }
 
     /**
+     * Note: CCM and GCM modes do not need HMAC
+     *
      * @param string $data
      * @param int    $keySize
      *
