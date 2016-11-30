@@ -176,6 +176,9 @@ class Openssl implements SymmetricInterface
      *
      * @param  array $options
      * @return void
+     *
+     * @throws Exception\RuntimeException
+     * @throws Exception\InvalidArgumentException
      */
     public function setOptions($options)
     {
@@ -400,6 +403,9 @@ class Openssl implements SymmetricInterface
      *
      * @param string $aad
      * @return self
+     *
+     * @throws Exception\InvalidArgumentException
+     * @throws Exception\RuntimeException
      */
     public function setAad($aad)
     {
