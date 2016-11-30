@@ -89,7 +89,7 @@ class Openssl implements SymmetricInterface
         'cbc',
         'cfb',
         'ofb',
-        'ecb'
+        'ecb',
     ];
 
     /**
