@@ -19,7 +19,10 @@ class CompatibilityTest extends TestCase
 {
     public function setUp()
     {
-        if (! extension_loaded('mcrypt') || ! extension_loaded('mcrypt')) {
+        if (PHP_VERSION_ID >= 70100) {
+            $this->markTestSkipped('The Mcrypt tests are deprecated for PHP 7.1+');
+        }
+        if (! extension_loaded('mcrypt') || ! extension_loaded('openssl')) {
             $this->markTestSkipped(
                 sprintf("I cannot execute %s without Mcrypt and OpenSSL installed", __CLASS__)
             );

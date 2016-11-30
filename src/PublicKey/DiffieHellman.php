@@ -133,7 +133,9 @@ class DiffieHellman
                 'p' => $this->convert($this->getPrime(), self::FORMAT_NUMBER, self::FORMAT_BINARY),
                 'g' => $this->convert($this->getGenerator(), self::FORMAT_NUMBER, self::FORMAT_BINARY)
             ];
-            if ($this->hasPrivateKey()) {
+            // the priv_key parameter is allowed only for PHP < 7.1
+            // @see https://bugs.php.net/bug.php?id=73478
+            if ($this->hasPrivateKey() && PHP_VERSION_ID < 70100) {
                 $details['priv_key'] = $this->convert(
                     $this->privateKey,
                     self::FORMAT_NUMBER,

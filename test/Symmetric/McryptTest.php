@@ -25,6 +25,14 @@ class McryptTest extends AbstractTest
 
     protected $default_padding = 'pkcs7';
 
+    public function setUp()
+    {
+        if (PHP_VERSION_ID >= 70100) {
+            $this->markTestSkipped('The Mcrypt tests are deprecated for PHP 7.1+');
+        }
+        parent::setUp();
+    }
+
     public function testSetShortKey()
     {
         foreach ($this->crypt->getSupportedAlgorithms() as $algo) {
