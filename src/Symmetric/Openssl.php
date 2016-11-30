@@ -603,7 +603,7 @@ class Openssl implements SymmetricInterface
 
         $iv         = mb_substr($data, 0, $this->getSaltSize(), '8bit');
         $ciphertext = mb_substr($data, $this->getSaltSize(), null, '8bit');
-        $result     = $this->attemptOpensslDecrypt($ciphertext, $iv, $tag);
+        $result     = $this->attemptOpensslDecrypt($ciphertext, $iv, $this->tag);
 
         if (false === $result) {
             $errMsg = '';
