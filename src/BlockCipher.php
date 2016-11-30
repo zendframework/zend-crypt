@@ -411,7 +411,7 @@ class BlockCipher
             $this->cipher->setSalt(Rand::getBytes($this->cipher->getSaltSize()));
         }
 
-        if (in_array($this->cipher->getMode(), [ 'ccm', 'gcm' ])) {
+        if (in_array($this->cipher->getMode(), ['ccm', 'gcm'], true)) {
             return $this->encryptViaCcmOrGcm($data, $keySize);
         }
 
