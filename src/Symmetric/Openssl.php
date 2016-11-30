@@ -600,34 +600,18 @@ class Openssl implements SymmetricInterface
             $data = mb_substr($data, $this->getTagSize(), null, '8bit');
             $this->tag = $tag;
         }
+
         $iv         = mb_substr($data, 0, $this->getSaltSize(), '8bit');
         $ciphertext = mb_substr($data, $this->getSaltSize(), null, '8bit');
-
-        if ($this->isCcmOrGcm()) {
-            $result = openssl_decrypt(
-                $ciphertext,
-                strtolower($this->encryptionAlgos[$this->algo] . '-' . $this->mode),
-                $this->getKey(),
-                OPENSSL_RAW_DATA | OPENSSL_ZERO_PADDING,
-                $iv,
-                $tag,
-                $this->getAad()
-            );
-        } else {
-            $result = openssl_decrypt(
-                $ciphertext,
-                strtolower($this->encryptionAlgos[$this->algo] . '-' . $this->mode),
-                $this->getKey(),
-                OPENSSL_RAW_DATA | OPENSSL_ZERO_PADDING,
-                $iv
-            );
-        }
+        $result     = $this->attemptOpensslDecrypt($ciphertext, $iv, $tag);
 
         if (false === $result) {
             $errMsg = '';
+
             while ($msg = openssl_error_string()) {
                 $errMsg .= $msg;
             }
+
             throw new Exception\RuntimeException(sprintf(
                 'OpenSSL error: %s',
                 $errMsg
@@ -826,5 +810,35 @@ class Openssl implements SymmetricInterface
     private function isCcmOrGcm()
     {
         return in_array(strtolower($this->mode), ['gcm', 'ccm'], true);
+    }
+
+    /**
+     * @param string $cipherText
+     * @param string $iv
+     * @param string $tag
+     *
+     * @return string|bool false on failure
+     */
+    private function attemptOpensslDecrypt($cipherText, $iv, $tag)
+    {
+        if ($this->isCcmOrGcm()) {
+            return openssl_decrypt(
+                $cipherText,
+                strtolower($this->encryptionAlgos[$this->algo] . '-' . $this->mode),
+                $this->getKey(),
+                OPENSSL_RAW_DATA | OPENSSL_ZERO_PADDING,
+                $iv,
+                $tag,
+                $this->getAad()
+            );
+        }
+
+        return openssl_decrypt(
+            $cipherText,
+            strtolower($this->encryptionAlgos[$this->algo] . '-' . $this->mode),
+            $this->getKey(),
+            OPENSSL_RAW_DATA | OPENSSL_ZERO_PADDING,
+            $iv
+        );
     }
 }
