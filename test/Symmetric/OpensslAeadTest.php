@@ -60,7 +60,20 @@ class OpensslAeadTest extends \PHPUnit_Framework_TestCase
             'algo'     => 'aes',
             'mode'     => 'gcm',
             'aad'      => 123, // invalid, on purpose
-            'tag_size' => 14
+            'tag_size' => 14,
+        ]);
+    }
+
+    public function testRejectsNonIntegerTagSize()
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('The provided $size must be an integer, double given');
+
+        new Openssl([
+            'algo'     => 'aes',
+            'mode'     => 'gcm',
+            'aad'      => 'foo@bar.com',
+            'tag_size' => 14.5, // invalid, on purpose
         ]);
     }
 
