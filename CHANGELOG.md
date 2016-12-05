@@ -21,6 +21,24 @@ chronological order by release.
 
 - Nothing.
 
+## 3.2.0 - TBD
+
+### Added
+
+- Nothing.
+
+### Deprecated
+
+- Nothing.
+
+### Removed
+
+- Nothing.
+
+### Fixed
+
+- Nothing.
+
 ## 3.1.0 - 2016-08-11
 
 ### Added

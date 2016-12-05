@@ -116,7 +116,7 @@ class Rsa
      * Set options
      *
      * @param RsaOptions $options
-     * @return Rsa
+     * @return Rsa Provides a fluent interface
      */
     public function setOptions(RsaOptions $options)
     {
@@ -332,7 +332,7 @@ class Rsa
      * @see RsaOptions::generateKeys()
      *
      * @param  array $opensslConfig
-     * @return Rsa
+     * @return Rsa Provides a fluent interface
      * @throws Rsa\Exception\RuntimeException
      */
     public function generateKeys(array $opensslConfig = [])
