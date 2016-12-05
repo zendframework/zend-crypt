@@ -42,7 +42,7 @@ matrix:
     - php: 7
       env:
         - DEPS=locked
-        - CS_CHECK=true
+        - CHECK_CS=true
     - php: 7
       env:
         - DEPS=latest
@@ -74,7 +74,7 @@ notifications:
   email: false
 
 before_install:
-  - if [[ $TEST_COVERAGE != 'true' ]]; then phpenv config-rm xdebug.ini || return 0 ; fi
+  - if [[ $TRAVIS_PHP_VERSION != "hhvm" && $TEST_COVERAGE != 'true' ]]; then phpenv config-rm xdebug.ini ; fi
   - travis_retry composer self-update
 
 install:
@@ -85,13 +85,12 @@ install:
   - composer show
 
 script:
-  - if [[ $TEST_COVERAGE == 'true' ]]; then ./vendor/bin/phpunit --coverage-clover clover.xml ; fi
-  - if [[ $TEST_COVERAGE != 'true' ]]; then ./vendor/bin/phpunit ; fi
-  - if [[ $CS_CHECK == 'true' ]]; then ./vendor/bin/phpcs ; fi
-  - if [[ $DEPLOY_DOCS == "true" && "$TRAVIS_TEST_RESULT" == "0" ]]; then wget -O theme-installer.sh "https://raw.githubusercontent.com/zendframework/zf-mkdoc-theme/master/theme-installer.sh" ; chmod 755 theme-installer.sh ; ./theme-installer.sh ; fi
-
-after_success:
-  - if [[ $DEPLOY_DOCS == "true" ]]; then echo "Preparing to build and deploy documentation" ; ./zf-mkdoc-theme/deploy.sh ; echo "Completed deploying documentation" ; fi
+  - if [[ $TEST_COVERAGE == 'true' ]]; then composer test-coverage ; else composer test ; fi
+  - if [[ $CHECK_CS == 'true' ]]; then composer cs-check ; fi
+  - if [[ $DEPLOY_DOCS == "true" && "$TRAVIS_TEST_RESULT" == "0" ]]; then travis_retry curl -sSL https://raw.githubusercontent.com/zendframework/zf-mkdoc-theme/master/theme-installer.sh | bash ; fi
 
 after_script:
-  - if [[ $TEST_COVERAGE == 'true' ]]; then ./vendor/bin/coveralls ; fi
+  - if [[ $TEST_COVERAGE == 'true' ]]; then travis_retry composer upload-coverage ; fi
+
+after_success:
+  - if [[ $DEPLOY_DOCS == "true" ]]; then ./zf-mkdoc-theme/deploy.sh ; fi
