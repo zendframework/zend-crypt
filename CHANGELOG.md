@@ -3,29 +3,12 @@
 All notable changes to this project will be documented in this file, in reverse
 chronological order by release.
 
-## 3.2.0 - TBD
+## 3.2.0 - 2016-12-06
 
 ### Added
 
-- Nothing.
-
-### Deprecated
-
-- Nothing.
-
-### Removed
-
-- Nothing.
-
-### Fixed
-
-- Nothing.
-
-## 3.2.0 - TBD
-
-### Added
-
-- Nothing.
+- [#38](https://github.com/zendframework/zend-crypt/pull/38) Support of GCM and
+  CCM encryption mode for OpenSSL with PHP 7.1+
 
 ### Deprecated
 
