@@ -168,6 +168,10 @@
         
             <li><a href="#recommendation">Recommendation</a></li>
         
+            <li><a href="#using-gcm-or-ccm-mode-from-php-71">Using GCM or CCM mode from PHP 7.1+</a></li>
+        
+            <li><a href="#recommendation_1">Recommendation</a></li>
+        
     
     </ul>
 
@@ -279,12 +283,53 @@ used during encryption.</p>
 we can inject the symmetric cipher adapter directly via the constructor.
 For instance, we can rewrite the previous example as follows:</p>
 <pre class="codehilite"><code class="language-php">use Zend\Crypt\BlockCipher;
-use Zend\Crypt\Symmetric\Mcrypt;
+use Zend\Crypt\Symmetric\Openssl;
 
-$blockCipher = new BlockCipher(new Mcrypt(['algo' =&gt; 'aes']));
+$blockCipher = new BlockCipher(new Openssl(['algo' =&gt; 'aes']));
 $blockCipher-&gt;setKey('encryption key');
 $result = $blockCipher-&gt;encrypt('this is a secret message');
 echo &quot;Encrypted text: $result \n&quot;;</code></pre>
+
+
+<h2 id="using-gcm-or-ccm-mode-from-php-71">Using GCM or CCM mode from PHP 7.1+</h2>
+<p>If you are using PHP 7.1+ you can choose the GCM or CCM mode for authenticated
+encryption with OpenSSL. These modes provide authenticated encryption by itself,
+without the usage of HMAC as described in the previous section.</p>
+<p>GCM is <a href="https://en.wikipedia.org/wiki/Galois/Counter_Mode">Galois/Counter Mode</a>
+and CCM is <a href="https://en.wikipedia.org/wiki/CCM_mode">Counter with CBC-MAC</a>.
+For more information on the usage of this encryption modes in PHP we suggest to
+read <a href="http://www.zimuel.it/authenticated-encrypt-with-openssl-and-php-7-1/">this blog post</a>.</p>
+<p>If you want to use the GCM or CCM mode with <code>BlockCipher</code> you can just specify
+the mode in the factory. For instance, the following is an example of
+<code>aes-256-gcm</code> encryption with OpenSSL:</p>
+<pre class="codehilite"><code class="language-php">use Zend\Crypt\BlockCipher;
+
+$blockCipher = BlockCipher::factory(
+    'openssl',
+    [
+        'algo' =&gt; 'aes',
+        'mode' =&gt; 'gcm'
+    ]
+);</code></pre>
+
+
+<p>And below is an example demonstrating the factory for <code>aes-256-ccm</code> algorithm:</p>
+<pre class="codehilite"><code class="language-php">use Zend\Crypt\BlockCipher;
+
+$blockCipher = BlockCipher::factory(
+    'openssl',
+    [
+        'algo' =&gt; 'aes',
+        'mode' =&gt; 'ccm'
+    ]
+);</code></pre>
+
+
+<blockquote>
+<h2 id="recommendation_1">Recommendation</h2>
+<p><strong>GCM mode is about 3x faster than CCM</strong>, we recommend using GCM unless
+you have requirements that dictate CCM.</p>
+</blockquote>
 
 <hr />
 
