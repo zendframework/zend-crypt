@@ -18,6 +18,11 @@ class SymmetricPluginManagerTest extends \PHPUnit_Framework_TestCase
 {
     public function getSymmetrics()
     {
+        if (PHP_VERSION_ID >= 70100) {
+            return [
+              [ 'openssl' ]
+            ];
+        }
         return [
             [ 'mcrypt' ],
             [ 'openssl' ],

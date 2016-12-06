@@ -123,7 +123,7 @@ class DiffieHellman
      * Generate own public key. If a private number has not already been set,
      * one will be generated at this stage.
      *
-     * @return DiffieHellman
+     * @return DiffieHellman Provides a fluent interface
      * @throws \Zend\Crypt\Exception\RuntimeException
      */
     public function generateKeys()
@@ -133,7 +133,9 @@ class DiffieHellman
                 'p' => $this->convert($this->getPrime(), self::FORMAT_NUMBER, self::FORMAT_BINARY),
                 'g' => $this->convert($this->getGenerator(), self::FORMAT_NUMBER, self::FORMAT_BINARY)
             ];
-            if ($this->hasPrivateKey()) {
+            // the priv_key parameter is allowed only for PHP < 7.1
+            // @see https://bugs.php.net/bug.php?id=73478
+            if ($this->hasPrivateKey() && PHP_VERSION_ID < 70100) {
                 $details['priv_key'] = $this->convert(
                     $this->privateKey,
                     self::FORMAT_NUMBER,
@@ -174,7 +176,7 @@ class DiffieHellman
      *
      * @param string $number
      * @param string $format
-     * @return DiffieHellman
+     * @return DiffieHellman Provides a fluent interface
      * @throws \Zend\Crypt\Exception\InvalidArgumentException
      */
     public function setPublicKey($number, $format = self::FORMAT_NUMBER)
@@ -273,7 +275,7 @@ class DiffieHellman
      * Setter for the value of the prime number
      *
      * @param string $number
-     * @return DiffieHellman
+     * @return DiffieHellman Provides a fluent interface
      * @throws \Zend\Crypt\Exception\InvalidArgumentException
      */
     public function setPrime($number)
@@ -309,7 +311,7 @@ class DiffieHellman
      * Setter for the value of the generator number
      *
      * @param string $number
-     * @return DiffieHellman
+     * @return DiffieHellman Provides a fluent interface
      * @throws \Zend\Crypt\Exception\InvalidArgumentException
      */
     public function setGenerator($number)
@@ -345,7 +347,7 @@ class DiffieHellman
      *
      * @param string $number
      * @param string $format
-     * @return DiffieHellman
+     * @return DiffieHellman Provides a fluent interface
      * @throws \Zend\Crypt\Exception\InvalidArgumentException
      */
     public function setPrivateKey($number, $format = self::FORMAT_NUMBER)

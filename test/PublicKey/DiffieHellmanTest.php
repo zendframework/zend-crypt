@@ -116,13 +116,18 @@ class DiffieHellmanTest extends \PHPUnit_Framework_TestCase
         // @codingStandardsIgnoreEnd
     }
 
-    public function testWithBinaryFormsAndLargeIntegersAndOpenssl()
+    public function testWithBinaryFormsAndLargeIntegersAndOpensslWithPrivateKey()
     {
         // @codingStandardsIgnoreStart
         // skip this test if openssl DH support is not available
         if (!function_exists('openssl_dh_compute_key')) {
             $this->markTestSkipped(
                 'An openssl extension with Diffie-Hellman support is not available.'
+            );
+        }
+        if (PHP_VERSION_ID >= 70100) {
+            $this->markTestSkipped(
+                'PHP 7.1+ does not support the priv_key for key generation of Diffie-Hellman'
             );
         }
 
@@ -173,6 +178,53 @@ class DiffieHellmanTest extends \PHPUnit_Framework_TestCase
         // @codingStandardsIgnoreEnd
     }
 
+    public function testWithBinaryFormsAndLargeIntegersAndOpensslWithoutPrivateKey()
+    {
+        // @codingStandardsIgnoreStart
+        // skip this test if openssl DH support is not available
+        if (!function_exists('openssl_dh_compute_key')) {
+            $this->markTestSkipped(
+                'An openssl extension with Diffie-Hellman support is not available.'
+            );
+        }
+
+        DiffieHellman::useOpensslExtension(true);
+
+        $aliceOptions = [
+            'prime'    => '155172898181473697471232257763715539915724801966915404479707795314057629378541917580651227423698188993727816152646631438561595825688188889951272158842675419950341258706556549803580104870537681476726513255747040765857479291291572334510643245094715007229621094194349783925984760375594985848253359305585439638443',
+            'generator'=> '2'
+        ];
+        $bobOptions   = [
+            'prime'    => '155172898181473697471232257763715539915724801966915404479707795314057629378541917580651227423698188993727816152646631438561595825688188889951272158842675419950341258706556549803580104870537681476726513255747040765857479291291572334510643245094715007229621094194349783925984760375594985848253359305585439638443',
+            'generator'=> '2'
+        ];
+
+        $alice = new DiffieHellman($aliceOptions['prime'], $aliceOptions['generator']);
+        $bob   = new DiffieHellman($bobOptions['prime'], $bobOptions['generator']);
+
+        $alice->generateKeys();
+        $bob->generateKeys();
+
+        $this->assertNotEquals($alice->getPublicKey(), $bob->getPublicKey());
+        $this->assertNotEquals($alice->getPrivateKey(), $bob->getPrivateKey());
+
+        $aliceSecretKey = $alice->computeSecretKey(
+            $bob->getPublicKey(DiffieHellman::FORMAT_BINARY),
+            DiffieHellman::FORMAT_BINARY,
+            DiffieHellman::FORMAT_BINARY
+        );
+        $bobSecretKey   = $bob->computeSecretKey(
+            $alice->getPublicKey(DiffieHellman::FORMAT_BINARY),
+            DiffieHellman::FORMAT_BINARY,
+            DiffieHellman::FORMAT_BINARY
+        );
+
+        $this->assertNotEmpty($aliceSecretKey);
+        $this->assertEquals($aliceSecretKey, $bobSecretKey);
+
+        // @codingStandardsIgnoreEnd
+    }
+
     public function testGenerateKeysWithUnsetPrivateKey()
     {
         $dh = new DiffieHellman(563, 5);
@@ -186,5 +238,59 @@ class DiffieHellmanTest extends \PHPUnit_Framework_TestCase
         // try different format of private key
         new DiffieHellman('563', '5', '9', DiffieHellman::FORMAT_NUMBER);
         new DiffieHellman('563', '5', hex2bin('09'), DiffieHellman::FORMAT_BINARY);
+    }
+
+    /**
+     * @expectedException Zend\Crypt\Exception\InvalidArgumentException
+     */
+    public function testGetPublicKeyWithoutGenerated()
+    {
+        $dh = new DiffieHellman(563, 5);
+        $pubKey = $dh->getPublicKey();
+    }
+
+    /**
+     * @expectedException Zend\Crypt\Exception\InvalidArgumentException
+     */
+    public function testSetWrongPublicKey()
+    {
+        $dh = new DiffieHellman(563, 5);
+        $dh->setPublicKey(-2);
+    }
+
+    /**
+     * @expectedException Zend\Crypt\Exception\InvalidArgumentException
+     */
+    public function testGetSharedSecretKeyWihoutCompute()
+    {
+        $dh = new DiffieHellman(563, 5);
+        $skey = $dh->getSharedSecretKey();
+    }
+
+    /**
+     * @expectedException Zend\Crypt\Exception\InvalidArgumentException
+     */
+    public function testSetWrongPrime()
+    {
+        $dh = new DiffieHellman(563, 5);
+        $dh->setPrime(-2);
+    }
+
+    /**
+     * @expectedException Zend\Crypt\Exception\InvalidArgumentException
+     */
+    public function testSetWrongGenerator()
+    {
+        $dh = new DiffieHellman(563, 5);
+        $dh->setGenerator(-2);
+    }
+
+    /**
+     * @expectedException Zend\Crypt\Exception\InvalidArgumentException
+     */
+    public function testSetWrongPrivateKey()
+    {
+        $dh = new DiffieHellman(563, 5);
+        $privKey = $dh->setPrivateKey(-2);
     }
 }

@@ -50,6 +50,14 @@ abstract class AbstractBlockCipherTest extends TestCase
         $this->assertEquals('test', $this->blockCipher->getKey());
     }
 
+    /**
+     * @expectedException Zend\Crypt\Exception\InvalidArgumentException
+     */
+    public function testSetEmptyKey()
+    {
+        $result = $this->blockCipher->setKey('');
+    }
+
     public function testSetSalt()
     {
         $salt = str_repeat('a', $this->blockCipher->getCipher()->getSaltSize() + 2);
@@ -60,6 +68,14 @@ abstract class AbstractBlockCipherTest extends TestCase
             $this->blockCipher->getSalt()
         );
         $this->assertEquals($salt, $this->blockCipher->getOriginalSalt());
+    }
+
+    /**
+     * @expectedException Zend\Crypt\Exception\InvalidArgumentException
+     */
+    public function testSetWrongSalt()
+    {
+        $this->blockCipher->setSalt('x');
     }
 
     public function testSetAlgorithm()
@@ -85,11 +101,27 @@ abstract class AbstractBlockCipherTest extends TestCase
         $this->assertEquals('sha1', $this->blockCipher->getHashAlgorithm());
     }
 
+    /**
+     * @expectedException Zend\Crypt\Exception\InvalidArgumentException
+     */
+    public function testSetUnsupportedHashAlgorithm()
+    {
+        $result = $this->blockCipher->setHashAlgorithm('foo');
+    }
+
     public function testSetPbkdf2HashAlgorithm()
     {
         $result = $this->blockCipher->setPbkdf2HashAlgorithm('sha1');
         $this->assertEquals($result, $this->blockCipher);
         $this->assertEquals('sha1', $this->blockCipher->getPbkdf2HashAlgorithm());
+    }
+
+    /**
+     * @expectedException Zend\Crypt\Exception\InvalidArgumentException
+     */
+    public function testSetUnsupportedPbkdf2HashAlgorithm()
+    {
+        $result = $this->blockCipher->setPbkdf2HashAlgorithm('foo');
     }
 
     public function testSetKeyIteration()
@@ -137,6 +169,8 @@ abstract class AbstractBlockCipherTest extends TestCase
         $this->blockCipher->setKey('test');
         $this->blockCipher->setKeyIteration(1000);
         $this->blockCipher->setBinaryOutput(true);
+        $this->assertTrue($this->blockCipher->getBinaryOutput());
+
         foreach ($this->blockCipher->getCipherSupportedAlgorithms() as $algo) {
             $this->blockCipher->setCipherAlgorithm($algo);
             $encrypted = $this->blockCipher->encrypt($this->plaintext);
@@ -172,6 +206,30 @@ abstract class AbstractBlockCipherTest extends TestCase
         }
     }
 
+    /**
+     * @expectedException Zend\Crypt\Exception\InvalidArgumentException
+     */
+    public function testDecryptNotString()
+    {
+        $this->blockCipher->decrypt([ 'foo' ]);
+    }
+
+    /**
+     * @expectedException Zend\Crypt\Exception\InvalidArgumentException
+     */
+    public function testDecryptEmptyString()
+    {
+        $this->blockCipher->decrypt('');
+    }
+
+    /**
+     * @expectedException Zend\Crypt\Exception\InvalidArgumentException
+     */
+    public function testDecyptWihoutKey()
+    {
+        $this->blockCipher->decrypt('encrypted data');
+    }
+
     public function testDecryptAuthFail()
     {
         $this->blockCipher->setKey('test');
@@ -194,5 +252,33 @@ abstract class AbstractBlockCipherTest extends TestCase
         $this->assertInstanceOf(ContainerInterface::class, $this->blockCipher->getSymmetricPluginManager());
 
         $this->blockCipher->setSymmetricPluginManager($old);
+    }
+
+    /**
+     * @expectedException Zend\Crypt\Exception\RuntimeException
+     */
+    public function testFactoryWithWrongAdapter()
+    {
+        $this->blockCipher = BlockCipher::factory('foo');
+    }
+
+    /**
+     * @expectedException Zend\Crypt\Exception\InvalidArgumentException
+     */
+    public function testSetWrongSymmetricPluginManager()
+    {
+        $this->blockCipher->setSymmetricPluginManager(
+            stdClass::class
+        );
+    }
+
+    /**
+     * @expectedException Zend\Crypt\Exception\InvalidArgumentException
+     */
+    public function testSetNotExistingSymmetricPluginManager()
+    {
+        $this->blockCipher->setSymmetricPluginManager(
+            'Foo'
+        );
     }
 }

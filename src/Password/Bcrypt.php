@@ -96,7 +96,7 @@ class Bcrypt implements PasswordInterface
      *
      * @param  int|string $cost
      * @throws Exception\InvalidArgumentException
-     * @return Bcrypt
+     * @return Bcrypt Provides a fluent interface
      */
     public function setCost($cost)
     {
@@ -127,7 +127,7 @@ class Bcrypt implements PasswordInterface
      *
      * @param  string $salt
      * @throws Exception\InvalidArgumentException
-     * @return Bcrypt
+     * @return Bcrypt Provides a fluent interface
      */
     public function setSalt($salt)
     {

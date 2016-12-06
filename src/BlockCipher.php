@@ -153,7 +153,7 @@ class BlockCipher
      * Set the symmetric cipher
      *
      * @param  SymmetricInterface $cipher
-     * @return BlockCipher
+     * @return BlockCipher Provides a fluent interface
      */
     public function setCipher(SymmetricInterface $cipher)
     {
@@ -175,7 +175,7 @@ class BlockCipher
      * Set the number of iterations for Pbkdf2
      *
      * @param  int $num
-     * @return BlockCipher
+     * @return BlockCipher Provides a fluent interface
      */
     public function setKeyIteration($num)
     {
@@ -198,7 +198,7 @@ class BlockCipher
      * Set the salt (IV)
      *
      * @param  string $salt
-     * @return BlockCipher
+     * @return BlockCipher Provides a fluent interface
      * @throws Exception\InvalidArgumentException
      */
     public function setSalt($salt)
@@ -237,7 +237,7 @@ class BlockCipher
      * Enable/disable the binary output
      *
      * @param  bool $value
-     * @return BlockCipher
+     * @return BlockCipher Provides a fluent interface
      */
     public function setBinaryOutput($value)
     {
@@ -259,8 +259,8 @@ class BlockCipher
     /**
      * Set the encryption/decryption key
      *
-     * @param  string                             $key
-     * @return BlockCipher
+     * @param  string $key
+     * @return BlockCipher Provides a fluent interface
      * @throws Exception\InvalidArgumentException
      */
     public function setKey($key)
@@ -287,14 +287,11 @@ class BlockCipher
      * Set algorithm of the symmetric cipher
      *
      * @param  string $algo
-     * @return BlockCipher
+     * @return BlockCipher Provides a fluent interface
      * @throws Exception\InvalidArgumentException
      */
     public function setCipherAlgorithm($algo)
     {
-        if (empty($this->cipher)) {
-            throw new Exception\InvalidArgumentException('No symmetric cipher specified');
-        }
         try {
             $this->cipher->setAlgorithm($algo);
         } catch (Symmetric\Exception\InvalidArgumentException $e) {
@@ -311,11 +308,7 @@ class BlockCipher
      */
     public function getCipherAlgorithm()
     {
-        if (!empty($this->cipher)) {
-            return $this->cipher->getAlgorithm();
-        }
-
-        return false;
+        return $this->cipher->getAlgorithm();
     }
 
     /**
@@ -325,18 +318,14 @@ class BlockCipher
      */
     public function getCipherSupportedAlgorithms()
     {
-        if (!empty($this->cipher)) {
-            return $this->cipher->getSupportedAlgorithms();
-        }
-
-        return [];
+        return $this->cipher->getSupportedAlgorithms();
     }
 
     /**
      * Set the hash algorithm for HMAC authentication
      *
      * @param  string $hash
-     * @return BlockCipher
+     * @return BlockCipher Provides a fluent interface
      * @throws Exception\InvalidArgumentException
      */
     public function setHashAlgorithm($hash)
@@ -365,7 +354,7 @@ class BlockCipher
      * Set the hash algorithm for the Pbkdf2
      *
      * @param  string $hash
-     * @return BlockCipher
+     * @return BlockCipher Provides a fluent interface
      * @throws Exception\InvalidArgumentException
      */
     public function setPbkdf2HashAlgorithm($hash)
@@ -413,9 +402,6 @@ class BlockCipher
             $data = (string) $data;
         }
 
-        if (empty($this->cipher)) {
-            throw new Exception\InvalidArgumentException('No symmetric cipher specified');
-        }
         if (empty($this->key)) {
             throw new Exception\InvalidArgumentException('No key specified for the encryption');
         }
@@ -424,6 +410,11 @@ class BlockCipher
         if (!$this->saltSetted) {
             $this->cipher->setSalt(Rand::getBytes($this->cipher->getSaltSize()));
         }
+
+        if (in_array($this->cipher->getMode(), ['ccm', 'gcm'], true)) {
+            return $this->encryptViaCcmOrGcm($data, $keySize);
+        }
+
         // generate the encryption key and the HMAC key for the authentication
         $hash = Pbkdf2::calc(
             $this->getPbkdf2HashAlgorithm(),
@@ -440,11 +431,8 @@ class BlockCipher
         $ciphertext = $this->cipher->encrypt($data);
         // HMAC
         $hmac = Hmac::compute($keyHmac, $this->hash, $this->cipher->getAlgorithm() . $ciphertext);
-        if (!$this->binaryOutput) {
-            $ciphertext = base64_encode($ciphertext);
-        }
 
-        return $hmac . $ciphertext;
+        return $this->binaryOutput ? $hmac . $ciphertext : $hmac . base64_encode($ciphertext);
     }
 
     /**
@@ -465,17 +453,20 @@ class BlockCipher
         if (empty($this->key)) {
             throw new Exception\InvalidArgumentException('No key specified for the decryption');
         }
-        if (empty($this->cipher)) {
-            throw new Exception\InvalidArgumentException('No symmetric cipher specified');
+
+        $keySize = $this->cipher->getKeySize();
+
+        if (in_array($this->cipher->getMode(), ['ccm', 'gcm'], true)) {
+            return $this->decryptViaCcmOrGcm($data, $keySize);
         }
+
         $hmacSize   = Hmac::getOutputSize($this->hash);
         $hmac       = mb_substr($data, 0, $hmacSize, '8bit');
         $ciphertext = mb_substr($data, $hmacSize, null, '8bit') ?: '';
-        if (!$this->binaryOutput) {
+        if (! $this->binaryOutput) {
             $ciphertext = base64_decode($ciphertext);
         }
-        $iv      = mb_substr($ciphertext, 0, $this->cipher->getSaltSize(), '8bit');
-        $keySize = $this->cipher->getKeySize();
+        $iv = mb_substr($ciphertext, 0, $this->cipher->getSaltSize(), '8bit');
         // generate the encryption key and the HMAC key for the authentication
         $hash = Pbkdf2::calc(
             $this->getPbkdf2HashAlgorithm(),
@@ -494,5 +485,56 @@ class BlockCipher
         }
 
         return $this->cipher->decrypt($ciphertext);
+    }
+
+    /**
+     * Note: CCM and GCM modes do not need HMAC
+     *
+     * @param string $data
+     * @param int    $keySize
+     *
+     * @return string
+     *
+     * @throws Exception\InvalidArgumentException
+     */
+    private function encryptViaCcmOrGcm($data, $keySize)
+    {
+        $this->cipher->setKey(Pbkdf2::calc(
+            $this->getPbkdf2HashAlgorithm(),
+            $this->getKey(),
+            $this->getSalt(),
+            $this->keyIteration,
+            $keySize
+        ));
+
+        $cipherText = $this->cipher->encrypt($data);
+
+        return $this->binaryOutput ? $cipherText : base64_encode($cipherText);
+    }
+
+    /**
+     * Note: CCM and GCM modes do not need HMAC
+     *
+     * @param string $data
+     * @param int    $keySize
+     *
+     * @return string
+     *
+     * @throws Exception\InvalidArgumentException
+     */
+    private function decryptViaCcmOrGcm($data, $keySize)
+    {
+        $cipherText = $this->binaryOutput ? $data : base64_decode($data);
+        $iv         = mb_substr($cipherText, $this->cipher->getTagSize(), $this->cipher->getSaltSize(), '8bit');
+
+        $this->cipher->setKey(Pbkdf2::calc(
+            $this->getPbkdf2HashAlgorithm(),
+            $this->getKey(),
+            $iv,
+            $this->keyIteration,
+            $keySize
+        ));
+
+        return $this->cipher->decrypt($cipherText);
     }
 }

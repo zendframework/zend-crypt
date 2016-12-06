@@ -110,7 +110,14 @@ class Mcrypt implements SymmetricInterface
      */
     public function __construct($options = [])
     {
-        if (!extension_loaded('mcrypt')) {
+        if (PHP_VERSION_ID >= 70100) {
+            trigger_error(
+                'The Mcrypt extension is deprecated from PHP 7.1+. '
+                . 'We suggest to use Zend\Crypt\Symmetric\Openssl.',
+                E_USER_DEPRECATED
+            );
+        }
+        if (! extension_loaded('mcrypt')) {
             throw new Exception\RuntimeException(sprintf(
                 'You cannot use %s without the Mcrypt extension',
                 __CLASS__
@@ -233,9 +240,9 @@ class Mcrypt implements SymmetricInterface
      * Set the encryption key
      * If the key is longer than maximum supported, it will be truncated by getKey().
      *
-     * @param  string                             $key
+     * @param  string $key
+     * @return Mcrypt Provides a fluent interface
      * @throws Exception\InvalidArgumentException
-     * @return Mcrypt
      */
     public function setKey($key)
     {
@@ -280,9 +287,9 @@ class Mcrypt implements SymmetricInterface
     /**
      * Set the encryption algorithm (cipher)
      *
-     * @param  string                             $algo
+     * @param  string $algo
+     * @return Mcrypt Provides a fluent interface
      * @throws Exception\InvalidArgumentException
-     * @return Mcrypt
      */
     public function setAlgorithm($algo)
     {
@@ -312,7 +319,7 @@ class Mcrypt implements SymmetricInterface
      * Set the padding object
      *
      * @param  Padding\PaddingInterface $padding
-     * @return Mcrypt
+     * @return Mcrypt Provides a fluent interface
      */
     public function setPadding(Padding\PaddingInterface $padding)
     {
@@ -422,9 +429,9 @@ class Mcrypt implements SymmetricInterface
     /**
      * Set the salt (IV)
      *
-     * @param  string                             $salt
+     * @param  string $salt
+     * @return Mcrypt Provides a fluent interface
      * @throws Exception\InvalidArgumentException
-     * @return Mcrypt
      */
     public function setSalt($salt)
     {
@@ -475,9 +482,9 @@ class Mcrypt implements SymmetricInterface
     /**
      * Set the cipher mode
      *
-     * @param  string                             $mode
+     * @param  string $mode
+     * @return Mcrypt Provides a fluent interface
      * @throws Exception\InvalidArgumentException
-     * @return Mcrypt
      */
     public function setMode($mode)
     {

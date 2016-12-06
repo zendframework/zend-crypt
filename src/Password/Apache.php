@@ -161,7 +161,7 @@ class Apache implements PasswordInterface
      *
      * @param  string $format
      * @throws Exception\InvalidArgumentException
-     * @return Apache
+     * @return Apache Provides a fluent interface
      */
     public function setFormat($format)
     {
@@ -192,7 +192,7 @@ class Apache implements PasswordInterface
      * Set the AuthName (for digest authentication)
      *
      * @param  string $name
-     * @return Apache
+     * @return Apache Provides a fluent interface
      */
     public function setAuthName($name)
     {
@@ -215,7 +215,7 @@ class Apache implements PasswordInterface
      * Set the username
      *
      * @param  string $name
-     * @return Apache
+     * @return Apache Provides a fluent interface
      */
     public function setUserName($name)
     {
