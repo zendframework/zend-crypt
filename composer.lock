@@ -4,12 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-<<<<<<< HEAD
     "content-hash": "1c07f0e96d66d324b15da472c76650fd",
-=======
-    "hash": "0bf864e6bc52a14e2da2120532a0b07d",
-    "content-hash": "6c91ee0aaf8627e0545b3c3efb229b8f",
->>>>>>> stefanotorresi-tidy-up-travis
     "packages": [
         {
             "name": "container-interop/container-interop",
