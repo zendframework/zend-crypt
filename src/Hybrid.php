@@ -29,17 +29,17 @@ class Hybrid
     protected $bCipher;
 
     /**
-     * @var Rsa
+     * @var PublicKey\Rsa
      */
     protected $rsa;
 
     /**
      * Constructor
      *
-     * @param BlockCipher $blockCipher
-     * @param Rsa $public
+     * @param BlockCipher $bCipher
+     * @param PublicKey\Rsa $rsa
      */
-    public function __construct(BlockCipher $bCipher = null, Rsa $rsa = null)
+    public function __construct(BlockCipher $bCipher = null, PublicKey\Rsa $rsa = null)
     {
         $this->bCipher = (null === $bCipher ) ? BlockCipher::factory('openssl') : $bCipher;
         $this->rsa     = (null === $rsa ) ? new PublicKey\Rsa() : $rsa;
