@@ -361,7 +361,7 @@ class FileCipher
     }
 
     /**
-     * Check that input file exists and output file dont
+     * Check that input file exists and output file don't
      *
      * @param  string $fileIn
      * @param  string $fileOut
