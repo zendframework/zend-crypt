@@ -3,11 +3,12 @@
 All notable changes to this project will be documented in this file, in reverse
 chronological order by release.
 
-## 3.2.1 - TBD
+## 3.2.1 - 2017-17-07
 
 ### Added
 
-- Nothing.
+- [#42](https://github.com/zendframework/zend-crypt/pull/42) Added the CTR mode
+  for OpenSSL.
 
 ### Deprecated
 
@@ -19,7 +20,8 @@ chronological order by release.
 
 ### Fixed
 
-- Nothing.
+- [#48](https://github.com/zendframework/zend-crypt/pull/48) Incorrect Rsa type
+  declaration in Hybrid constructor.
 
 
 ## 3.2.0 - 2016-12-06
