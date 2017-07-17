@@ -32,6 +32,15 @@ class HybridTest extends \PHPUnit_Framework_TestCase
         $this->assertInstanceOf(Hybrid::class, $hybrid);
     }
 
+    public function testConstructorWithParameters()
+    {
+        $hybrid = new Hybrid(
+            $this->prophesize(BlockCipher::class)->reveal(),
+            $this->prophesize(Rsa::class)->reveal()
+        );
+        $this->assertInstanceOf(Hybrid::class, $hybrid);
+    }
+
     public function testGetDefaultBlockCipherInstance()
     {
         $bCipher = $this->hybrid->getBlockCipherInstance();
