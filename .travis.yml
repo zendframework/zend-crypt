@@ -55,24 +55,23 @@ matrix:
       env:
         - DEPS=latest
         - TEST_COVERAGE=true
-    - php: hhvm
+    - php: nightly
       env:
         - DEPS=lowest
-    - php: hhvm
+    - php: nightly
       env:
         - DEPS=locked
-    - php: hhvm
+    - php: nightly
       env:
         - DEPS=latest
   allow_failures:
-    - php: hhvm
+    - php: nightly
 
 notifications:
-  irc: "irc.freenode.org#zftalk.dev"
   email: false
 
 before_install:
-  - if [[ $TRAVIS_PHP_VERSION != "hhvm" && $TEST_COVERAGE != 'true' ]]; then phpenv config-rm xdebug.ini ; fi
+  - if [[ $TEST_COVERAGE != 'true' ]]; then phpenv config-rm xdebug.ini || return 0 ; fi
   - travis_retry composer self-update
 
 install:
@@ -80,7 +79,8 @@ install:
   - if [[ $DEPS == 'lowest' ]]; then travis_retry composer update --prefer-lowest --prefer-stable $COMPOSER_ARGS ; fi
   - if [[ $TEST_COVERAGE == 'true' ]]; then composer require --dev $COMPOSER_ARGS satooshi/php-coveralls:^1.0 ; fi
   - travis_retry composer install $COMPOSER_ARGS
-  - composer show
+  - stty cols 120
+  - COLUMNS=120 composer show
 
 script:
   - if [[ $TEST_COVERAGE == 'true' ]]; then composer test-coverage ; else composer test ; fi
