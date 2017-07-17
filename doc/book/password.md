@@ -126,7 +126,7 @@ $bcrypt = new Bcrypt([
   the AuthName directive in `httpd.conf`.
 
 In order to specify the format of the Apache’s password, use the `setFormat()`
-method. An example with all the formats usage is demostrated below:
+method. An example with all the formats usage is demonstrated below:
 
 ```php
 use Zend\Crypt\Password\Apache;
