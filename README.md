@@ -22,4 +22,4 @@ and authenticate sensitive data in PHP.
 
 
 - File issues at https://github.com/zendframework/zend-crypt/issues
-- Documentation is at http://framework.zend.com/manual/current/en/index.html#zend-crypt
+- Documentation is at https://docs.zendframework.com/zend-crypt
