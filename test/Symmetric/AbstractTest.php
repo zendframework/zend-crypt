@@ -235,7 +235,7 @@ abstract class AbstractTest extends \PHPUnit_Framework_TestCase
         $ciphertext = $this->crypt->encrypt('');
     }
 
-    public function testEncryptWihoutSalt()
+    public function testEncryptWithoutSalt()
     {
         $this->crypt->setKey($this->generateKey());
         $this->setExpectedException(
