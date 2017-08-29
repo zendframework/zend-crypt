@@ -34,7 +34,7 @@ class PaddingPluginManager implements ContainerInterface
      */
     public function has($id)
     {
-        return array_key_exists($id, $this->paddings);
+        return \array_key_exists($id, $this->paddings);
     }
 
     /**

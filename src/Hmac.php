@@ -48,7 +48,7 @@ class Hmac
             );
         }
 
-        return hash_hmac($hash, $data, $key, $output);
+        return \hash_hmac($hash, $data, $key, $output);
     }
 
     /**
@@ -60,7 +60,7 @@ class Hmac
      */
     public static function getOutputSize($hash, $output = self::OUTPUT_STRING)
     {
-        return mb_strlen(static::compute('key', $hash, 'data', $output), '8bit');
+        return \mb_strlen(static::compute('key', $hash, 'data', $output), '8bit');
     }
 
     /**
@@ -70,7 +70,7 @@ class Hmac
      */
     public static function getSupportedAlgorithms()
     {
-        return hash_algos();
+        return \hash_algos();
     }
 
     /**
@@ -85,7 +85,7 @@ class Hmac
             return true;
         }
 
-        if (in_array(strtolower($algorithm), hash_algos(), true)) {
+        if (\in_array(\strtolower($algorithm), \hash_algos(), true)) {
             static::$lastAlgorithmSupported = $algorithm;
             return true;
         }

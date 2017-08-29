@@ -32,17 +32,17 @@ class Utils
         $expected     = (string) $expected;
         $actual       = (string) $actual;
 
-        if (function_exists('hash_equals')) {
-            return hash_equals($expected, $actual);
+        if (\function_exists('hash_equals')) {
+            return \hash_equals($expected, $actual);
         }
 
-        $lenExpected  = mb_strlen($expected, '8bit');
-        $lenActual    = mb_strlen($actual, '8bit');
-        $len          = min($lenExpected, $lenActual);
+        $lenExpected  = \mb_strlen($expected, '8bit');
+        $lenActual    = \mb_strlen($actual, '8bit');
+        $len          = \min($lenExpected, $lenActual);
 
         $result = 0;
         for ($i = 0; $i < $len; $i++) {
-            $result |= ord($expected[$i]) ^ ord($actual[$i]);
+            $result |= \ord($expected[$i]) ^ \ord($actual[$i]);
         }
         $result |= $lenExpected ^ $lenActual;
 

@@ -135,15 +135,15 @@ class RsaOptions extends AbstractOptions
      */
     public function setHashAlgorithm($hash)
     {
-        $hashUpper = strtoupper($hash);
-        if (!defined('OPENSSL_ALGO_' . $hashUpper)) {
+        $hashUpper = \strtoupper($hash);
+        if (!\defined('OPENSSL_ALGO_' . $hashUpper)) {
             throw new Exception\InvalidArgumentException(
                 "Hash algorithm '{$hash}' is not supported"
             );
         }
 
-        $this->hashAlgorithm = strtolower($hash);
-        $this->opensslSignatureAlgorithm = constant('OPENSSL_ALGO_' . $hashUpper);
+        $this->hashAlgorithm = \strtolower($hash);
+        $this->opensslSignatureAlgorithm = \constant('OPENSSL_ALGO_' . $hashUpper);
         return $this;
     }
 
@@ -218,9 +218,9 @@ class RsaOptions extends AbstractOptions
      */
     public function generateKeys(array $opensslConfig = [])
     {
-        $opensslConfig = array_replace(
+        $opensslConfig = \array_replace(
             [
-                'private_key_type' => OPENSSL_KEYTYPE_RSA,
+                'private_key_type' => \OPENSSL_KEYTYPE_RSA,
                 'private_key_bits' => Rsa\PrivateKey::DEFAULT_KEY_SIZE,
                 'digest_alg'       => $this->getHashAlgorithm()
             ],
@@ -228,23 +228,23 @@ class RsaOptions extends AbstractOptions
         );
 
         // generate
-        $resource = openssl_pkey_new($opensslConfig);
+        $resource = \openssl_pkey_new($opensslConfig);
         if (false === $resource) {
             throw new Exception\RuntimeException(
-                'Can not generate keys; openssl ' . openssl_error_string()
+                'Can not generate keys; openssl ' . \openssl_error_string()
             );
         }
 
         // export key
         $passPhrase = $this->getPassPhrase();
-        $result     = openssl_pkey_export($resource, $private, $passPhrase, $opensslConfig);
+        $result     = \openssl_pkey_export($resource, $private, $passPhrase, $opensslConfig);
         if (false === $result) {
             throw new Exception\RuntimeException(
-                'Can not export key; openssl ' . openssl_error_string()
+                'Can not export key; openssl ' . \openssl_error_string()
             );
         }
 
-        $details          = openssl_pkey_get_details($resource);
+        $details          = \openssl_pkey_get_details($resource);
         $this->privateKey = new Rsa\PrivateKey($private, $passPhrase);
         $this->publicKey  = new Rsa\PublicKey($details['key']);
 

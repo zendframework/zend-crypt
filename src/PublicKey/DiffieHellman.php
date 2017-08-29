@@ -128,35 +128,35 @@ class DiffieHellman
      */
     public function generateKeys()
     {
-        if (function_exists('openssl_dh_compute_key') && static::$useOpenssl !== false) {
+        if (\function_exists('openssl_dh_compute_key') && static::$useOpenssl !== false) {
             $details = [
                 'p' => $this->convert($this->getPrime(), self::FORMAT_NUMBER, self::FORMAT_BINARY),
                 'g' => $this->convert($this->getGenerator(), self::FORMAT_NUMBER, self::FORMAT_BINARY)
             ];
             // the priv_key parameter is allowed only for PHP < 7.1
             // @see https://bugs.php.net/bug.php?id=73478
-            if ($this->hasPrivateKey() && PHP_VERSION_ID < 70100) {
+            if ($this->hasPrivateKey() && \PHP_VERSION_ID < 70100) {
                 $details['priv_key'] = $this->convert(
                     $this->privateKey,
                     self::FORMAT_NUMBER,
                     self::FORMAT_BINARY
                 );
-                $opensslKeyResource = openssl_pkey_new(['dh' => $details]);
+                $opensslKeyResource = \openssl_pkey_new(['dh' => $details]);
             } else {
-                $opensslKeyResource = openssl_pkey_new([
+                $opensslKeyResource = \openssl_pkey_new([
                     'dh'               => $details,
                     'private_key_bits' => self::DEFAULT_KEY_SIZE,
-                    'private_key_type' => OPENSSL_KEYTYPE_DH
+                    'private_key_type' => \OPENSSL_KEYTYPE_DH
                 ]);
             }
 
             if (false === $opensslKeyResource) {
                 throw new Exception\RuntimeException(
-                    'Can not generate new key; openssl ' . openssl_error_string()
+                    'Can not generate new key; openssl ' . \openssl_error_string()
                 );
             }
 
-            $data = openssl_pkey_get_details($opensslKeyResource);
+            $data = \openssl_pkey_get_details($opensslKeyResource);
 
             $this->setPrivateKey($data['dh']['priv_key'], self::FORMAT_BINARY);
             $this->setPublicKey($data['dh']['pub_key'], self::FORMAT_BINARY);
@@ -182,7 +182,7 @@ class DiffieHellman
     public function setPublicKey($number, $format = self::FORMAT_NUMBER)
     {
         $number = $this->convert($number, $format, self::FORMAT_NUMBER);
-        if (!preg_match('/^\d+$/', $number)) {
+        if (!\preg_match('/^\d+$/', $number)) {
             throw new Exception\InvalidArgumentException('Invalid parameter; not a positive natural number');
         }
         $this->publicKey = (string) $number;
@@ -231,18 +231,18 @@ class DiffieHellman
         $publicKeyFormat = self::FORMAT_NUMBER,
         $secretKeyFormat = self::FORMAT_NUMBER
     ) {
-        if (function_exists('openssl_dh_compute_key') && static::$useOpenssl !== false) {
+        if (\function_exists('openssl_dh_compute_key') && static::$useOpenssl !== false) {
             $publicKey = $this->convert($publicKey, $publicKeyFormat, self::FORMAT_BINARY);
-            $secretKey = openssl_dh_compute_key($publicKey, $this->opensslKeyResource);
+            $secretKey = \openssl_dh_compute_key($publicKey, $this->opensslKeyResource);
             if (false === $secretKey) {
                 throw new Exception\RuntimeException(
-                    'Can not compute key; openssl ' . openssl_error_string()
+                    'Can not compute key; openssl ' . \openssl_error_string()
                 );
             }
             $this->secretKey = $this->convert($secretKey, self::FORMAT_BINARY, self::FORMAT_NUMBER);
         } else {
             $publicKey = $this->convert($publicKey, $publicKeyFormat, self::FORMAT_NUMBER);
-            if (!preg_match('/^\d+$/', $publicKey)) {
+            if (!\preg_match('/^\d+$/', $publicKey)) {
                 throw new Exception\InvalidArgumentException(
                     'Invalid parameter; not a positive natural number'
                 );
@@ -280,7 +280,7 @@ class DiffieHellman
      */
     public function setPrime($number)
     {
-        if (!preg_match('/^\d+$/', $number) || $number < 11) {
+        if (!\preg_match('/^\d+$/', $number) || $number < 11) {
             throw new Exception\InvalidArgumentException(
                 'Invalid parameter; not a positive natural number or too small: ' .
                 'should be a large natural number prime'
@@ -316,7 +316,7 @@ class DiffieHellman
      */
     public function setGenerator($number)
     {
-        if (!preg_match('/^\d+$/', $number) || $number < 2) {
+        if (!\preg_match('/^\d+$/', $number) || $number < 2) {
             throw new Exception\InvalidArgumentException(
                 'Invalid parameter; not a positive natural number greater than 1'
             );
@@ -353,7 +353,7 @@ class DiffieHellman
     public function setPrivateKey($number, $format = self::FORMAT_NUMBER)
     {
         $number = $this->convert($number, $format, self::FORMAT_NUMBER);
-        if (!preg_match('/^\d+$/', $number)) {
+        if (!\preg_match('/^\d+$/', $number)) {
             throw new Exception\InvalidArgumentException('Invalid parameter; not a positive natural number');
         }
         $this->privateKey = (string) $number;

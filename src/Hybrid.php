@@ -62,21 +62,21 @@ class Hybrid
         $this->bCipher->setKey($sessionKey);
         $ciphertext = $this->bCipher->encrypt($plaintext);
 
-        if (! is_array($keys)) {
+        if (! \is_array($keys)) {
             $keys = ['' => $keys];
         }
 
         $encKeys = '';
         // encrypt the session key with public keys
         foreach ($keys as $id => $pubkey) {
-            if (! $pubkey instanceof PubKey && ! is_string($pubkey)) {
+            if (! $pubkey instanceof PubKey && ! \is_string($pubkey)) {
                 throw new Exception\RuntimeException(sprintf(
                     "The public key must be a string in PEM format or an instance of %s",
                     PubKey::class
                 ));
             }
-            $pubkey = is_string($pubkey) ? new PubKey($pubkey) : $pubkey;
-            $encKeys .= sprintf(
+            $pubkey = \is_string($pubkey) ? new PubKey($pubkey) : $pubkey;
+            $encKeys .= \sprintf(
                 "%s:%s:",
                 base64_encode($id),
                 base64_encode($this->rsa->encrypt($sessionKey, $pubkey))
@@ -98,26 +98,26 @@ class Hybrid
     public function decrypt($msg, $privateKey = null, $passPhrase = null, $id = null)
     {
         // get the session key
-        list($encKeys, $ciphertext) = explode(';', $msg, 2);
+        list($encKeys, $ciphertext) = \explode(';', $msg, 2);
 
-        $keys = explode(':', $encKeys);
-        $pos  = array_search(base64_encode($id), $keys);
+        $keys = \explode(':', $encKeys);
+        $pos  = \array_search(\base64_encode($id), $keys);
         if (false === $pos) {
             throw new Exception\RuntimeException(
                 "This private key cannot be used for decryption"
             );
         }
 
-        if (! $privateKey instanceof PrivateKey && ! is_string($privateKey)) {
-            throw new Exception\RuntimeException(sprintf(
+        if (! $privateKey instanceof PrivateKey && ! \is_string($privateKey)) {
+            throw new Exception\RuntimeException(\sprintf(
                 "The private key must be a string in PEM format or an instance of %s",
                 PrivateKey::class
             ));
         }
-        $privateKey = is_string($privateKey) ? new PrivateKey($privateKey, $passPhrase) : $privateKey;
+        $privateKey = \is_string($privateKey) ? new PrivateKey($privateKey, $passPhrase) : $privateKey;
 
         // decrypt the session key with privateKey
-        $sessionKey = $this->rsa->decrypt(base64_decode($keys[$pos + 1]), $privateKey);
+        $sessionKey = $this->rsa->decrypt(\base64_decode($keys[$pos + 1]), $privateKey);
 
         // decrypt the plaintext with the blockcipher algorithm
         $this->bCipher->setKey($sessionKey);

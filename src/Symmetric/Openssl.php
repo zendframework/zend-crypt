@@ -158,14 +158,14 @@ class Openssl implements SymmetricInterface
      */
     public function __construct($options = [])
     {
-        if (!extension_loaded('openssl')) {
+        if (!\extension_loaded('openssl')) {
             throw new Exception\RuntimeException(sprintf(
                 'You cannot use %s without the OpenSSL extension',
                 __CLASS__
             ));
         }
         // Add the GCM and CCM modes for PHP 7.1+
-        if (PHP_VERSION_ID >= 70100) {
+        if (\PHP_VERSION_ID >= 70100) {
             array_push($this->encryptionModes, 'gcm', 'ccm');
         }
         $this->setOptions($options);
@@ -206,7 +206,7 @@ class Openssl implements SymmetricInterface
         }
 
         foreach ($options as $key => $value) {
-            switch (strtolower($key)) {
+            switch (\strtolower($key)) {
                 case 'mode':
                     $this->setMode($value);
                     break;
@@ -274,8 +274,8 @@ class Openssl implements SymmetricInterface
      */
     public static function setPaddingPluginManager($plugins)
     {
-        if (is_string($plugins)) {
-            if (! class_exists($plugins) || ! is_subclass_of($plugins, ContainerInterface::class)) {
+        if (\is_string($plugins)) {
+            if (! \class_exists($plugins) || ! \is_subclass_of($plugins, ContainerInterface::class)) {
                 throw new Exception\InvalidArgumentException(sprintf(
                     'Unable to locate padding plugin manager via class "%s"; '
                     . 'class does not exist or does not implement ContainerInterface',
@@ -290,7 +290,7 @@ class Openssl implements SymmetricInterface
             throw new Exception\InvalidArgumentException(sprintf(
                 'Padding plugins must implements %s; received "%s"',
                 ContainerInterface::class,
-                (is_object($plugins) ? get_class($plugins) : gettype($plugins))
+                (\is_object($plugins) ? \get_class($plugins) : \gettype($plugins))
             ));
         }
 
@@ -317,7 +317,7 @@ class Openssl implements SymmetricInterface
      */
     public function setKey($key)
     {
-        $keyLen = mb_strlen($key, '8bit');
+        $keyLen = \mb_strlen($key, '8bit');
 
         if (! $keyLen) {
             throw new Exception\InvalidArgumentException('The key cannot be empty');
@@ -344,7 +344,7 @@ class Openssl implements SymmetricInterface
         if (empty($this->key)) {
             return;
         }
-        return mb_substr($this->key, 0, $this->getKeySize(), '8bit');
+        return \mb_substr($this->key, 0, $this->getKeySize(), '8bit');
     }
 
     /**
@@ -356,7 +356,7 @@ class Openssl implements SymmetricInterface
      */
     public function setAlgorithm($algo)
     {
-        if (! in_array($algo, $this->getSupportedAlgorithms())) {
+        if (! \in_array($algo, $this->getSupportedAlgorithms())) {
             throw new Exception\InvalidArgumentException(sprintf(
                 'The algorithm %s is not supported by %s',
                 $algo,
@@ -422,7 +422,7 @@ class Openssl implements SymmetricInterface
             );
         }
 
-        if (! is_string($aad)) {
+        if (! \is_string($aad)) {
             throw new Exception\InvalidArgumentException(sprintf(
                 'The provided $aad must be a string, %s given',
                 gettype($aad)
@@ -465,7 +465,7 @@ class Openssl implements SymmetricInterface
      */
     public function setTagSize($size)
     {
-        if (! is_int($size)) {
+        if (! \is_int($size)) {
             throw new Exception\InvalidArgumentException(sprintf(
                 'The provided $size must be an integer, %s given',
                 gettype($size)
@@ -515,7 +515,7 @@ class Openssl implements SymmetricInterface
     public function encrypt($data)
     {
         // Cannot encrypt empty string
-        if (! is_string($data) || $data === '') {
+        if (! \is_string($data) || $data === '') {
             throw new Exception\InvalidArgumentException('The data to encrypt cannot be empty');
         }
 
@@ -537,11 +537,11 @@ class Openssl implements SymmetricInterface
 
         // encryption with GCM or CCM
         if ($this->isCcmOrGcm()) {
-            $result = openssl_encrypt(
+            $result = \openssl_encrypt(
                 $data,
-                strtolower($this->encryptionAlgos[$this->algo] . '-' . $this->mode),
+                \strtolower($this->encryptionAlgos[$this->algo] . '-' . $this->mode),
                 $this->getKey(),
-                OPENSSL_RAW_DATA | OPENSSL_ZERO_PADDING,
+                \OPENSSL_RAW_DATA | \OPENSSL_ZERO_PADDING,
                 $iv,
                 $tag,
                 $this->getAad(),
@@ -549,18 +549,18 @@ class Openssl implements SymmetricInterface
             );
             $this->tag = $tag;
         } else {
-            $result = openssl_encrypt(
+            $result = \openssl_encrypt(
                 $data,
-                strtolower($this->encryptionAlgos[$this->algo] . '-' . $this->mode),
+                \strtolower($this->encryptionAlgos[$this->algo] . '-' . $this->mode),
                 $this->getKey(),
-                OPENSSL_RAW_DATA | OPENSSL_ZERO_PADDING,
+                \OPENSSL_RAW_DATA | \OPENSSL_ZERO_PADDING,
                 $iv
             );
         }
 
         if (false === $result) {
             $errMsg = '';
-            while ($msg = openssl_error_string()) {
+            while ($msg = \openssl_error_string()) {
                 $errMsg .= $msg;
             }
             throw new Exception\RuntimeException(sprintf(
@@ -597,19 +597,19 @@ class Openssl implements SymmetricInterface
         }
 
         if ($this->isCcmOrGcm()) {
-            $tag  = mb_substr($data, 0, $this->getTagSize(), '8bit');
-            $data = mb_substr($data, $this->getTagSize(), null, '8bit');
+            $tag  = \mb_substr($data, 0, $this->getTagSize(), '8bit');
+            $data = \mb_substr($data, $this->getTagSize(), null, '8bit');
             $this->tag = $tag;
         }
 
-        $iv         = mb_substr($data, 0, $this->getSaltSize(), '8bit');
-        $ciphertext = mb_substr($data, $this->getSaltSize(), null, '8bit');
+        $iv         = \mb_substr($data, 0, $this->getSaltSize(), '8bit');
+        $ciphertext = \mb_substr($data, $this->getSaltSize(), null, '8bit');
         $result     = $this->attemptOpensslDecrypt($ciphertext, $iv, $this->tag);
 
         if (false === $result) {
             $errMsg = '';
 
-            while ($msg = openssl_error_string()) {
+            while ($msg = \openssl_error_string()) {
                 $errMsg .= $msg;
             }
 
@@ -630,7 +630,7 @@ class Openssl implements SymmetricInterface
      */
     public function getSaltSize()
     {
-        return openssl_cipher_iv_length(
+        return \openssl_cipher_iv_length(
             $this->encryptionAlgos[$this->algo] . '-' . $this->mode
         );
     }
@@ -645,7 +645,7 @@ class Openssl implements SymmetricInterface
         if (empty($this->supportedAlgos)) {
             foreach ($this->encryptionAlgos as $name => $algo) {
                 // CBC mode is supported by all the algorithms
-                if (in_array($algo . '-cbc', $this->getOpensslAlgos())) {
+                if (\in_array($algo . '-cbc', $this->getOpensslAlgos())) {
                     $this->supportedAlgos[] = $name;
                 }
             }
@@ -675,7 +675,7 @@ class Openssl implements SymmetricInterface
             throw new Exception\InvalidArgumentException('The salt (IV) cannot be empty');
         }
 
-        if (mb_strlen($salt, '8bit') < $this->getSaltSize()) {
+        if (\mb_strlen($salt, '8bit') < $this->getSaltSize()) {
             throw new Exception\InvalidArgumentException(sprintf(
                 'The size of the salt (IV) must be at least %d bytes',
                 $this->getSaltSize()
@@ -697,14 +697,14 @@ class Openssl implements SymmetricInterface
             return;
         }
 
-        if (mb_strlen($this->iv, '8bit') < $this->getSaltSize()) {
+        if (\mb_strlen($this->iv, '8bit') < $this->getSaltSize()) {
             throw new Exception\RuntimeException(sprintf(
                 'The size of the salt (IV) must be at least %d bytes',
                 $this->getSaltSize()
             ));
         }
 
-        return mb_substr($this->iv, 0, $this->getSaltSize(), '8bit');
+        return \mb_substr($this->iv, 0, $this->getSaltSize(), '8bit');
     }
 
     /**
@@ -729,7 +729,7 @@ class Openssl implements SymmetricInterface
         if (empty($mode)) {
             return $this;
         }
-        if (! in_array($mode, $this->getSupportedModes())) {
+        if (! \in_array($mode, $this->getSupportedModes())) {
             throw new Exception\InvalidArgumentException(sprintf(
                 'The mode %s is not supported by %s',
                 $mode,
@@ -758,7 +758,7 @@ class Openssl implements SymmetricInterface
     protected function getOpensslAlgos()
     {
         if (empty($this->opensslAlgos)) {
-            $this->opensslAlgos = openssl_get_cipher_methods(true);
+            $this->opensslAlgos = \openssl_get_cipher_methods(true);
         }
         return $this->opensslAlgos;
     }
@@ -773,7 +773,7 @@ class Openssl implements SymmetricInterface
         $modes = [];
         foreach ($this->encryptionModes as $mode) {
             $algo = $this->encryptionAlgos[$this->algo] . '-' . $mode;
-            if (in_array($algo, $this->getOpensslAlgos())) {
+            if (\in_array($algo, $this->getOpensslAlgos())) {
                 $modes[] = $mode;
             }
         }
@@ -798,9 +798,9 @@ class Openssl implements SymmetricInterface
     public function isAuthEncAvailable()
     {
         // Counter with CBC-MAC
-        $ccm = in_array('aes-256-ccm', $this->getOpensslAlgos());
+        $ccm = \in_array('aes-256-ccm', $this->getOpensslAlgos());
         // Galois/Counter Mode
-        $gcm = in_array('aes-256-gcm', $this->getOpensslAlgos());
+        $gcm = \in_array('aes-256-gcm', $this->getOpensslAlgos());
 
         return PHP_VERSION_ID >= 70100 && ($ccm || $gcm);
     }
@@ -810,7 +810,7 @@ class Openssl implements SymmetricInterface
      */
     private function isCcmOrGcm()
     {
-        return in_array(strtolower($this->mode), ['gcm', 'ccm'], true);
+        return \in_array(strtolower($this->mode), ['gcm', 'ccm'], true);
     }
 
     /**
@@ -823,11 +823,11 @@ class Openssl implements SymmetricInterface
     private function attemptOpensslDecrypt($cipherText, $iv, $tag)
     {
         if ($this->isCcmOrGcm()) {
-            return openssl_decrypt(
+            return \openssl_decrypt(
                 $cipherText,
-                strtolower($this->encryptionAlgos[$this->algo] . '-' . $this->mode),
+                \strtolower($this->encryptionAlgos[$this->algo] . '-' . $this->mode),
                 $this->getKey(),
-                OPENSSL_RAW_DATA | OPENSSL_ZERO_PADDING,
+                \OPENSSL_RAW_DATA | \OPENSSL_ZERO_PADDING,
                 $iv,
                 $tag,
                 $this->getAad()
@@ -836,9 +836,9 @@ class Openssl implements SymmetricInterface
 
         return openssl_decrypt(
             $cipherText,
-            strtolower($this->encryptionAlgos[$this->algo] . '-' . $this->mode),
+            \strtolower($this->encryptionAlgos[$this->algo] . '-' . $this->mode),
             $this->getKey(),
-            OPENSSL_RAW_DATA | OPENSSL_ZERO_PADDING,
+            \OPENSSL_RAW_DATA | \OPENSSL_ZERO_PADDING,
             $iv
         );
     }

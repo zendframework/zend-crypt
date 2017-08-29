@@ -36,7 +36,7 @@ class Hash
             );
         }
 
-        return hash($hash, $data, $output);
+        return \hash($hash, $data, $output);
     }
 
     /**
@@ -48,7 +48,7 @@ class Hash
      */
     public static function getOutputSize($hash, $output = self::OUTPUT_STRING)
     {
-        return mb_strlen(static::compute($hash, 'data', $output), '8bit');
+        return \mb_strlen(static::compute($hash, 'data', $output), '8bit');
     }
 
     /**
@@ -58,7 +58,7 @@ class Hash
      */
     public static function getSupportedAlgorithms()
     {
-        return hash_algos();
+        return \hash_algos();
     }
 
     /**
@@ -73,7 +73,7 @@ class Hash
             return true;
         }
 
-        if (in_array(strtolower($algorithm), hash_algos(), true)) {
+        if (\in_array(\strtolower($algorithm), \hash_algos(), true)) {
             static::$lastAlgorithmSupported = $algorithm;
             return true;
         }

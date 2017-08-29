@@ -43,14 +43,14 @@ class Bcrypt implements PasswordInterface
                 $options = ArrayUtils::iteratorToArray($options);
             }
 
-            if (!is_array($options)) {
+            if (!\is_array($options)) {
                 throw new Exception\InvalidArgumentException(
                     'The options parameter must be an array or a Traversable'
                 );
             }
 
             foreach ($options as $key => $value) {
-                switch (strtolower($key)) {
+                switch (\strtolower($key)) {
                     case 'salt':
                         $this->setSalt($value);
                         break;
@@ -72,11 +72,11 @@ class Bcrypt implements PasswordInterface
     public function create($password)
     {
         $options = [ 'cost' => (int) $this->cost ];
-        if (PHP_VERSION_ID < 70000) { // salt is deprecated from PHP 7.0
+        if (\PHP_VERSION_ID < 70000) { // salt is deprecated from PHP 7.0
             $salt = $this->salt ?: Rand::getBytes(self::MIN_SALT_SIZE);
             $options['salt'] = $salt;
         }
-        return password_hash($password, PASSWORD_BCRYPT, $options);
+        return password_hash($password, \PASSWORD_BCRYPT, $options);
     }
 
     /**
@@ -88,7 +88,7 @@ class Bcrypt implements PasswordInterface
      */
     public function verify($password, $hash)
     {
-        return password_verify($password, $hash);
+        return \password_verify($password, $hash);
     }
 
     /**
@@ -107,7 +107,7 @@ class Bcrypt implements PasswordInterface
                     'The cost parameter of bcrypt must be in range 04-31'
                 );
             }
-            $this->cost = sprintf('%1$02d', $cost);
+            $this->cost = \sprintf('%1$02d', $cost);
         }
         return $this;
     }
@@ -131,11 +131,11 @@ class Bcrypt implements PasswordInterface
      */
     public function setSalt($salt)
     {
-        if (PHP_VERSION_ID >= 70000) {
-            trigger_error('Salt support is deprecated starting with PHP 7.0.0', E_USER_DEPRECATED);
+        if (\PHP_VERSION_ID >= 70000) {
+            trigger_error('Salt support is deprecated starting with PHP 7.0.0', \E_USER_DEPRECATED);
         }
 
-        if (mb_strlen($salt, '8bit') < self::MIN_SALT_SIZE) {
+        if (\mb_strlen($salt, '8bit') < self::MIN_SALT_SIZE) {
             throw new Exception\InvalidArgumentException(
                 'The length of the salt must be at least ' . self::MIN_SALT_SIZE . ' bytes'
             );
@@ -152,8 +152,8 @@ class Bcrypt implements PasswordInterface
      */
     public function getSalt()
     {
-        if (PHP_VERSION_ID >= 70000) {
-            trigger_error('Salt support is deprecated starting with PHP 7.0.0', E_USER_DEPRECATED);
+        if (\PHP_VERSION_ID >= 70000) {
+            \trigger_error('Salt support is deprecated starting with PHP 7.0.0', \E_USER_DEPRECATED);
         }
 
         return $this->salt;
@@ -177,9 +177,9 @@ class Bcrypt implements PasswordInterface
 
         do {
             $cost++;
-            $start = microtime(true);
-            password_hash('test', PASSWORD_BCRYPT, [ 'cost' => $cost ]);
-            $end = microtime(true);
+            $start = \microtime(true);
+            \password_hash('test', \PASSWORD_BCRYPT, [ 'cost' => $cost ]);
+            $end = \microtime(true);
         } while (($end - $start) < $timeTarget);
 
         return $cost;

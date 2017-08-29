@@ -130,8 +130,8 @@ class BlockCipher
      */
     public static function setSymmetricPluginManager($plugins)
     {
-        if (is_string($plugins)) {
-            if (!class_exists($plugins) || ! is_subclass_of($plugins, ContainerInterface::class)) {
+        if (\is_string($plugins)) {
+            if (!\class_exists($plugins) || ! \is_subclass_of($plugins, ContainerInterface::class)) {
                 throw new Exception\InvalidArgumentException(sprintf(
                     'Unable to locate symmetric cipher plugins using class "%s"; '
                     . 'class does not exist or does not implement ContainerInterface',
@@ -143,7 +143,7 @@ class BlockCipher
         if (!$plugins instanceof ContainerInterface) {
             throw new Exception\InvalidArgumentException(sprintf(
                 'Symmetric plugin must implements Interop\Container\ContainerInterface;; received "%s"',
-                (is_object($plugins) ? get_class($plugins) : gettype($plugins))
+                (is_object($plugins) ? \get_class($plugins) : \gettype($plugins))
             ));
         }
         static::$symmetricPlugins = $plugins;
@@ -390,15 +390,15 @@ class BlockCipher
     {
         // 0 (as integer), 0.0 (as float) & '0' (as string) will return false, though these should be allowed
         // Must be a string, integer, or float in order to encrypt
-        if ((is_string($data) && $data === '')
-            || is_array($data)
-            || is_object($data)
+        if ((\is_string($data) && $data === '')
+            || \is_array($data)
+            || \is_object($data)
         ) {
             throw new Exception\InvalidArgumentException('The data to encrypt cannot be empty');
         }
 
         // Cast to string prior to encrypting
-        if (!is_string($data)) {
+        if (!\is_string($data)) {
             $data = (string) $data;
         }
 
@@ -411,7 +411,7 @@ class BlockCipher
             $this->cipher->setSalt(Rand::getBytes($this->cipher->getSaltSize()));
         }
 
-        if (in_array($this->cipher->getMode(), ['ccm', 'gcm'], true)) {
+        if (\in_array($this->cipher->getMode(), ['ccm', 'gcm'], true)) {
             return $this->encryptViaCcmOrGcm($data, $keySize);
         }
 
@@ -424,15 +424,15 @@ class BlockCipher
             $keySize * 2
         );
         // set the encryption key
-        $this->cipher->setKey(mb_substr($hash, 0, $keySize, '8bit'));
+        $this->cipher->setKey(\mb_substr($hash, 0, $keySize, '8bit'));
         // set the key for HMAC
-        $keyHmac = mb_substr($hash, $keySize, null, '8bit');
+        $keyHmac = \mb_substr($hash, $keySize, null, '8bit');
         // encryption
         $ciphertext = $this->cipher->encrypt($data);
         // HMAC
         $hmac = Hmac::compute($keyHmac, $this->hash, $this->cipher->getAlgorithm() . $ciphertext);
 
-        return $this->binaryOutput ? $hmac . $ciphertext : $hmac . base64_encode($ciphertext);
+        return $this->binaryOutput ? $hmac . $ciphertext : $hmac . \base64_encode($ciphertext);
     }
 
     /**
@@ -444,7 +444,7 @@ class BlockCipher
      */
     public function decrypt($data)
     {
-        if (!is_string($data)) {
+        if (!\is_string($data)) {
             throw new Exception\InvalidArgumentException('The data to decrypt must be a string');
         }
         if ('' === $data) {
@@ -456,15 +456,15 @@ class BlockCipher
 
         $keySize = $this->cipher->getKeySize();
 
-        if (in_array($this->cipher->getMode(), ['ccm', 'gcm'], true)) {
+        if (\in_array($this->cipher->getMode(), ['ccm', 'gcm'], true)) {
             return $this->decryptViaCcmOrGcm($data, $keySize);
         }
 
         $hmacSize   = Hmac::getOutputSize($this->hash);
-        $hmac       = mb_substr($data, 0, $hmacSize, '8bit');
-        $ciphertext = mb_substr($data, $hmacSize, null, '8bit') ?: '';
+        $hmac       = \mb_substr($data, 0, $hmacSize, '8bit');
+        $ciphertext = \mb_substr($data, $hmacSize, null, '8bit') ?: '';
         if (! $this->binaryOutput) {
-            $ciphertext = base64_decode($ciphertext);
+            $ciphertext = \base64_decode($ciphertext);
         }
         $iv = mb_substr($ciphertext, 0, $this->cipher->getSaltSize(), '8bit');
         // generate the encryption key and the HMAC key for the authentication
@@ -476,9 +476,9 @@ class BlockCipher
             $keySize * 2
         );
         // set the decryption key
-        $this->cipher->setKey(mb_substr($hash, 0, $keySize, '8bit'));
+        $this->cipher->setKey(\mb_substr($hash, 0, $keySize, '8bit'));
         // set the key for HMAC
-        $keyHmac = mb_substr($hash, $keySize, null, '8bit');
+        $keyHmac = \mb_substr($hash, $keySize, null, '8bit');
         $hmacNew = Hmac::compute($keyHmac, $this->hash, $this->cipher->getAlgorithm() . $ciphertext);
         if (!Utils::compareStrings($hmacNew, $hmac)) {
             return false;
@@ -524,8 +524,8 @@ class BlockCipher
      */
     private function decryptViaCcmOrGcm($data, $keySize)
     {
-        $cipherText = $this->binaryOutput ? $data : base64_decode($data);
-        $iv         = mb_substr($cipherText, $this->cipher->getTagSize(), $this->cipher->getSaltSize(), '8bit');
+        $cipherText = $this->binaryOutput ? $data : \base64_decode($data);
+        $iv         = \mb_substr($cipherText, $this->cipher->getTagSize(), $this->cipher->getSaltSize(), '8bit');
 
         $this->cipher->setKey(Pbkdf2::calc(
             $this->getPbkdf2HashAlgorithm(),
