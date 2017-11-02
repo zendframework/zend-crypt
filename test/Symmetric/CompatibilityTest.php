@@ -9,7 +9,7 @@
 
 namespace ZendTest\Crypt\Symmetric;
 
-use PHPUnit_Framework_TestCase as TestCase;
+use PHPUnit\Framework\TestCase;
 use Zend\Crypt\Symmetric\Openssl;
 use Zend\Crypt\Symmetric\Mcrypt;
 use Zend\Math\Rand;

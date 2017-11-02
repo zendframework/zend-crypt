@@ -9,13 +9,14 @@
 
 namespace ZendTest\Crypt\Password;
 
+use PHPUnit\Framework\TestCase;
 use Zend\Crypt\Password\Bcrypt;
 use Zend\Math\Rand;
 
 /**
  * @group      Zend_Crypt
  */
-class BcryptBCTest extends \PHPUnit_Framework_TestCase
+class BcryptBCTest extends TestCase
 {
     public function setUp()
     {

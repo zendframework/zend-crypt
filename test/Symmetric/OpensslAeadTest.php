@@ -9,6 +9,7 @@
 
 namespace ZendTest\Crypt\Symmetric;
 
+use PHPUnit\Framework\TestCase;
 use Zend\Crypt\Symmetric\Exception\InvalidArgumentException;
 use Zend\Crypt\Symmetric\Exception\RuntimeException;
 use Zend\Crypt\Symmetric\Openssl;
@@ -19,7 +20,7 @@ use Zend\Math\Rand;
  * This is a set of unit tests for OpenSSL Authenticated Encrypt with Associated Data (AEAD)
  * support from PHP 7.1+
  */
-class OpensslAeadTest extends \PHPUnit_Framework_TestCase
+class OpensslAeadTest extends TestCase
 {
     /**
      * @var Openssl
@@ -154,7 +155,6 @@ class OpensslAeadTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @dataProvider getAuthEncryptionMode
-     * @expectedException
      */
     public function testAuthenticationError($mode)
     {
@@ -170,7 +170,6 @@ class OpensslAeadTest extends \PHPUnit_Framework_TestCase
         $encrypt[$i] = $encrypt[$i] ^ chr(1);
 
         $this->expectException(RuntimeException::class);
-
         $this->crypt->decrypt($encrypt);
     }
 

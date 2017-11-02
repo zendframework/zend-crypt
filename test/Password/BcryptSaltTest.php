@@ -10,16 +10,21 @@
 namespace ZendTest\Crypt\Password;
 
 use ArrayObject;
+use PHPUnit\Framework\TestCase;
 use Zend\Crypt\Password\Bcrypt;
+use Zend\Crypt\Password\Exception;
 
-class BcryptSaltTest extends \PHPUnit_Framework_TestCase
+class BcryptSaltTest extends TestCase
 {
     /** @var Bcrypt */
     public $bcrypt;
+
     /** @var string */
     public $salt;
+
     /** @var string */
     public $bcryptPassword;
+
     /** @var string */
     public $password;
 
@@ -27,7 +32,7 @@ class BcryptSaltTest extends \PHPUnit_Framework_TestCase
     {
         if (PHP_VERSION_ID >= 70000) {
             $this->markTestSkipped(
-                sprintf("I cannot execute %s with PHP 7+", __CLASS__)
+                sprintf('I cannot execute %s with PHP 7+', __CLASS__)
             );
         }
         $this->bcrypt   = new Bcrypt();
@@ -73,10 +78,11 @@ class BcryptSaltTest extends \PHPUnit_Framework_TestCase
 
     public function testSetSmallSalt()
     {
-        $this->setExpectedException(
-            'Zend\Crypt\Password\Exception\InvalidArgumentException',
-            'The length of the salt must be at least ' . Bcrypt::MIN_SALT_SIZE . ' bytes'
-        );
+        $this->expectException(Exception\InvalidArgumentException::class);
+        $this->expectExceptionMessage(sprintf(
+            'The length of the salt must be at least %d bytes',
+            Bcrypt::MIN_SALT_SIZE
+        ));
         $this->bcrypt->setSalt('small salt');
     }
 

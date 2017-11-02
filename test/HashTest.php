@@ -9,6 +9,7 @@
 
 namespace ZendTest\Crypt;
 
+use PHPUnit\Framework\TestCase;
 use Zend\Crypt\Hash;
 
 /**
@@ -19,7 +20,7 @@ use Zend\Crypt\Hash;
 /**
  * @group      Zend_Crypt
  */
-class HashTest extends \PHPUnit_Framework_TestCase
+class HashTest extends TestCase
 {
     public function testIsSupportedAndCache()
     {
@@ -121,19 +122,15 @@ class HashTest extends \PHPUnit_Framework_TestCase
     public function testNullHashAlgorithm()
     {
         Hash::clearLastAlgorithmCache();
-        $this->setExpectedException(
-            'Zend\Crypt\Exception\InvalidArgumentException',
-            'Hash algorithm provided is not supported on this PHP installation'
-        );
+        $this->expectException('Zend\Crypt\Exception\InvalidArgumentException');
+        $this->expectExceptionMessage('Hash algorithm provided is not supported on this PHP installation');
         Hash::compute(null, 'test');
     }
 
     public function testWrongHashAlgorithm()
     {
-        $this->setExpectedException(
-            'Zend\Crypt\Exception\InvalidArgumentException',
-            'Hash algorithm provided is not supported on this PHP installation'
-        );
+        $this->expectException('Zend\Crypt\Exception\InvalidArgumentException');
+        $this->expectExceptionMessage('Hash algorithm provided is not supported on this PHP installation');
         Hash::compute('wrong', 'test');
     }
 

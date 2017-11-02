@@ -9,6 +9,7 @@
 
 namespace ZendTest\Crypt;
 
+use PHPUnit\Framework\TestCase;
 use Zend\Crypt\Hmac;
 
 /**
@@ -19,7 +20,7 @@ use Zend\Crypt\Hmac;
 /**
  * @group      Zend_Crypt
  */
-class HmacTest extends \PHPUnit_Framework_TestCase
+class HmacTest extends TestCase
 {
     public function testIsSupportedAndCache()
     {
@@ -140,28 +141,22 @@ class HmacTest extends \PHPUnit_Framework_TestCase
     public function testEmptyKey()
     {
         Hmac::clearLastAlgorithmCache();
-        $this->setExpectedException(
-            'Zend\Crypt\Exception\InvalidArgumentException',
-            'Provided key is null or empty'
-        );
+        $this->expectException('Zend\Crypt\Exception\InvalidArgumentException');
+        $this->expectExceptionMessage('Provided key is null or empty');
         Hmac::compute(null, 'md5', 'test');
     }
 
     public function testNullHashAlgorithm()
     {
-        $this->setExpectedException(
-            'Zend\Crypt\Exception\InvalidArgumentException',
-            'Hash algorithm is not supported on this PHP installation'
-        );
+        $this->expectException('Zend\Crypt\Exception\InvalidArgumentException');
+        $this->expectExceptionMessage('Hash algorithm is not supported on this PHP installation');
         Hmac::compute('key', null, 'test');
     }
 
     public function testWrongHashAlgorithm()
     {
-        $this->setExpectedException(
-            'Zend\Crypt\Exception\InvalidArgumentException',
-            'Hash algorithm is not supported on this PHP installation'
-        );
+        $this->expectException('Zend\Crypt\Exception\InvalidArgumentException');
+        $this->expectExceptionMessage('Hash algorithm is not supported on this PHP installation');
         Hmac::compute('key', 'wrong', 'test');
     }
 

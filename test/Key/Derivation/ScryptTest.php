@@ -9,16 +9,19 @@
 
 namespace ZendTest\Crypt\Key\Derivation;
 
+use PHPUnit\Framework\TestCase;
+use ReflectionClass;
+use Zend\Crypt\Key\Derivation\Exception;
 use Zend\Crypt\Key\Derivation\Scrypt;
 
 /**
  * @group      Zend_Crypt
  */
-class ScryptTest extends \PHPUnit_Framework_TestCase
+class ScryptTest extends TestCase
 {
     protected static function getMethod($name)
     {
-        $class = new \ReflectionClass('Zend\Crypt\Key\Derivation\Scrypt');
+        $class = new ReflectionClass(Scrypt::class);
         $method = $class->getMethod($name);
         $method->setAccessible(true);
         return $method;
@@ -41,13 +44,12 @@ class ScryptTest extends \PHPUnit_Framework_TestCase
                       b4 39 31 68 e3 c9 e6 bc fe 6b c5 b7 a0 6d 96 ba
                       e4 24 cc 10 2c 91 74 5c 24 ad 67 3d c7 61 8f 81';
 
-
         $salsaAlg = 'salsa208Core32';
         if (PHP_INT_SIZE === 8) {
             $salsaAlg = 'salsa208Core64';
         }
         $salsa20 = self::getMethod($salsaAlg);
-        $obj     = $this->getMockForAbstractClass('Zend\Crypt\Key\Derivation\Scrypt');
+        $obj     = $this->getMockForAbstractClass(Scrypt::class);
         $input   = self::hex2bin(str_replace([' ', "\n"], '', $hexInput));
         $result  = $salsa20->invokeArgs($obj, [$input]);
 
@@ -55,6 +57,7 @@ class ScryptTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(64, strlen($result), 'Output must be a string of 64 bytes');
         $this->assertEquals(str_replace([' ', "\n"], '', $hexOutput), bin2hex($result));
     }
+
     /**
      * Test vector of Scrypt BlockMix
      *
@@ -83,7 +86,7 @@ class ScryptTest extends \PHPUnit_Framework_TestCase
                       5d 2a 22 58 77 d5 ed f5 84 2c b9 f1 4e ef e4 25';
 
         $blockMix = self::getMethod('scryptBlockMix');
-        $obj      = $this->getMockForAbstractClass('Zend\Crypt\Key\Derivation\Scrypt');
+        $obj      = $this->getMockForAbstractClass(Scrypt::class);
         $input    = self::hex2bin(str_replace([' ', "\n"], '', $hexInput));
         $result   = $blockMix->invokeArgs($obj, [$input, 1]);
 
@@ -115,15 +118,13 @@ class ScryptTest extends \PHPUnit_Framework_TestCase
                       ae 12 fd 44 38 f2 03 a0 e4 e1 c4 7e c3 14 86 1f
                       4e 90 87 cb 33 39 6a 68 73 e8 f9 d2 53 9a 4b 8e';
 
-
         $roMix  = self::getMethod('scryptROMix');
-        $obj    = $this->getMockForAbstractClass('Zend\Crypt\Key\Derivation\Scrypt');
+        $obj    = $this->getMockForAbstractClass(Scrypt::class);
         $input  = self::hex2bin(str_replace([' ', "\n"], '', $hexInput));
         $result = $roMix->invokeArgs($obj, [$input, 16, 1]);
 
         $this->assertEquals(str_replace([' ', "\n"], '', $hexOutput), bin2hex($result));
     }
-
 
     /**
      * Test Vector Scrypt
@@ -142,21 +143,22 @@ class ScryptTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(str_replace([' ', "\n"], '', $hexOutput), bin2hex($result));
     }
 
-    /**
-     * @expectedException Zend\Crypt\Key\Derivation\Exception\InvalidArgumentException
-     */
-    public function testScryptWrongN()
+    public function testScryptWrongN1()
     {
-        $result = Scrypt::calc('test', 'salt', 17, 1, 1, 64);
-        $result = Scrypt::calc('test', 'salt', PHP_INT_MAX, 1, 1, 64);
+        $this->expectException(Exception\InvalidArgumentException::class);
+        Scrypt::calc('test', 'salt', 17, 1, 1, 64);
     }
 
-    /**
-     * @expectedException Zend\Crypt\Key\Derivation\Exception\InvalidArgumentException
-     */
+    public function testScryptWronN2()
+    {
+        $this->expectException(Exception\InvalidArgumentException::class);
+        Scrypt::calc('test', 'salt', PHP_INT_MAX, 1, 1, 64);
+    }
+
     public function testScryptWrongR()
     {
-        $result = Scrypt::calc('test', 'salt', PHP_INT_MAX / 128, 4, 1, 64);
+        $this->expectException(Exception\InvalidArgumentException::class);
+        Scrypt::calc('test', 'salt', PHP_INT_MAX / 128, 4, 1, 64);
     }
 
     /**
@@ -166,7 +168,7 @@ class ScryptTest extends \PHPUnit_Framework_TestCase
     {
         for ($size = 0; $size < 64; $size++) {
             if (extension_loaded('Scrypt') && ($size < 16)) {
-                $this->setExpectedException('Zend\Crypt\Key\Derivation\Exception\InvalidArgumentException');
+                $this->expectException(Exception\InvalidArgumentException::class);
             }
             $result = Scrypt::calc('test', 'salt', 16, 1, 1, $size) ?: '';
             $this->assertEquals($size, strlen($result));

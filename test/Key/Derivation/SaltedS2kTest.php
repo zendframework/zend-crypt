@@ -9,12 +9,14 @@
 
 namespace ZendTest\Crypt\Key\Derivation;
 
+use PHPUnit\Framework\TestCase;
+use Zend\Crypt\Key\Derivation\Exception;
 use Zend\Crypt\Key\Derivation\SaltedS2k;
 
 /**
  * @group      Zend_Crypt
  */
-class SaltedS2kTest extends \PHPUnit_Framework_TestCase
+class SaltedS2kTest extends TestCase
 {
     /** @var string */
     public $salt;
@@ -30,6 +32,7 @@ class SaltedS2kTest extends \PHPUnit_Framework_TestCase
             $this->markTestSkipped('The mhash extension is not available');
             return;
         }
+
         $password = SaltedS2k::calc('sha256', 'test', $this->salt, 32);
         $this->assertEquals(32, strlen($password));
         $this->assertEquals('qzQISUBUSP1iqYtwe/druhdOVqluc/Y2TetdSHSbaw8=', base64_encode($password));
@@ -41,11 +44,13 @@ class SaltedS2kTest extends \PHPUnit_Framework_TestCase
             $this->markTestSkipped('The mhash extension is not available');
             return;
         }
-        $this->setExpectedException(
-            'Zend\Crypt\Key\Derivation\Exception\InvalidArgumentException',
-            'The hash algorithm wrong is not supported by Zend\Crypt\Key\Derivation\SaltedS2k'
-        );
-        $password = SaltedS2k::calc('wrong', 'test', $this->salt, 32);
+
+        $this->expectException(Exception\InvalidArgumentException::class);
+        $this->expectExceptionMessage(sprintf(
+            'The hash algorithm wrong is not supported by %s',
+            SaltedS2k::class
+        ));
+        SaltedS2k::calc('wrong', 'test', $this->salt, 32);
     }
 
     public function testCalcWithWrongSalt()
@@ -54,10 +59,9 @@ class SaltedS2kTest extends \PHPUnit_Framework_TestCase
             $this->markTestSkipped('The mhash extension is not available');
             return;
         }
-        $this->setExpectedException(
-            'Zend\Crypt\Key\Derivation\Exception\InvalidArgumentException',
-            'The salt size must be at least of 8 bytes'
-        );
-        $password = SaltedS2k::calc('sha256', 'test', substr($this->salt, -1), 32);
+
+        $this->expectException(Exception\InvalidArgumentException::class);
+        $this->expectExceptionMessage('The salt size must be at least of 8 bytes');
+        SaltedS2k::calc('sha256', 'test', substr($this->salt, -1), 32);
     }
 }

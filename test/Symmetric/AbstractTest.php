@@ -11,6 +11,7 @@ namespace ZendTest\Crypt\Symmetric;
 
 use ArrayObject;
 use Interop\Container\ContainerInterface;
+use PHPUnit\Framework\TestCase;
 use Zend\Crypt\Symmetric\Exception;
 use Zend\Crypt\Symmetric\Padding\NoPadding;
 use Zend\Crypt\Symmetric\Padding\PKCS7;
@@ -19,7 +20,7 @@ use Zend\Math\Rand;
 /**
  * @group      Zend_Crypt
  */
-abstract class AbstractTest extends \PHPUnit_Framework_TestCase
+abstract class AbstractTest extends TestCase
 {
     /**
      * @var string
@@ -104,11 +105,9 @@ abstract class AbstractTest extends \PHPUnit_Framework_TestCase
     public function testConstructWrongParam()
     {
         $options = 'test';
-        $this->setExpectedException(
-            Exception\InvalidArgumentException::class,
-            'The options parameter must be an array or a Traversable'
-        );
-        $crypt = new $this->adapterClass($options);
+        $this->expectException(Exception\InvalidArgumentException::class);
+        $this->expectExceptionMessage('The options parameter must be an array or a Traversable');
+        new $this->adapterClass($options);
     }
 
     public function testSetAlgorithm()
@@ -119,10 +118,11 @@ abstract class AbstractTest extends \PHPUnit_Framework_TestCase
 
     public function testSetWrongAlgorithm()
     {
-        $this->setExpectedException(
-            Exception\InvalidArgumentException::class,
-            sprintf("The algorithm test is not supported by %s", $this->adapterClass)
-        );
+        $this->expectException(Exception\InvalidArgumentException::class);
+        $this->expectExceptionMessage(sprintf(
+            'The algorithm test is not supported by %s',
+            $this->adapterClass
+        ));
         $this->crypt->setAlgorithm('test');
     }
 
@@ -137,11 +137,9 @@ abstract class AbstractTest extends \PHPUnit_Framework_TestCase
 
     public function testSetEmptyKey()
     {
-        $this->setExpectedException(
-            Exception\InvalidArgumentException::class,
-            'The key cannot be empty'
-        );
-        $result = $this->crypt->setKey('');
+        $this->expectException(Exception\InvalidArgumentException::class);
+        $this->expectExceptionMessage('The key cannot be empty');
+        $this->crypt->setKey('');
     }
 
     public function testSetShortKey()
@@ -170,11 +168,9 @@ abstract class AbstractTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($iv, $this->crypt->getOriginalSalt());
     }
 
-    /**
-     * @expectedException Zend\Crypt\Symmetric\Exception\InvalidArgumentException
-     */
     public function testShortSalt()
     {
+        $this->expectException(Exception\InvalidArgumentException::class);
         $this->crypt->setSalt('short');
     }
 
@@ -186,10 +182,11 @@ abstract class AbstractTest extends \PHPUnit_Framework_TestCase
 
     public function testSetWrongMode()
     {
-        $this->setExpectedException(
-            Exception\InvalidArgumentException::class,
-            sprintf("The mode xxx is not supported by %s", $this->crypt->getAlgorithm())
-        );
+        $this->expectException(Exception\InvalidArgumentException::class);
+        $this->expectExceptionMessage(sprintf(
+            'The mode xxx is not supported by %s',
+            $this->crypt->getAlgorithm()
+        ));
         $this->crypt->setMode('xxx');
     }
 
@@ -222,41 +219,35 @@ abstract class AbstractTest extends \PHPUnit_Framework_TestCase
 
     public function testEncryptWithoutKey()
     {
-        $this->setExpectedException('Zend\Crypt\Symmetric\Exception\InvalidArgumentException');
-        $ciphertext = $this->crypt->encrypt('test');
+        $this->expectException(Exception\InvalidArgumentException::class);
+        $this->crypt->encrypt('test');
     }
 
     public function testEncryptEmptyData()
     {
-        $this->setExpectedException(
-            Exception\InvalidArgumentException::class,
-            'The data to encrypt cannot be empty'
-        );
-        $ciphertext = $this->crypt->encrypt('');
+        $this->expectException(Exception\InvalidArgumentException::class);
+        $this->expectExceptionMessage('The data to encrypt cannot be empty');
+        $this->crypt->encrypt('');
     }
 
     public function testEncryptWithoutSalt()
     {
         $this->crypt->setKey($this->generateKey());
-        $this->setExpectedException(
-            Exception\InvalidArgumentException::class,
-            'The salt (IV) cannot be empty'
-        );
-        $ciphertext = $this->crypt->encrypt($this->plaintext);
+        $this->expectException(Exception\InvalidArgumentException::class);
+        $this->expectExceptionMessage('The salt (IV) cannot be empty');
+        $this->crypt->encrypt($this->plaintext);
     }
 
     public function testDecryptEmptyData()
     {
-        $this->setExpectedException(
-            Exception\InvalidArgumentException::class,
-            'The data to decrypt cannot be empty'
-        );
-        $ciphertext = $this->crypt->decrypt('');
+        $this->expectException(Exception\InvalidArgumentException::class);
+        $this->expectExceptionMessage('The data to decrypt cannot be empty');
+        $this->crypt->decrypt('');
     }
 
     public function testDecryptWithoutKey()
     {
-        $this->setExpectedException(Exception\InvalidArgumentException::class);
+        $this->expectException(Exception\InvalidArgumentException::class);
         $this->crypt->decrypt($this->plaintext);
     }
 
@@ -291,24 +282,16 @@ abstract class AbstractTest extends \PHPUnit_Framework_TestCase
         $this->assertInstanceOf(ContainerInterface::class, $this->crypt->getPaddingPluginManager());
     }
 
-    /**
-     * @expectedException Zend\Crypt\Symmetric\Exception\InvalidArgumentException
-     */
     public function testSetWrongPaddingPluginManager()
     {
-        $this->crypt->setPaddingPluginManager(
-            stdClass::class
-        );
+        $this->expectException(Exception\InvalidArgumentException::class);
+        $this->crypt->setPaddingPluginManager(\stdClass::class);
     }
 
-    /**
-     * @expectedException Zend\Crypt\Symmetric\Exception\InvalidArgumentException
-     */
     public function testSetNotExistingPaddingPluginManager()
     {
-        $this->crypt->setPaddingPluginManager(
-            'Foo'
-        );
+        $this->expectException(Exception\InvalidArgumentException::class);
+        $this->crypt->setPaddingPluginManager('Foo');
     }
 
     protected function generateKey()

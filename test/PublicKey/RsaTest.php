@@ -9,6 +9,7 @@
 
 namespace ZendTest\Crypt\PublicKey;
 
+use PHPUnit\Framework\TestCase;
 use Zend\Crypt\PublicKey\Rsa;
 use Zend\Crypt\PublicKey\RsaOptions;
 use Zend\Crypt\PublicKey\Rsa\Exception;
@@ -16,7 +17,7 @@ use Zend\Crypt\PublicKey\Rsa\Exception;
 /**
  * @group      Zend_Crypt
  */
-class RsaTest extends \PHPUnit_Framework_TestCase
+class RsaTest extends TestCase
 {
     /** @var string */
     protected $testPemString = null;
@@ -436,7 +437,7 @@ CERT;
     public function testDecryptCorruptBase64()
     {
         $data = 'vNKINbWV6qUKGsmawN8ii0mak7PPNoVQPC7fwXJOgMNfCgdT+9W4PUte4fic6U4A6fMra4gv7NCTESxap2qpBQ==';
-        $this->setExpectedException('Zend\Crypt\PublicKey\Rsa\Exception\RuntimeException');
+        $this->expectException(Exception\RuntimeException::class);
         $this->rsa->decrypt(base64_decode($data), null, Rsa::MODE_BASE64);
     }
 
@@ -450,7 +451,7 @@ CERT;
     public function testDecryptCorruptRaw()
     {
         $data = 'vNKINbWV6qUKGsmawN8ii0mak7PPNoVQPC7fwXJOgMNfCgdT+9W4PUte4fic6U4A6fMra4gv7NCTESxap2qpBQ==';
-        $this->setExpectedException('Zend\Crypt\PublicKey\Rsa\Exception\RuntimeException');
+        $this->expectException(Exception\RuntimeException::class);
         $this->rsa->decrypt($data, null, Rsa::MODE_RAW);
     }
 

@@ -9,13 +9,15 @@
 
 namespace ZendTest\Crypt\Password;
 
+use PHPUnit\Framework\TestCase;
 use Zend\Crypt\Password\Apache;
 use Zend\Crypt\Password\Bcrypt;
+use Zend\Crypt\Password\Exception;
 
 /**
  * @group      Zend_Crypt
  */
-class ApacheTest extends \PHPUnit_Framework_TestCase
+class ApacheTest extends TestCase
 {
     /** @var Apache */
     public $apache;
@@ -27,56 +29,46 @@ class ApacheTest extends \PHPUnit_Framework_TestCase
 
     public function testConstruct()
     {
-        $this->apache = new Apache([
-            'format' => 'crypt'
-        ]);
-        $this->assertInstanceOf('Zend\Crypt\Password\Apache', $this->apache);
+        $apache = new Apache(['format' => 'crypt']);
+        $this->assertInstanceOf(Apache::class, $apache);
     }
 
-    /**
-     * @expectedException Zend\Crypt\Password\Exception\InvalidArgumentException
-     */
     public function testWrongConstruct()
     {
-        $this->apache = new Apache('crypt');
+        $this->expectException(Exception\InvalidArgumentException::class);
+        new Apache('crypt');
     }
 
-    /**
-     * @expectedException Zend\Crypt\Password\Exception\InvalidArgumentException
-     */
     public function testWrongParamConstruct()
     {
-        $this->apache = new Apache([
-            'format' => 'crypto'
-        ]);
+        $this->expectException(Exception\InvalidArgumentException::class);
+        new Apache(['format' => 'crypto']);
     }
 
     public function testSetUserName()
     {
         $result = $this->apache->setUserName('test');
-        $this->assertInstanceOf('Zend\Crypt\Password\Apache', $result);
+        $this->assertInstanceOf(Apache::class, $result);
         $this->assertEquals('test', $this->apache->getUserName());
     }
 
     public function testSetFormat()
     {
         $result = $this->apache->setFormat('crypt');
-        $this->assertInstanceOf('Zend\Crypt\Password\Apache', $result);
+        $this->assertInstanceOf(Apache::class, $result);
         $this->assertEquals('crypt', $this->apache->getFormat());
     }
 
-    /**
-     * @expectedException Zend\Crypt\Password\Exception\InvalidArgumentException
-     */
     public function testSetWrongFormat()
     {
-        $result = $this->apache->setFormat('test');
+        $this->expectException(Exception\InvalidArgumentException::class);
+        $this->apache->setFormat('test');
     }
 
     public function testSetAuthName()
     {
         $result = $this->apache->setAuthName('test');
-        $this->assertInstanceOf('Zend\Crypt\Password\Apache', $result);
+        $this->assertInstanceOf(Apache::class, $result);
         $this->assertEquals('test', $this->apache->getAuthName());
     }
 
@@ -113,32 +105,29 @@ class ApacheTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(32, strlen($hash));
     }
 
-    /**
-     * @expectedException Zend\Crypt\Password\Exception\RuntimeException
-     */
     public function testDigestWithoutPreset()
     {
         $this->apache->setFormat('digest');
+
+        $this->expectException(Exception\RuntimeException::class);
         $this->apache->create('myPassword');
     }
 
-    /**
-     * @expectedException Zend\Crypt\Password\Exception\RuntimeException
-     */
     public function testDigestWithoutAuthName()
     {
         $this->apache->setFormat('digest');
         $this->apache->setUserName('Enrico');
+
+        $this->expectException(Exception\RuntimeException::class);
         $this->apache->create('myPassword');
     }
 
-    /**
-     * @expectedException Zend\Crypt\Password\Exception\RuntimeException
-     */
     public function testDigestWithoutUserName()
     {
         $this->apache->setFormat('digest');
         $this->apache->setAuthName('Auth');
+
+        $this->expectException(Exception\RuntimeException::class);
         $this->apache->create('myPassword');
     }
 
@@ -155,7 +144,7 @@ class ApacheTest extends \PHPUnit_Framework_TestCase
             // openssl passwd -crypt -salt z0Hhe5Lq myPassword
             ['myPassword', 'z0yXKQm465G4o'],
             // htpasswd -nbs myName myPassword
-            ['myPassword', '{SHA}VBPuJHI7uixaa6LQGWx4s+5GKNE=']
+            ['myPassword', '{SHA}VBPuJHI7uixaa6LQGWx4s+5GKNE='],
         ];
     }
 
@@ -167,12 +156,15 @@ class ApacheTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($this->apache->verify($password, $hash));
     }
 
-    /**
-     * @expectedException Zend\Crypt\Password\Exception\InvalidArgumentException
-     */
-    public function testApr1Md5WrongSaltFormat()
+    public function testApr1Md5WrongSaltFormat1()
     {
+        $this->expectException(Exception\InvalidArgumentException::class);
         $this->apache->verify('myPassword', '$apr1$z0Hhe5Lq3$6YdJKbkrJg77Dvw2gpuSA1');
+    }
+
+    public function testApr1Md5WrongSaltFormat2()
+    {
+        $this->expectException(Exception\InvalidArgumentException::class);
         $this->apache->verify('myPassword', '$apr1$z0Hhe5L&$6YdJKbkrJg77Dvw2gpuSA1');
     }
 

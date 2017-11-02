@@ -9,9 +9,10 @@
 
 namespace ZendTest\Crypt\Symmetric\Padding;
 
+use PHPUnit\Framework\TestCase;
 use Zend\Crypt\Symmetric\Padding\NoPadding;
 
-class NoPaddingTest extends \PHPUnit_Framework_TestCase
+class NoPaddingTest extends TestCase
 {
     /**
      * @var NoPadding

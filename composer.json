@@ -35,6 +35,9 @@
         }
     },
     "autoload-dev": {
+        "files": [
+            "test/_autoload.php"
+        ],
         "psr-4": {
             "ZendTest\\Crypt\\": "test/"
         }

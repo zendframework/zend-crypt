@@ -9,7 +9,7 @@
 
 namespace ZendTest\Crypt\FileCipher;
 
-use PHPUnit_Framework_TestCase as TestCase;
+use PHPUnit\Framework\TestCase;
 use Zend\Crypt\FileCipher;
 use Zend\Crypt\Symmetric\Mcrypt;
 use Zend\Crypt\Symmetric\Openssl;

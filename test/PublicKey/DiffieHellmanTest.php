@@ -9,6 +9,8 @@
 
 namespace ZendTest\Crypt\PublicKey;
 
+use PHPUnit\Framework\TestCase;
+use Zend\Crypt\Exception;
 use Zend\Crypt\PublicKey\DiffieHellman;
 use Zend\Math\BigInteger;
 use Zend\Math\Exception\RuntimeException as MathException;
@@ -16,12 +18,12 @@ use Zend\Math\Exception\RuntimeException as MathException;
 /**
  * @group      Zend_Crypt
  */
-class DiffieHellmanTest extends \PHPUnit_Framework_TestCase
+class DiffieHellmanTest extends TestCase
 {
     public function setUp()
     {
         try {
-            $math = BigInteger\BigInteger::factory();
+            BigInteger\BigInteger::factory();
         } catch (MathException $e) {
             if (strpos($e->getMessage(), 'math support is not detected') !== false) {
                 $this->markTestSkipped($e->getMessage());
@@ -36,12 +38,12 @@ class DiffieHellmanTest extends \PHPUnit_Framework_TestCase
         $aliceOptions = [
             'prime'    => '563',
             'generator' => '5',
-            'private'  => '9'
+            'private'  => '9',
         ];
         $bobOptions   = [
             'prime'    => '563',
             'generator' => '5',
-            'private'  => '14'
+            'private'  => '14',
         ];
 
         DiffieHellman::useOpensslExtension(false);
@@ -240,57 +242,51 @@ class DiffieHellmanTest extends \PHPUnit_Framework_TestCase
         new DiffieHellman('563', '5', hex2bin('09'), DiffieHellman::FORMAT_BINARY);
     }
 
-    /**
-     * @expectedException Zend\Crypt\Exception\InvalidArgumentException
-     */
     public function testGetPublicKeyWithoutGenerated()
     {
         $dh = new DiffieHellman(563, 5);
-        $pubKey = $dh->getPublicKey();
+
+        $this->expectException(Exception\InvalidArgumentException::class);
+        $dh->getPublicKey();
     }
 
-    /**
-     * @expectedException Zend\Crypt\Exception\InvalidArgumentException
-     */
     public function testSetWrongPublicKey()
     {
         $dh = new DiffieHellman(563, 5);
+
+        $this->expectException(Exception\InvalidArgumentException::class);
         $dh->setPublicKey(-2);
     }
 
-    /**
-     * @expectedException Zend\Crypt\Exception\InvalidArgumentException
-     */
     public function testGetSharedSecretKeyWihoutCompute()
     {
         $dh = new DiffieHellman(563, 5);
-        $skey = $dh->getSharedSecretKey();
+
+        $this->expectException(Exception\InvalidArgumentException::class);
+        $dh->getSharedSecretKey();
     }
 
-    /**
-     * @expectedException Zend\Crypt\Exception\InvalidArgumentException
-     */
     public function testSetWrongPrime()
     {
         $dh = new DiffieHellman(563, 5);
+
+        $this->expectException(Exception\InvalidArgumentException::class);
         $dh->setPrime(-2);
     }
 
-    /**
-     * @expectedException Zend\Crypt\Exception\InvalidArgumentException
-     */
     public function testSetWrongGenerator()
     {
         $dh = new DiffieHellman(563, 5);
+
+        $this->expectException(Exception\InvalidArgumentException::class);
         $dh->setGenerator(-2);
     }
 
-    /**
-     * @expectedException Zend\Crypt\Exception\InvalidArgumentException
-     */
     public function testSetWrongPrivateKey()
     {
         $dh = new DiffieHellman(563, 5);
-        $privKey = $dh->setPrivateKey(-2);
+
+        $this->expectException(Exception\InvalidArgumentException::class);
+        $dh->setPrivateKey(-2);
     }
 }
