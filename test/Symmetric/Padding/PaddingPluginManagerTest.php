@@ -12,8 +12,8 @@ namespace ZendTest\Crypt\Symmetric\Padding;
 use Interop\Container\ContainerInterface;
 use PHPUnit\Framework\TestCase;
 use Zend\Crypt\Symmetric\Exception;
-use Zend\Crypt\Symmetric\PaddingPluginManager;
 use Zend\Crypt\Symmetric\Padding\PaddingInterface;
+use Zend\Crypt\Symmetric\PaddingPluginManager;
 
 class PaddingPluginManagerTest extends TestCase
 {

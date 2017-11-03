@@ -9,8 +9,8 @@
 
 namespace ZendTest\Crypt\Symmetric;
 
-use Zend\Crypt\Symmetric\Mcrypt;
 use Zend\Crypt\Symmetric\Exception;
+use Zend\Crypt\Symmetric\Mcrypt;
 
 /**
  * @group      Zend_Crypt

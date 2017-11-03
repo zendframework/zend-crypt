@@ -8,8 +8,8 @@
 namespace ZendTest\Crypt\BlockCipher;
 
 use PHPUnit\Framework\TestCase;
-use Zend\Crypt\Symmetric\Openssl;
 use Zend\Crypt\BlockCipher;
+use Zend\Crypt\Symmetric\Openssl;
 use Zend\Math\Rand;
 
 class OpensslAeadTest extends TestCase

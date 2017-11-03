@@ -12,9 +12,9 @@ namespace ZendTest\Crypt;
 use Interop\Container\ContainerInterface;
 use PHPUnit\Framework\TestCase;
 use Zend\Crypt\Exception as CryptException;
-use Zend\Crypt\SymmetricPluginManager;
-use Zend\Crypt\Symmetric\SymmetricInterface;
 use Zend\Crypt\Symmetric\Exception;
+use Zend\Crypt\Symmetric\SymmetricInterface;
+use Zend\Crypt\SymmetricPluginManager;
 
 class SymmetricPluginManagerTest extends TestCase
 {

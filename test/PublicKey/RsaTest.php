@@ -11,8 +11,8 @@ namespace ZendTest\Crypt\PublicKey;
 
 use PHPUnit\Framework\TestCase;
 use Zend\Crypt\PublicKey\Rsa;
-use Zend\Crypt\PublicKey\RsaOptions;
 use Zend\Crypt\PublicKey\Rsa\Exception;
+use Zend\Crypt\PublicKey\RsaOptions;
 
 /**
  * @group      Zend_Crypt

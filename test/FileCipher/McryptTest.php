@@ -9,9 +9,9 @@
 
 namespace ZendTest\Crypt\FileCipher;
 
-use Zend\Crypt\Symmetric\Mcrypt;
 use Zend\Crypt\FileCipher;
 use Zend\Crypt\Symmetric;
+use Zend\Crypt\Symmetric\Mcrypt;
 
 class McryptTest extends AbstractFileCipherTest
 {

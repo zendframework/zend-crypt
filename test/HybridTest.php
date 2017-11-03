@@ -10,9 +10,9 @@
 namespace ZendTest\Crypt;
 
 use PHPUnit\Framework\TestCase;
+use Zend\Crypt\BlockCipher;
 use Zend\Crypt\Exception;
 use Zend\Crypt\Hybrid;
-use Zend\Crypt\BlockCipher;
 use Zend\Crypt\PublicKey\Rsa;
 use Zend\Crypt\PublicKey\RsaOptions;
 
