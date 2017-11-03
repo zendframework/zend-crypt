@@ -48,7 +48,7 @@ class McryptTest extends AbstractTest
                     $result
                 );
             } else {
-                $this->assertInstanceof($this->adapterClass, $result);
+                $this->assertInstanceOf($this->adapterClass, $result);
             }
         }
     }
