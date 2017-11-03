@@ -263,7 +263,7 @@ CERT;
         $signature = $this->rsaBase64Out->sign('1234567890');
         $result    = $this->rsaBase64Out->verify('1234567890', $signature);
 
-        $this->assertSame(true, $result);
+        $this->assertTrue($result);
     }
 
     public function testEncryptionWithPublicKey()
