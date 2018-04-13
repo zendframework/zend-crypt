@@ -12,7 +12,7 @@
         "issues": "https://github.com/zendframework/zend-crypt/issues",
         "source": "https://github.com/zendframework/zend-crypt",
         "rss": "https://github.com/zendframework/zend-crypt/releases.atom",
-        "slack": "https://zendframework-slack.herokuapp.com",
+        "chat": "https://zendframework-slack.herokuapp.com",
         "forum": "https://discourse.zendframework.com/c/questions/components"
     },
     "require": {
