@@ -7,6 +7,7 @@
 
 namespace Zend\Crypt;
 
+use function functin_exists;
 use function hash_algos;
 use function hash_hmac;
 use function in_array;
@@ -74,7 +75,7 @@ class Hmac
      */
     public static function getSupportedAlgorithms()
     {
-        return hash_algos();
+        return function_exists('hash_hmac_algos') ? hash_hmac_algos() : hash_algos();
     }
 
     /**
@@ -89,7 +90,7 @@ class Hmac
             return true;
         }
 
-        if (in_array(strtolower($algorithm), hash_algos(), true)) {
+        if (in_array(strtolower($algorithm), function_exists('hash_hmac_algos') ? hash_hmac_algos() : hash_algos(), true)) {
             static::$lastAlgorithmSupported = $algorithm;
             return true;
         }
