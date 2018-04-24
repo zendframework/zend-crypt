@@ -1,10 +1,8 @@
 <?php
 /**
- * Zend Framework (http://framework.zend.com/)
- *
- * @link      http://github.com/zendframework/zf2 for the canonical source repository
- * @copyright Copyright (c) 2005-2016 Zend Technologies USA Inc. (http://www.zend.com)
- * @license   http://framework.zend.com/license/new-bsd New BSD License
+ * @see       https://github.com/zendframework/zend-crypt for the canonical source repository
+ * @copyright Copyright (c) 2005-2018 Zend Technologies USA Inc. (https://www.zend.com)
+ * @license   https://github.com/zendframework/zend-crypt/blob/master/LICENSE.md New BSD License
  */
 
 namespace Zend\Crypt;
@@ -12,6 +10,14 @@ namespace Zend\Crypt;
 use Zend\Math\Rand;
 use Zend\Crypt\PublicKey\Rsa\PublicKey as PubKey;
 use Zend\Crypt\PublicKey\Rsa\PrivateKey;
+
+use function array_search;
+use function base64_decode;
+use function base64_encode;
+use function explode;
+use function is_array;
+use function is_string;
+use function sprintf;
 
 /**
  * Hybrid encryption (OpenPGP like)
@@ -109,7 +115,7 @@ class Hybrid
         }
 
         if (! $privateKey instanceof PrivateKey && ! is_string($privateKey)) {
-            throw new Exception\RuntimeException(sprintf(
+            throw new Exception\RuntimeException(\sprintf(
                 "The private key must be a string in PEM format or an instance of %s",
                 PrivateKey::class
             ));

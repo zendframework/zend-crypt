@@ -1,10 +1,8 @@
 <?php
 /**
- * Zend Framework (http://framework.zend.com/)
- *
- * @link      http://github.com/zendframework/zf2 for the canonical source repository
- * @copyright Copyright (c) 2005-2016 Zend Technologies USA Inc. (http://www.zend.com)
- * @license   http://framework.zend.com/license/new-bsd New BSD License
+ * @see       https://github.com/zendframework/zend-crypt for the canonical source repository
+ * @copyright Copyright (c) 2005-2018 Zend Technologies USA Inc. (https://www.zend.com)
+ * @license   https://github.com/zendframework/zend-crypt/blob/master/LICENSE.md New BSD License
  */
 
 namespace Zend\Crypt;
@@ -14,6 +12,19 @@ use Interop\Container\Exception\NotFoundException;
 use Zend\Crypt\Key\Derivation\Pbkdf2;
 use Zend\Crypt\Symmetric\SymmetricInterface;
 use Zend\Math\Rand;
+
+use function base64_decode;
+use function base64_encode;
+use function class_exists;
+use function gettype;
+use function get_class;
+use function in_array;
+use function is_array;
+use function is_object;
+use function is_string;
+use function is_subclass_of;
+use function mb_substr;
+use function sprintf;
 
 /**
  * Encrypt using a symmetric cipher then authenticate using HMAC (SHA-256)
@@ -131,7 +142,7 @@ class BlockCipher
     public static function setSymmetricPluginManager($plugins)
     {
         if (is_string($plugins)) {
-            if (!class_exists($plugins) || ! is_subclass_of($plugins, ContainerInterface::class)) {
+            if (! class_exists($plugins) || ! is_subclass_of($plugins, ContainerInterface::class)) {
                 throw new Exception\InvalidArgumentException(sprintf(
                     'Unable to locate symmetric cipher plugins using class "%s"; '
                     . 'class does not exist or does not implement ContainerInterface',
@@ -140,10 +151,10 @@ class BlockCipher
             }
             $plugins = new $plugins();
         }
-        if (!$plugins instanceof ContainerInterface) {
+        if (! $plugins instanceof ContainerInterface) {
             throw new Exception\InvalidArgumentException(sprintf(
                 'Symmetric plugin must implements Interop\Container\ContainerInterface;; received "%s"',
-                (is_object($plugins) ? get_class($plugins) : gettype($plugins))
+                is_object($plugins) ? get_class($plugins) : gettype($plugins)
             ));
         }
         static::$symmetricPlugins = $plugins;
@@ -398,7 +409,7 @@ class BlockCipher
         }
 
         // Cast to string prior to encrypting
-        if (!is_string($data)) {
+        if (! is_string($data)) {
             $data = (string) $data;
         }
 
@@ -444,7 +455,7 @@ class BlockCipher
      */
     public function decrypt($data)
     {
-        if (!is_string($data)) {
+        if (! is_string($data)) {
             throw new Exception\InvalidArgumentException('The data to decrypt must be a string');
         }
         if ('' === $data) {

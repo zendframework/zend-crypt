@@ -1,13 +1,24 @@
 <?php
 /**
- * Zend Framework (http://framework.zend.com/)
- *
- * @link      http://github.com/zendframework/zf2 for the canonical source repository
- * @copyright Copyright (c) 2005-2016 Zend Technologies USA Inc. (http://www.zend.com)
- * @license   http://framework.zend.com/license/new-bsd New BSD License
+ * @see       https://github.com/zendframework/zend-crypt for the canonical source repository
+ * @copyright Copyright (c) 2005-2018 Zend Technologies USA Inc. (https://www.zend.com)
+ * @license   https://github.com/zendframework/zend-crypt/blob/master/LICENSE.md New BSD License
  */
 
 namespace Zend\Crypt\PublicKey\Rsa;
+
+use const OPENSSL_PKCS1_OAEP_PADDING;
+use const OPENSSL_PKCS1_PADDING;
+
+use function file_get_contents;
+use function is_readable;
+use function is_string;
+use function openssl_error_string;
+use function openssl_pkey_get_details;
+use function openssl_pkey_get_public;
+use function openssl_public_decrypt;
+use function openssl_public_encrypt;
+use function strpos;
 
 /**
  * RSA public key
@@ -31,7 +42,7 @@ class PublicKey extends AbstractKey
      */
     public static function fromFile($pemOrCertificateFile)
     {
-        if (!is_readable($pemOrCertificateFile)) {
+        if (! is_readable($pemOrCertificateFile)) {
             throw new Exception\InvalidArgumentException(
                 "File '{$pemOrCertificateFile}' is not readable"
             );
@@ -107,7 +118,7 @@ class PublicKey extends AbstractKey
      */
     public function decrypt($data, $padding = OPENSSL_PKCS1_PADDING)
     {
-        if (!is_string($data)) {
+        if (! is_string($data)) {
             throw new Exception\InvalidArgumentException('The data to decrypt must be a string');
         }
         if ('' === $data) {
@@ -143,9 +154,9 @@ class PublicKey extends AbstractKey
      */
     public function toString()
     {
-        if (!empty($this->certificateString)) {
+        if (! empty($this->certificateString)) {
             return $this->certificateString;
-        } elseif (!empty($this->pemString)) {
+        } elseif (! empty($this->pemString)) {
             return $this->pemString;
         }
         throw new Exception\RuntimeException('No public key string representation is available');

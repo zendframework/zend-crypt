@@ -1,16 +1,25 @@
 <?php
 /**
- * Zend Framework (http://framework.zend.com/)
- *
- * @link      http://github.com/zendframework/zf2 for the canonical source repository
- * @copyright Copyright (c) 2005-2016 Zend Technologies USA Inc. (http://www.zend.com)
- * @license   http://framework.zend.com/license/new-bsd New BSD License
+ * @see       https://github.com/zendframework/zend-crypt for the canonical source repository
+ * @copyright Copyright (c) 2005-2018 Zend Technologies USA Inc. (https://www.zend.com)
+ * @license   https://github.com/zendframework/zend-crypt/blob/master/LICENSE.md New BSD License
  */
 
 namespace Zend\Crypt\PublicKey;
 
 use Zend\Crypt\Exception;
 use Zend\Math;
+
+use const OPENSSL_KEYTYPE_DH;
+use const PHP_VERSION_ID;
+
+use function function_exists;
+use function mb_strlen;
+use function openssl_dh_compute_key;
+use function openssl_error_string;
+use function openssl_pkey_get_details;
+use function openssl_pkey_new;
+use function preg_match;
 
 /**
  * PHP implementation of the Diffie-Hellman public key encryption algorithm.
@@ -182,7 +191,7 @@ class DiffieHellman
     public function setPublicKey($number, $format = self::FORMAT_NUMBER)
     {
         $number = $this->convert($number, $format, self::FORMAT_NUMBER);
-        if (!preg_match('/^\d+$/', $number)) {
+        if (! preg_match('/^\d+$/', $number)) {
             throw new Exception\InvalidArgumentException('Invalid parameter; not a positive natural number');
         }
         $this->publicKey = (string) $number;
@@ -242,7 +251,7 @@ class DiffieHellman
             $this->secretKey = $this->convert($secretKey, self::FORMAT_BINARY, self::FORMAT_NUMBER);
         } else {
             $publicKey = $this->convert($publicKey, $publicKeyFormat, self::FORMAT_NUMBER);
-            if (!preg_match('/^\d+$/', $publicKey)) {
+            if (! preg_match('/^\d+$/', $publicKey)) {
                 throw new Exception\InvalidArgumentException(
                     'Invalid parameter; not a positive natural number'
                 );
@@ -280,7 +289,7 @@ class DiffieHellman
      */
     public function setPrime($number)
     {
-        if (!preg_match('/^\d+$/', $number) || $number < 11) {
+        if (! preg_match('/^\d+$/', $number) || $number < 11) {
             throw new Exception\InvalidArgumentException(
                 'Invalid parameter; not a positive natural number or too small: ' .
                 'should be a large natural number prime'
@@ -316,7 +325,7 @@ class DiffieHellman
      */
     public function setGenerator($number)
     {
-        if (!preg_match('/^\d+$/', $number) || $number < 2) {
+        if (! preg_match('/^\d+$/', $number) || $number < 2) {
             throw new Exception\InvalidArgumentException(
                 'Invalid parameter; not a positive natural number greater than 1'
             );
@@ -335,7 +344,7 @@ class DiffieHellman
      */
     public function getGenerator($format = self::FORMAT_NUMBER)
     {
-        if (!isset($this->generator)) {
+        if (! isset($this->generator)) {
             throw new Exception\InvalidArgumentException('No generator number has been set');
         }
 
@@ -353,7 +362,7 @@ class DiffieHellman
     public function setPrivateKey($number, $format = self::FORMAT_NUMBER)
     {
         $number = $this->convert($number, $format, self::FORMAT_NUMBER);
-        if (!preg_match('/^\d+$/', $number)) {
+        if (! preg_match('/^\d+$/', $number)) {
             throw new Exception\InvalidArgumentException('Invalid parameter; not a positive natural number');
         }
         $this->privateKey = (string) $number;

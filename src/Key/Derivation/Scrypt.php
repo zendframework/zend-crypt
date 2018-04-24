@@ -1,13 +1,21 @@
 <?php
 /**
- * Zend Framework (http://framework.zend.com/)
- *
- * @link      http://github.com/zendframework/zf2 for the canonical source repository
- * @copyright Copyright (c) 2005-2016 Zend Technologies USA Inc. (http://www.zend.com)
- * @license   http://framework.zend.com/license/new-bsd New BSD License
+ * @see       https://github.com/zendframework/zend-crypt for the canonical source repository
+ * @copyright Copyright (c) 2005-2018 Zend Technologies USA Inc. (https://www.zend.com)
+ * @license   https://github.com/zendframework/zend-crypt/blob/master/LICENSE.md New BSD License
  */
 
 namespace Zend\Crypt\Key\Derivation;
+
+use const PHP_INT_MAX;
+use const PHP_INT_SIZE;
+
+use function extension_loaded;
+use function hex2bin;
+use function mb_substr;
+use function pack;
+use function scrypt;
+use function unpack;
 
 /**
  * Scrypt key derivation function

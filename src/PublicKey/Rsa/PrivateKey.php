@@ -1,13 +1,22 @@
 <?php
 /**
- * Zend Framework (http://framework.zend.com/)
- *
- * @link      http://github.com/zendframework/zf2 for the canonical source repository
- * @copyright Copyright (c) 2005-2016 Zend Technologies USA Inc. (http://www.zend.com)
- * @license   http://framework.zend.com/license/new-bsd New BSD License
+ * @see       https://github.com/zendframework/zend-crypt for the canonical source repository
+ * @copyright Copyright (c) 2018 Zend Technologies USA Inc. (https://www.zend.com)
+ * @license   https://github.com/zendframework/zend-crypt/blob/master/LICENSE.md New BSD License
  */
 
 namespace Zend\Crypt\PublicKey\Rsa;
+
+use const OPENSSL_PKCS1_OAEP_PADDING;
+use const OPENSSL_PKCS1_PADDING;
+
+use function file_get_contents;
+use function is_readable;
+use function openssl_error_string;
+use function openssl_pkey_get_details;
+use function openssl_pkey_get_private;
+use function openssl_private_decrypt;
+use function openssl_private_encrypt;
 
 /**
  * RSA private key
@@ -31,7 +40,7 @@ class PrivateKey extends AbstractKey
      */
     public static function fromFile($pemFile, $passPhrase = null)
     {
-        if (!is_readable($pemFile)) {
+        if (! is_readable($pemFile)) {
             throw new Exception\InvalidArgumentException(
                 "PEM file '{$pemFile}' is not readable"
             );
