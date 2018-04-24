@@ -3,6 +3,28 @@
 All notable changes to this project will be documented in this file, in reverse
 chronological order by release.
 
+## 3.2.2 - TBD
+
+### Added
+
+- Nothing.
+
+### Changed
+
+- [#50](https://github.com/zendframework/zend-crypt/pull/50) updates all classes to import functions and constants they use.
+
+### Deprecated
+
+- Nothing.
+
+### Removed
+
+- Nothing.
+
+### Fixed
+
+- Nothing.
+
 ## 3.2.1 - 2017-07-17
 
 ### Added
