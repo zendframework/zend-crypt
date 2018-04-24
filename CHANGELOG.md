@@ -11,7 +11,8 @@ chronological order by release.
 
 ### Changed
 
-- Nothing.
+- [#55](https://github.com/zendframework/zend-crypt/pull/55) updates `Zend\Crypt\Hmac` to use `hash_hmac_algos` instead of `hmac_algos`
+  when it is present.
 
 ### Deprecated
 
