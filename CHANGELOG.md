@@ -7,7 +7,7 @@ chronological order by release.
 
 ### Added
 
-- Nothing.
+- [#52](https://github.com/zendframework/zend-crypt/pull/52) adds support for PHP 7.2.
 
 ### Changed
 
