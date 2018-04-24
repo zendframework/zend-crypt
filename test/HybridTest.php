@@ -9,12 +9,14 @@
 
 namespace ZendTest\Crypt;
 
-use Zend\Crypt\Hybrid;
+use PHPUnit\Framework\TestCase;
 use Zend\Crypt\BlockCipher;
+use Zend\Crypt\Exception;
+use Zend\Crypt\Hybrid;
 use Zend\Crypt\PublicKey\Rsa;
 use Zend\Crypt\PublicKey\RsaOptions;
 
-class HybridTest extends \PHPUnit_Framework_TestCase
+class HybridTest extends TestCase
 {
     protected $hybrid;
 
@@ -140,9 +142,6 @@ class HybridTest extends \PHPUnit_Framework_TestCase
         }
     }
 
-    /**
-     * @expectedException Zend\Crypt\Exception\RuntimeException
-     */
     public function testFailToDecryptWithOneKey()
     {
         $rsaOptions = new RsaOptions();
@@ -158,24 +157,22 @@ class HybridTest extends \PHPUnit_Framework_TestCase
 
         // encrypt using a single key
         $encrypted = $this->hybrid->encrypt('test', $publicKey);
+
+        $this->expectException(Exception\RuntimeException::class);
         // try to decrypt using a different private key throws an exception
-        $plaintext = $this->hybrid->decrypt($encrypted, $privateKey);
+        $this->hybrid->decrypt($encrypted, $privateKey);
     }
 
-
-    /**
-     * @expectedException Zend\Crypt\Exception\RuntimeException
-     */
     public function testFailToEncryptUsingPrivateKey()
     {
         $rsaOptions = new RsaOptions();
         $rsaOptions->generateKeys([
             'private_key_bits' => 1024,
         ]);
-        $publicKey  = $rsaOptions->getPublicKey();
         $privateKey = $rsaOptions->getPrivateKey();
 
+        $this->expectException(Exception\RuntimeException::class);
         // encrypt using a PrivateKey object throws an exception
-        $encrypted = $this->hybrid->encrypt('test', $privateKey);
+        $this->hybrid->encrypt('test', $privateKey);
     }
 }

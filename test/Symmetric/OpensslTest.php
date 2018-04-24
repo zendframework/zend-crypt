@@ -26,7 +26,7 @@ class OpensslTest extends AbstractTest
 
     public function testCtrMode()
     {
-        if (!in_array('aes-256-ctr', openssl_get_cipher_methods())) {
+        if (! in_array('aes-256-ctr', openssl_get_cipher_methods())) {
             $this->markTestSkipped('The CTR mode is not supported');
         }
         $this->crypt->setAlgorithm('aes');

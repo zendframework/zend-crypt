@@ -169,7 +169,7 @@ class RsaOptions extends AbstractOptions
 
     public function getOpensslSignatureAlgorithm()
     {
-        if (!isset($this->opensslSignatureAlgorithm)) {
+        if (! isset($this->opensslSignatureAlgorithm)) {
             $this->opensslSignatureAlgorithm = constant('OPENSSL_ALGO_' . strtoupper($this->hashAlgorithm));
         }
         return $this->opensslSignatureAlgorithm;

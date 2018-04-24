@@ -44,7 +44,7 @@ $rsaOptions = new RsaOptions([
 $rsaOptions->generateKeys([
     'private_key_bits' => 4096
 ]);
-$publicKey  = $rsaOptions->getPublicKey();  
+$publicKey  = $rsaOptions->getPublicKey();
 $privateKey = $rsaOptions->getPrivateKey();
 
 $hybrid     = new Hybrid();

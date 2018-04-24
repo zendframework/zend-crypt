@@ -9,9 +9,10 @@
 
 namespace ZendTest\Crypt\Symmetric\Padding;
 
+use PHPUnit\Framework\TestCase;
 use Zend\Crypt\Symmetric\Padding\Pkcs7;
 
-class Pkcs7Test extends \PHPUnit_Framework_TestCase
+class Pkcs7Test extends TestCase
 {
     /** @var Pkcs7 */
     public $padding;

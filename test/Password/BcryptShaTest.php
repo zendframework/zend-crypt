@@ -10,18 +10,22 @@
 namespace ZendTest\Crypt\Password;
 
 use ArrayObject;
+use PHPUnit\Framework\TestCase;
 use Zend\Crypt\Password\Bcrypt;
 use Zend\Crypt\Password\BcryptSha;
+use Zend\Crypt\Password\Exception;
 
 /**
  * @group      Zend_Crypt
  */
-class BcryptShaTest extends \PHPUnit_Framework_TestCase
+class BcryptShaTest extends TestCase
 {
     /** @var Bcrypt */
     private $bcrypt;
+
     /** @var string */
     private $bcryptPassword;
+
     /** @var string */
     private $password;
 
@@ -55,11 +59,9 @@ class BcryptShaTest extends \PHPUnit_Framework_TestCase
 
     public function testWrongConstruct()
     {
-        $this->setExpectedException(
-            'Zend\Crypt\Password\Exception\InvalidArgumentException',
-            'The options parameter must be an array or a Traversable'
-        );
-        $bcrypt = new BcryptSha('test');
+        $this->expectException(Exception\InvalidArgumentException::class);
+        $this->expectExceptionMessage('The options parameter must be an array or a Traversable');
+        new BcryptSha('test');
     }
 
     public function testSetCost()
@@ -70,10 +72,8 @@ class BcryptShaTest extends \PHPUnit_Framework_TestCase
 
     public function testSetWrongCost()
     {
-        $this->setExpectedException(
-            'Zend\Crypt\Password\Exception\InvalidArgumentException',
-            'The cost parameter of bcrypt must be in range 04-31'
-        );
+        $this->expectException(Exception\InvalidArgumentException::class);
+        $this->expectExceptionMessage('The cost parameter of bcrypt must be in range 04-31');
         $this->bcrypt->setCost('3');
     }
 

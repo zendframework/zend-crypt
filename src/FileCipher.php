@@ -362,7 +362,7 @@ class FileCipher
         fclose($read);
 
         // check for data integrity
-        if (!Utils::compareStrings($hmac, $hmacRead)) {
+        if (! Utils::compareStrings($hmac, $hmacRead)) {
             unlink($fileOut);
             return false;
         }

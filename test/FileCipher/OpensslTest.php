@@ -9,9 +9,9 @@
 
 namespace ZendTest\Crypt\FileCipher;
 
-use Zend\Crypt\Symmetric\Openssl;
 use Zend\Crypt\FileCipher;
 use Zend\Crypt\Symmetric;
+use Zend\Crypt\Symmetric\Openssl;
 
 class OpensslTest extends AbstractFileCipherTest
 {

@@ -10,29 +10,32 @@
 namespace ZendTest\Crypt;
 
 use Interop\Container\ContainerInterface;
-use Zend\Crypt\SymmetricPluginManager;
-use Zend\Crypt\Symmetric\SymmetricInterface;
+use PHPUnit\Framework\TestCase;
+use Zend\Crypt\Exception as CryptException;
 use Zend\Crypt\Symmetric\Exception;
+use Zend\Crypt\Symmetric\SymmetricInterface;
+use Zend\Crypt\SymmetricPluginManager;
 
-class SymmetricPluginManagerTest extends \PHPUnit_Framework_TestCase
+class SymmetricPluginManagerTest extends TestCase
 {
     public function getSymmetrics()
     {
         if (PHP_VERSION_ID >= 70100) {
             return [
-              [ 'openssl' ]
+                ['openssl'],
             ];
         }
+
         return [
-            [ 'mcrypt' ],
-            [ 'openssl' ],
+            ['mcrypt'],
+            ['openssl'],
         ];
     }
 
     public function testConstruct()
     {
         $plugin = new SymmetricPluginManager();
-        $this->assertInstanceof(ContainerInterface::class, $plugin);
+        $this->assertInstanceOf(ContainerInterface::class, $plugin);
     }
 
     /**
@@ -50,18 +53,17 @@ class SymmetricPluginManagerTest extends \PHPUnit_Framework_TestCase
     public function testGet($symmetric)
     {
         if (! extension_loaded($symmetric)) {
-            $this->setExpectedException(Exception\RuntimeException::class);
+            $this->expectException(Exception\RuntimeException::class);
         }
         $plugin = new SymmetricPluginManager();
-        $this->assertInstanceof(SymmetricInterface::class, $plugin->get($symmetric));
+        $this->assertInstanceOf(SymmetricInterface::class, $plugin->get($symmetric));
     }
 
-    /**
-     * @expectedException Zend\Crypt\Exception\NotFoundException
-     */
     public function testGetError()
     {
         $plugin = new SymmetricPluginManager();
+
+        $this->expectException(CryptException\NotFoundException::class);
         $plugin->get('foo');
     }
 }

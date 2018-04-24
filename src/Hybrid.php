@@ -7,9 +7,9 @@
 
 namespace Zend\Crypt;
 
-use Zend\Math\Rand;
-use Zend\Crypt\PublicKey\Rsa\PublicKey as PubKey;
 use Zend\Crypt\PublicKey\Rsa\PrivateKey;
+use Zend\Crypt\PublicKey\Rsa\PublicKey as PubKey;
+use Zend\Math\Rand;
 
 use function array_search;
 use function base64_decode;

@@ -9,9 +9,9 @@
 
 namespace ZendTest\Crypt\Symmetric;
 
-use PHPUnit_Framework_TestCase as TestCase;
-use Zend\Crypt\Symmetric\Openssl;
+use PHPUnit\Framework\TestCase;
 use Zend\Crypt\Symmetric\Mcrypt;
+use Zend\Crypt\Symmetric\Openssl;
 use Zend\Math\Rand;
 
 class CompatibilityTest extends TestCase

@@ -10,9 +10,9 @@
 namespace ZendTest\Crypt\BlockCipher;
 
 use Interop\Container\ContainerInterface;
-use PHPUnit_Framework_TestCase as TestCase;
+use PHPUnit\Framework\TestCase;
 use Zend\Crypt\BlockCipher;
-use Zend\Crypt\Exception as CryptException;
+use Zend\Crypt\Exception;
 use Zend\Crypt\Symmetric;
 
 abstract class AbstractBlockCipherTest extends TestCase
@@ -50,12 +50,10 @@ abstract class AbstractBlockCipherTest extends TestCase
         $this->assertEquals('test', $this->blockCipher->getKey());
     }
 
-    /**
-     * @expectedException Zend\Crypt\Exception\InvalidArgumentException
-     */
     public function testSetEmptyKey()
     {
-        $result = $this->blockCipher->setKey('');
+        $this->expectException(Exception\InvalidArgumentException::class);
+        $this->blockCipher->setKey('');
     }
 
     public function testSetSalt()
@@ -70,11 +68,9 @@ abstract class AbstractBlockCipherTest extends TestCase
         $this->assertEquals($salt, $this->blockCipher->getOriginalSalt());
     }
 
-    /**
-     * @expectedException Zend\Crypt\Exception\InvalidArgumentException
-     */
     public function testSetWrongSalt()
     {
+        $this->expectException(Exception\InvalidArgumentException::class);
         $this->blockCipher->setSalt('x');
     }
 
@@ -87,10 +83,11 @@ abstract class AbstractBlockCipherTest extends TestCase
 
     public function testSetAlgorithmFail()
     {
-        $this->setExpectedException(
-            CryptException\InvalidArgumentException::class,
-            sprintf('The algorithm unknown is not supported by %s', get_class($this->cipher))
-        );
+        $this->expectException(Exception\InvalidArgumentException::class);
+        $this->expectExceptionMessage(sprintf(
+            'The algorithm unknown is not supported by %s',
+            get_class($this->cipher)
+        ));
         $result = $this->blockCipher->setCipherAlgorithm('unknown');
     }
 
@@ -101,12 +98,10 @@ abstract class AbstractBlockCipherTest extends TestCase
         $this->assertEquals('sha1', $this->blockCipher->getHashAlgorithm());
     }
 
-    /**
-     * @expectedException Zend\Crypt\Exception\InvalidArgumentException
-     */
     public function testSetUnsupportedHashAlgorithm()
     {
-        $result = $this->blockCipher->setHashAlgorithm('foo');
+        $this->expectException(Exception\InvalidArgumentException::class);
+        $this->blockCipher->setHashAlgorithm('foo');
     }
 
     public function testSetPbkdf2HashAlgorithm()
@@ -116,12 +111,10 @@ abstract class AbstractBlockCipherTest extends TestCase
         $this->assertEquals('sha1', $this->blockCipher->getPbkdf2HashAlgorithm());
     }
 
-    /**
-     * @expectedException Zend\Crypt\Exception\InvalidArgumentException
-     */
     public function testSetUnsupportedPbkdf2HashAlgorithm()
     {
-        $result = $this->blockCipher->setPbkdf2HashAlgorithm('foo');
+        $this->expectException(Exception\InvalidArgumentException::class);
+        $this->blockCipher->setPbkdf2HashAlgorithm('foo');
     }
 
     public function testSetKeyIteration()
@@ -134,21 +127,17 @@ abstract class AbstractBlockCipherTest extends TestCase
     public function testEncryptWithoutData()
     {
         $plaintext = '';
-        $this->setExpectedException(
-            CryptException\InvalidArgumentException::class,
-            'The data to encrypt cannot be empty'
-        );
-        $ciphertext = $this->blockCipher->encrypt($plaintext);
+        $this->expectException(Exception\InvalidArgumentException::class);
+        $this->expectExceptionMessage('The data to encrypt cannot be empty');
+        $this->blockCipher->encrypt($plaintext);
     }
 
     public function testEncryptErrorKey()
     {
         $plaintext = 'test';
-        $this->setExpectedException(
-            CryptException\InvalidArgumentException::class,
-            'No key specified for the encryption'
-        );
-        $ciphertext = $this->blockCipher->encrypt($plaintext);
+        $this->expectException(Exception\InvalidArgumentException::class);
+        $this->expectExceptionMessage('No key specified for the encryption');
+        $this->blockCipher->encrypt($plaintext);
     }
 
     public function testEncryptDecrypt()
@@ -206,27 +195,21 @@ abstract class AbstractBlockCipherTest extends TestCase
         }
     }
 
-    /**
-     * @expectedException Zend\Crypt\Exception\InvalidArgumentException
-     */
     public function testDecryptNotString()
     {
+        $this->expectException(Exception\InvalidArgumentException::class);
         $this->blockCipher->decrypt([ 'foo' ]);
     }
 
-    /**
-     * @expectedException Zend\Crypt\Exception\InvalidArgumentException
-     */
     public function testDecryptEmptyString()
     {
+        $this->expectException(Exception\InvalidArgumentException::class);
         $this->blockCipher->decrypt('');
     }
 
-    /**
-     * @expectedException Zend\Crypt\Exception\InvalidArgumentException
-     */
     public function testDecyptWihoutKey()
     {
+        $this->expectException(Exception\InvalidArgumentException::class);
         $this->blockCipher->decrypt('encrypted data');
     }
 
@@ -254,31 +237,21 @@ abstract class AbstractBlockCipherTest extends TestCase
         $this->blockCipher->setSymmetricPluginManager($old);
     }
 
-    /**
-     * @expectedException Zend\Crypt\Exception\RuntimeException
-     */
     public function testFactoryWithWrongAdapter()
     {
+        $this->expectException(Exception\RuntimeException::class);
         $this->blockCipher = BlockCipher::factory('foo');
     }
 
-    /**
-     * @expectedException Zend\Crypt\Exception\InvalidArgumentException
-     */
     public function testSetWrongSymmetricPluginManager()
     {
-        $this->blockCipher->setSymmetricPluginManager(
-            stdClass::class
-        );
+        $this->expectException(Exception\InvalidArgumentException::class);
+        $this->blockCipher->setSymmetricPluginManager(stdClass::class);
     }
 
-    /**
-     * @expectedException Zend\Crypt\Exception\InvalidArgumentException
-     */
     public function testSetNotExistingSymmetricPluginManager()
     {
-        $this->blockCipher->setSymmetricPluginManager(
-            'Foo'
-        );
+        $this->expectException(Exception\InvalidArgumentException::class);
+        $this->blockCipher->setSymmetricPluginManager('Foo');
     }
 }

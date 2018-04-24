@@ -7,9 +7,10 @@
 
 namespace ZendTest\Crypt\Symmetric;
 
+use PHPUnit\Framework\TestCase;
 use Zend\Crypt\Symmetric\Mcrypt;
 
-class MCryptDeprecatedTest extends \PHPUnit_Framework_TestCase
+class McryptDeprecatedTest extends TestCase
 {
     public function setUp()
     {
@@ -18,11 +19,9 @@ class MCryptDeprecatedTest extends \PHPUnit_Framework_TestCase
         }
     }
 
-    /**
-     * @expectedException PHPUnit_Framework_Error_Deprecated
-     */
     public function testDeprecated()
     {
-        $mcrypt = new Mcrypt();
+        $this->expectException(\PHPUnit\Framework\Error\Deprecated::class);
+        new Mcrypt();
     }
 }
