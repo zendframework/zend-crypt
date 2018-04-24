@@ -1,13 +1,24 @@
 <?php
 /**
- * Zend Framework (http://framework.zend.com/)
- *
- * @link      http://github.com/zendframework/zf2 for the canonical source repository
- * @copyright Copyright (c) 2005-2016 Zend Technologies USA Inc. (http://www.zend.com)
- * @license   http://framework.zend.com/license/new-bsd New BSD License
+ * @see       https://github.com/zendframework/zend-crypt for the canonical source repository
+ * @copyright Copyright (c) 2005-2018 Zend Technologies USA Inc. (https://www.zend.com)
+ * @license   https://github.com/zendframework/zend-crypt/blob/master/LICENSE.md New BSD License
  */
 
 namespace Zend\Crypt\PublicKey\Rsa;
+
+use const OPENSSL_PKCS1_OAEP_PADDING;
+use const OPENSSL_PKCS1_PADDING;
+
+use function file_get_contents;
+use function is_readable;
+use function is_string;
+use function openssl_error_string;
+use function openssl_pkey_get_details;
+use function openssl_pkey_get_public;
+use function openssl_public_decrypt;
+use function openssl_public_encrypt;
+use function strpos;
 
 /**
  * RSA public key
@@ -31,13 +42,13 @@ class PublicKey extends AbstractKey
      */
     public static function fromFile($pemOrCertificateFile)
     {
-        if (!\is_readable($pemOrCertificateFile)) {
+        if (! is_readable($pemOrCertificateFile)) {
             throw new Exception\InvalidArgumentException(
                 "File '{$pemOrCertificateFile}' is not readable"
             );
         }
 
-        return new static(\file_get_contents($pemOrCertificateFile));
+        return new static(file_get_contents($pemOrCertificateFile));
     }
 
     /**
@@ -48,21 +59,21 @@ class PublicKey extends AbstractKey
      */
     public function __construct($pemStringOrCertificate)
     {
-        $result = \openssl_pkey_get_public($pemStringOrCertificate);
+        $result = openssl_pkey_get_public($pemStringOrCertificate);
         if (false === $result) {
             throw new Exception\RuntimeException(
-                'Unable to load public key; openssl ' . \openssl_error_string()
+                'Unable to load public key; openssl ' . openssl_error_string()
             );
         }
 
-        if (\strpos($pemStringOrCertificate, self::CERT_START) !== false) {
+        if (strpos($pemStringOrCertificate, self::CERT_START) !== false) {
             $this->certificateString = $pemStringOrCertificate;
         } else {
             $this->pemString = $pemStringOrCertificate;
         }
 
         $this->opensslKeyResource = $result;
-        $this->details            = \openssl_pkey_get_details($this->opensslKeyResource);
+        $this->details            = openssl_pkey_get_details($this->opensslKeyResource);
     }
 
     /**
@@ -79,17 +90,17 @@ class PublicKey extends AbstractKey
      * @throws Exception\RuntimeException
      * @return string
      */
-    public function encrypt($data, $padding = \OPENSSL_PKCS1_OAEP_PADDING)
+    public function encrypt($data, $padding = OPENSSL_PKCS1_OAEP_PADDING)
     {
         if (empty($data)) {
             throw new Exception\InvalidArgumentException('The data to encrypt cannot be empty');
         }
 
         $encrypted = '';
-        $result = \openssl_public_encrypt($data, $encrypted, $this->getOpensslKeyResource(), $padding);
+        $result = openssl_public_encrypt($data, $encrypted, $this->getOpensslKeyResource(), $padding);
         if (false === $result) {
             throw new Exception\RuntimeException(
-                'Can not encrypt; openssl ' . \openssl_error_string()
+                'Can not encrypt; openssl ' . openssl_error_string()
             );
         }
 
@@ -105,9 +116,9 @@ class PublicKey extends AbstractKey
      * @throws Exception\RuntimeException
      * @return string
      */
-    public function decrypt($data, $padding = \OPENSSL_PKCS1_PADDING)
+    public function decrypt($data, $padding = OPENSSL_PKCS1_PADDING)
     {
-        if (!\is_string($data)) {
+        if (! is_string($data)) {
             throw new Exception\InvalidArgumentException('The data to decrypt must be a string');
         }
         if ('' === $data) {
@@ -115,10 +126,10 @@ class PublicKey extends AbstractKey
         }
 
         $decrypted = '';
-        $result = \openssl_public_decrypt($data, $decrypted, $this->getOpensslKeyResource(), $padding);
+        $result = openssl_public_decrypt($data, $decrypted, $this->getOpensslKeyResource(), $padding);
         if (false === $result) {
             throw new Exception\RuntimeException(
-                'Can not decrypt; openssl ' . \openssl_error_string()
+                'Can not decrypt; openssl ' . openssl_error_string()
             );
         }
 
@@ -143,9 +154,9 @@ class PublicKey extends AbstractKey
      */
     public function toString()
     {
-        if (!empty($this->certificateString)) {
+        if (! empty($this->certificateString)) {
             return $this->certificateString;
-        } elseif (!empty($this->pemString)) {
+        } elseif (! empty($this->pemString)) {
             return $this->pemString;
         }
         throw new Exception\RuntimeException('No public key string representation is available');

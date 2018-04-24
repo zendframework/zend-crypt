@@ -1,13 +1,16 @@
 <?php
 /**
- * Zend Framework (http://framework.zend.com/)
- *
- * @link      http://github.com/zendframework/zf2 for the canonical source repository
- * @copyright Copyright (c) 2005-2016 Zend Technologies USA Inc. (http://www.zend.com)
- * @license   http://framework.zend.com/license/new-bsd New BSD License
+ * @see       https://github.com/zendframework/zend-crypt for the canonical source repository
+ * @copyright Copyright (c) 2005-2018 Zend Technologies USA Inc. (https://www.zend.com)
+ * @license   https://github.com/zendframework/zend-crypt/blob/master/LICENSE.md New BSD License
  */
 
 namespace Zend\Crypt\Symmetric\Padding;
+
+use function mb_strlen;
+use function mb_substr;
+use function ord;
+use function str_repeat;
 
 /**
  * PKCS#7 padding
@@ -24,8 +27,8 @@ class Pkcs7 implements PaddingInterface
      */
     public function pad($string, $blockSize = 32)
     {
-        $pad = $blockSize - (\mb_strlen($string, '8bit') % $blockSize);
-        return $string . \str_repeat(chr($pad), $pad);
+        $pad = $blockSize - (mb_strlen($string, '8bit') % $blockSize);
+        return $string . str_repeat(chr($pad), $pad);
     }
 
     /**
@@ -37,11 +40,11 @@ class Pkcs7 implements PaddingInterface
      */
     public function strip($string)
     {
-        $end  = \mb_substr($string, -1, null, '8bit');
-        $last = \ord($end);
-        $len  = \mb_strlen($string, '8bit') - $last;
-        if (\mb_substr($string, $len, null, '8bit') == \str_repeat($end, $last)) {
-            return \mb_substr($string, 0, $len, '8bit');
+        $end  = mb_substr($string, -1, null, '8bit');
+        $last = ord($end);
+        $len  = mb_strlen($string, '8bit') - $last;
+        if (mb_substr($string, $len, null, '8bit') == str_repeat($end, $last)) {
+            return mb_substr($string, 0, $len, '8bit');
         }
         return false;
     }

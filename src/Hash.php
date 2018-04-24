@@ -1,13 +1,17 @@
 <?php
 /**
- * Zend Framework (http://framework.zend.com/)
- *
- * @link      http://github.com/zendframework/zf2 for the canonical source repository
- * @copyright Copyright (c) 2005-2016 Zend Technologies USA Inc. (http://www.zend.com)
- * @license   http://framework.zend.com/license/new-bsd New BSD License
+ * @see       https://github.com/zendframework/zend-crypt for the canonical source repository
+ * @copyright Copyright (c) 2005-2018 Zend Technologies USA Inc. (https://www.zend.com)
+ * @license   https://github.com/zendframework/zend-crypt/blob/master/LICENSE.md New BSD License
  */
 
 namespace Zend\Crypt;
+
+use function hash;
+use function hash_algos;
+use function in_array;
+use function mb_strlen;
+use function strtolower;
 
 class Hash
 {
@@ -30,13 +34,13 @@ class Hash
      */
     public static function compute($hash, $data, $output = self::OUTPUT_STRING)
     {
-        if (!$hash || ($hash !== static::$lastAlgorithmSupported && !static::isSupported($hash))) {
+        if (! $hash || ($hash !== static::$lastAlgorithmSupported && ! static::isSupported($hash))) {
             throw new Exception\InvalidArgumentException(
                 'Hash algorithm provided is not supported on this PHP installation'
             );
         }
 
-        return \hash($hash, $data, $output);
+        return hash($hash, $data, $output);
     }
 
     /**
@@ -48,7 +52,7 @@ class Hash
      */
     public static function getOutputSize($hash, $output = self::OUTPUT_STRING)
     {
-        return \mb_strlen(static::compute($hash, 'data', $output), '8bit');
+        return mb_strlen(static::compute($hash, 'data', $output), '8bit');
     }
 
     /**
@@ -58,7 +62,7 @@ class Hash
      */
     public static function getSupportedAlgorithms()
     {
-        return \hash_algos();
+        return hash_algos();
     }
 
     /**
@@ -73,7 +77,7 @@ class Hash
             return true;
         }
 
-        if (\in_array(\strtolower($algorithm), \hash_algos(), true)) {
+        if (in_array(strtolower($algorithm), hash_algos(), true)) {
             static::$lastAlgorithmSupported = $algorithm;
             return true;
         }

@@ -1,10 +1,8 @@
 <?php
 /**
- * Zend Framework (http://framework.zend.com/)
- *
- * @link      http://github.com/zendframework/zf2 for the canonical source repository
- * @copyright Copyright (c) 2005-2016 Zend Technologies USA Inc. (http://www.zend.com)
- * @license   http://framework.zend.com/license/new-bsd New BSD License
+ * @see       https://github.com/zendframework/zend-crypt for the canonical source repository
+ * @copyright Copyright (c) 2005-2018 Zend Technologies USA Inc. (https://www.zend.com)
+ * @license   https://github.com/zendframework/zend-crypt/blob/master/LICENSE.md New BSD License
  */
 
 namespace Zend\Crypt\PublicKey;
@@ -12,6 +10,15 @@ namespace Zend\Crypt\PublicKey;
 use Traversable;
 use Zend\Crypt\PublicKey\Rsa\Exception;
 use Zend\Stdlib\ArrayUtils;
+
+use function base64_decode;
+use function base64_encode;
+use function extension_loaded;
+use function is_file;
+use function is_string;
+use function openssl_error_string;
+use function openssl_sign;
+use function openssl_verify;
 
 /**
  * Implementation of the RSA public key encryption algorithm.
@@ -37,7 +44,7 @@ class Rsa
      */
     public static function factory($options)
     {
-        if (!\extension_loaded('openssl')) {
+        if (! extension_loaded('openssl')) {
             throw new Exception\RuntimeException(
                 'Can not create Zend\Crypt\PublicKey\Rsa; openssl extension to be loaded'
             );
@@ -54,9 +61,9 @@ class Rsa
         $privateKey = null;
         $passPhrase = isset($options['pass_phrase']) ? $options['pass_phrase'] : null;
         if (isset($options['private_key'])) {
-            if (\is_file($options['private_key'])) {
+            if (is_file($options['private_key'])) {
                 $privateKey = Rsa\PrivateKey::fromFile($options['private_key'], $passPhrase);
-            } elseif (\is_string($options['private_key'])) {
+            } elseif (is_string($options['private_key'])) {
                 $privateKey = new Rsa\PrivateKey($options['private_key'], $passPhrase);
             } else {
                 throw new Exception\InvalidArgumentException(
@@ -68,9 +75,9 @@ class Rsa
 
         $publicKey = null;
         if (isset($options['public_key'])) {
-            if (\is_file($options['public_key'])) {
+            if (is_file($options['public_key'])) {
                 $publicKey = Rsa\PublicKey::fromFile($options['public_key']);
-            } elseif (\is_string($options['public_key'])) {
+            } elseif (is_string($options['public_key'])) {
                 $publicKey = new Rsa\PublicKey($options['public_key']);
             } else {
                 throw new Exception\InvalidArgumentException(
@@ -99,7 +106,7 @@ class Rsa
      */
     public function __construct(RsaOptions $options = null)
     {
-        if (!\extension_loaded('openssl')) {
+        if (! extension_loaded('openssl')) {
             throw new Exception\RuntimeException(
                 'Zend\Crypt\PublicKey\Rsa requires openssl extension to be loaded'
             );
@@ -142,7 +149,7 @@ class Rsa
     public function getOpensslErrorString()
     {
         $message = '';
-        while (false !== ($error = \openssl_error_string())) {
+        while (false !== ($error = openssl_error_string())) {
             $message .= $error . "\n";
         }
         return trim($message);
@@ -163,7 +170,7 @@ class Rsa
             $privateKey = $this->options->getPrivateKey();
         }
 
-        $result = \openssl_sign(
+        $result = openssl_sign(
             $data,
             $signature,
             $privateKey->getOpensslKeyResource(),
@@ -179,7 +186,7 @@ class Rsa
             return $signature;
         }
 
-        return \base64_encode($signature);
+        return base64_encode($signature);
     }
 
     /**
@@ -213,20 +220,20 @@ class Rsa
         switch ($mode) {
             case self::MODE_AUTO:
                 // check if data is encoded in Base64
-                $output = \base64_decode($signature, true);
-                if ((false !== $output) && ($signature === \base64_encode($output))) {
+                $output = base64_decode($signature, true);
+                if ((false !== $output) && ($signature === base64_encode($output))) {
                     $signature = $output;
                 }
                 break;
             case self::MODE_BASE64:
-                $signature = \base64_decode($signature);
+                $signature = base64_decode($signature);
                 break;
             case self::MODE_RAW:
             default:
                 break;
         }
 
-        $result = \openssl_verify(
+        $result = openssl_verify(
             $data,
             $signature,
             $publicKey->getOpensslKeyResource(),
@@ -270,7 +277,7 @@ class Rsa
             return $encrypted;
         }
 
-        return \base64_encode($encrypted);
+        return base64_encode($encrypted);
     }
 
     /**

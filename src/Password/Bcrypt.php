@@ -1,10 +1,8 @@
 <?php
 /**
- * Zend Framework (http://framework.zend.com/)
- *
- * @link      http://github.com/zendframework/zf2 for the canonical source repository
- * @copyright Copyright (c) 2005-2016 Zend Technologies USA Inc. (http://www.zend.com)
- * @license   http://framework.zend.com/license/new-bsd New BSD License
+ * @see       https://github.com/zendframework/zend-crypt for the canonical source repository
+ * @copyright Copyright (c) 2005-2018 Zend Technologies USA Inc. (https://www.zend.com)
+ * @license   https://github.com/zendframework/zend-crypt/blob/master/LICENSE.md New BSD License
  */
 
 namespace Zend\Crypt\Password;
@@ -12,6 +10,19 @@ namespace Zend\Crypt\Password;
 use Traversable;
 use Zend\Math\Rand;
 use Zend\Stdlib\ArrayUtils;
+
+use const E_USER_DEPRECATED;
+use const PASSWORD_BCRYPT;
+use const PHP_VERSION_ID;
+
+use function is_array;
+use function password_hash;
+use function password_verify;
+use function mb_strlen;
+use function microtime;
+use function sprintf;
+use function strtolower;
+use function trigger_error;
 
 /**
  * Bcrypt algorithm using crypt() function of PHP
@@ -43,14 +54,14 @@ class Bcrypt implements PasswordInterface
                 $options = ArrayUtils::iteratorToArray($options);
             }
 
-            if (!\is_array($options)) {
+            if (! is_array($options)) {
                 throw new Exception\InvalidArgumentException(
                     'The options parameter must be an array or a Traversable'
                 );
             }
 
             foreach ($options as $key => $value) {
-                switch (\strtolower($key)) {
+                switch (strtolower($key)) {
                     case 'salt':
                         $this->setSalt($value);
                         break;
@@ -72,11 +83,11 @@ class Bcrypt implements PasswordInterface
     public function create($password)
     {
         $options = [ 'cost' => (int) $this->cost ];
-        if (\PHP_VERSION_ID < 70000) { // salt is deprecated from PHP 7.0
+        if (PHP_VERSION_ID < 70000) { // salt is deprecated from PHP 7.0
             $salt = $this->salt ?: Rand::getBytes(self::MIN_SALT_SIZE);
             $options['salt'] = $salt;
         }
-        return password_hash($password, \PASSWORD_BCRYPT, $options);
+        return password_hash($password, PASSWORD_BCRYPT, $options);
     }
 
     /**
@@ -88,7 +99,7 @@ class Bcrypt implements PasswordInterface
      */
     public function verify($password, $hash)
     {
-        return \password_verify($password, $hash);
+        return password_verify($password, $hash);
     }
 
     /**
@@ -107,7 +118,7 @@ class Bcrypt implements PasswordInterface
                     'The cost parameter of bcrypt must be in range 04-31'
                 );
             }
-            $this->cost = \sprintf('%1$02d', $cost);
+            $this->cost = sprintf('%1$02d', $cost);
         }
         return $this;
     }
@@ -131,11 +142,11 @@ class Bcrypt implements PasswordInterface
      */
     public function setSalt($salt)
     {
-        if (\PHP_VERSION_ID >= 70000) {
-            trigger_error('Salt support is deprecated starting with PHP 7.0.0', \E_USER_DEPRECATED);
+        if (PHP_VERSION_ID >= 70000) {
+            trigger_error('Salt support is deprecated starting with PHP 7.0.0', E_USER_DEPRECATED);
         }
 
-        if (\mb_strlen($salt, '8bit') < self::MIN_SALT_SIZE) {
+        if (mb_strlen($salt, '8bit') < self::MIN_SALT_SIZE) {
             throw new Exception\InvalidArgumentException(
                 'The length of the salt must be at least ' . self::MIN_SALT_SIZE . ' bytes'
             );
@@ -152,8 +163,8 @@ class Bcrypt implements PasswordInterface
      */
     public function getSalt()
     {
-        if (\PHP_VERSION_ID >= 70000) {
-            \trigger_error('Salt support is deprecated starting with PHP 7.0.0', \E_USER_DEPRECATED);
+        if (PHP_VERSION_ID >= 70000) {
+            trigger_error('Salt support is deprecated starting with PHP 7.0.0', E_USER_DEPRECATED);
         }
 
         return $this->salt;
@@ -177,9 +188,9 @@ class Bcrypt implements PasswordInterface
 
         do {
             $cost++;
-            $start = \microtime(true);
-            \password_hash('test', \PASSWORD_BCRYPT, [ 'cost' => $cost ]);
-            $end = \microtime(true);
+            $start = microtime(true);
+            password_hash('test', PASSWORD_BCRYPT, [ 'cost' => $cost ]);
+            $end = microtime(true);
         } while (($end - $start) < $timeTarget);
 
         return $cost;

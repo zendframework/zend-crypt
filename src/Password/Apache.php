@@ -1,10 +1,8 @@
 <?php
 /**
- * Zend Framework (http://framework.zend.com/)
- *
- * @link      http://github.com/zendframework/zf2 for the canonical source repository
- * @copyright Copyright (c) 2005-2016 Zend Technologies USA Inc. (http://www.zend.com)
- * @license   http://framework.zend.com/license/new-bsd New BSD License
+ * @see       https://github.com/zendframework/zend-crypt for the canonical source repository
+ * @copyright Copyright (c) 2005-2018 Zend Technologies USA Inc. (https://www.zend.com)
+ * @license   https://github.com/zendframework/zend-crypt/blob/master/LICENSE.md New BSD License
  */
 
 namespace Zend\Crypt\Password;
@@ -12,6 +10,27 @@ namespace Zend\Crypt\Password;
 use Traversable;
 use Zend\Crypt\Utils;
 use Zend\Math\Rand;
+
+use function addcslashes;
+use function base64_encode;
+use function chr;
+use function crypt;
+use function explode;
+use function implode;
+use function in_array;
+use function is_array;
+use function mb_strlen;
+use function mb_substr;
+use function md5;
+use function min;
+use function pack;
+use function preg_match;
+use function sha1;
+use function sprintf;
+use function strpos;
+use function strrev;
+use function strtolower;
+use function strtr;
 
 /**
  * Apache password authentication
@@ -59,13 +78,13 @@ class Apache implements PasswordInterface
         if (empty($options)) {
             return;
         }
-        if (!\is_array($options) && !$options instanceof Traversable) {
+        if (! is_array($options) && ! $options instanceof Traversable) {
             throw new Exception\InvalidArgumentException(
                 'The options parameter must be an array or a Traversable'
             );
         }
         foreach ($options as $key => $value) {
-            switch (\strtolower($key)) {
+            switch (strtolower($key)) {
                 case 'format':
                     $this->setFormat($value);
                     break;
@@ -95,10 +114,10 @@ class Apache implements PasswordInterface
         }
         switch ($this->format) {
             case 'crypt':
-                $hash = \crypt($password, Rand::getString(2, self::ALPHA64));
+                $hash = crypt($password, Rand::getString(2, self::ALPHA64));
                 break;
             case 'sha1':
-                $hash = '{SHA}' . \base64_encode(sha1($password, true));
+                $hash = '{SHA}' . base64_encode(sha1($password, true));
                 break;
             case 'md5':
                 $hash = $this->apr1Md5($password);
@@ -109,7 +128,7 @@ class Apache implements PasswordInterface
                         'You must specify UserName and AuthName (realm) to generate the digest'
                     );
                 }
-                $hash = \md5($this->userName . ':' . $this->authName . ':' .$password);
+                $hash = md5($this->userName . ':' . $this->authName . ':' . $password);
                 break;
         }
 
@@ -125,13 +144,13 @@ class Apache implements PasswordInterface
      */
     public function verify($password, $hash)
     {
-        if (\mb_substr($hash, 0, 5, '8bit') === '{SHA}') {
-            $hash2 = '{SHA}' . \base64_encode(sha1($password, true));
+        if (mb_substr($hash, 0, 5, '8bit') === '{SHA}') {
+            $hash2 = '{SHA}' . base64_encode(sha1($password, true));
             return Utils::compareStrings($hash, $hash2);
         }
 
-        if (\mb_substr($hash, 0, 6, '8bit') === '$apr1$') {
-            $token = \explode('$', $hash);
+        if (mb_substr($hash, 0, 6, '8bit') === '$apr1$') {
+            $token = explode('$', $hash);
             if (empty($token[2])) {
                 throw new Exception\InvalidArgumentException(
                     'The APR1 password format is not valid'
@@ -141,15 +160,15 @@ class Apache implements PasswordInterface
             return Utils::compareStrings($hash, $hash2);
         }
 
-        $bcryptPattern = '/\$2[ay]?\$[0-9]{2}\$[' . \addcslashes(static::BASE64, '+/') . '\.]{53}/';
+        $bcryptPattern = '/\$2[ay]?\$[0-9]{2}\$[' . addcslashes(static::BASE64, '+/') . '\.]{53}/';
 
-        if (\mb_strlen($hash, '8bit') > 13 && ! \preg_match($bcryptPattern, $hash)) { // digest
+        if (mb_strlen($hash, '8bit') > 13 && ! preg_match($bcryptPattern, $hash)) { // digest
             if (empty($this->userName) || empty($this->authName)) {
                 throw new Exception\RuntimeException(
                     'You must specify UserName and AuthName (realm) to verify the digest'
                 );
             }
-            $hash2 = \md5($this->userName . ':' . $this->authName . ':' .$password);
+            $hash2 = md5($this->userName . ':' . $this->authName . ':' . $password);
             return Utils::compareStrings($hash, $hash2);
         }
 
@@ -165,12 +184,12 @@ class Apache implements PasswordInterface
      */
     public function setFormat($format)
     {
-        $format = \strtolower($format);
-        if (!\in_array($format, $this->supportedFormat)) {
-            throw new Exception\InvalidArgumentException(\sprintf(
+        $format = strtolower($format);
+        if (! in_array($format, $this->supportedFormat)) {
+            throw new Exception\InvalidArgumentException(sprintf(
                 'The format %s specified is not valid. The supported formats are: %s',
                 $format,
-                \implode(',', $this->supportedFormat)
+                implode(',', $this->supportedFormat)
             ));
         }
         $this->format = $format;
@@ -242,7 +261,7 @@ class Apache implements PasswordInterface
      */
     protected function toAlphabet64($value)
     {
-        return \strtr(\strrev(\mb_substr(\base64_encode($value), 2, null, '8bit')), self::BASE64, self::ALPHA64);
+        return strtr(strrev(mb_substr(base64_encode($value), 2, null, '8bit')), self::BASE64, self::ALPHA64);
     }
 
     /**
@@ -257,29 +276,29 @@ class Apache implements PasswordInterface
         if (null === $salt) {
             $salt = Rand::getString(8, self::ALPHA64);
         } else {
-            if (\mb_strlen($salt, '8bit') !== 8) {
+            if (mb_strlen($salt, '8bit') !== 8) {
                 throw new Exception\InvalidArgumentException(
                     'The salt value for APR1 algorithm must be 8 characters long'
                 );
             }
             for ($i = 0; $i < 8; $i++) {
-                if (\strpos(self::ALPHA64, $salt[$i]) === false) {
+                if (strpos(self::ALPHA64, $salt[$i]) === false) {
                     throw new Exception\InvalidArgumentException(
                         'The salt value must be a string in the alphabet "./0-9A-Za-z"'
                     );
                 }
             }
         }
-        $len  = \mb_strlen($password, '8bit');
+        $len  = mb_strlen($password, '8bit');
         $text = $password . '$apr1$' . $salt;
-        $bin  = \pack("H32", \md5($password . $salt . $password));
+        $bin  = pack("H32", md5($password . $salt . $password));
         for ($i = $len; $i > 0; $i -= 16) {
-            $text .= \mb_substr($bin, 0, \min(16, $i), '8bit');
+            $text .= mb_substr($bin, 0, min(16, $i), '8bit');
         }
         for ($i = $len; $i > 0; $i >>= 1) {
-            $text .= ($i & 1) ? \chr(0) : $password[0];
+            $text .= ($i & 1) ? chr(0) : $password[0];
         }
-        $bin = \pack("H32", \md5($text));
+        $bin = pack("H32", md5($text));
         for ($i = 0; $i < 1000; $i++) {
             $new = ($i & 1) ? $password : $bin;
             if ($i % 3) {
@@ -289,7 +308,7 @@ class Apache implements PasswordInterface
                 $new .= $password;
             }
             $new .= ($i & 1) ? $bin : $password;
-            $bin = \pack("H32", \md5($new));
+            $bin = pack("H32", md5($new));
         }
         $tmp = '';
         for ($i = 0; $i < 5; $i++) {
@@ -300,7 +319,7 @@ class Apache implements PasswordInterface
             }
             $tmp = $bin[$i] . $bin[$k] . $bin[$j] . $tmp;
         }
-        $tmp = \chr(0) . \chr(0) . $bin[11] . $tmp;
+        $tmp = chr(0) . chr(0) . $bin[11] . $tmp;
 
         return '$apr1$' . $salt . '$' . $this->toAlphabet64($tmp);
     }

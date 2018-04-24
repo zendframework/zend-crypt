@@ -1,16 +1,26 @@
 <?php
 /**
- * Zend Framework (http://framework.zend.com/)
- *
- * @link      http://github.com/zendframework/zf2 for the canonical source repository
- * @copyright Copyright (c) 2005-2016 Zend Technologies USA Inc. (http://www.zend.com)
- * @license   http://framework.zend.com/license/new-bsd New BSD License
+ * @see       https://github.com/zendframework/zend-crypt for the canonical source repository
+ * @copyright Copyright (c) 2005-2018 Zend Technologies USA Inc. (https://www.zend.com)
+ * @license   https://github.com/zendframework/zend-crypt/blob/master/LICENSE.md New BSD License
  */
 
 namespace Zend\Crypt\PublicKey;
 
 use Zend\Crypt\PublicKey\Rsa\Exception;
 use Zend\Stdlib\AbstractOptions;
+
+use const OPENSSL_KEYTYPE_RSA;
+
+use function array_replace;
+use function constant;
+use function defined;
+use function openssl_error_string;
+use function openssl_pkey_export;
+use function openssl_pkey_get_details;
+use function openssl_pkey_new;
+use function strtolower;
+use function strtoupper;
 
 /**
  * RSA instance options
@@ -135,15 +145,15 @@ class RsaOptions extends AbstractOptions
      */
     public function setHashAlgorithm($hash)
     {
-        $hashUpper = \strtoupper($hash);
-        if (!\defined('OPENSSL_ALGO_' . $hashUpper)) {
+        $hashUpper = strtoupper($hash);
+        if (! defined('OPENSSL_ALGO_' . $hashUpper)) {
             throw new Exception\InvalidArgumentException(
                 "Hash algorithm '{$hash}' is not supported"
             );
         }
 
-        $this->hashAlgorithm = \strtolower($hash);
-        $this->opensslSignatureAlgorithm = \constant('OPENSSL_ALGO_' . $hashUpper);
+        $this->hashAlgorithm = strtolower($hash);
+        $this->opensslSignatureAlgorithm = constant('OPENSSL_ALGO_' . $hashUpper);
         return $this;
     }
 
@@ -218,9 +228,9 @@ class RsaOptions extends AbstractOptions
      */
     public function generateKeys(array $opensslConfig = [])
     {
-        $opensslConfig = \array_replace(
+        $opensslConfig = array_replace(
             [
-                'private_key_type' => \OPENSSL_KEYTYPE_RSA,
+                'private_key_type' => OPENSSL_KEYTYPE_RSA,
                 'private_key_bits' => Rsa\PrivateKey::DEFAULT_KEY_SIZE,
                 'digest_alg'       => $this->getHashAlgorithm()
             ],
@@ -228,23 +238,23 @@ class RsaOptions extends AbstractOptions
         );
 
         // generate
-        $resource = \openssl_pkey_new($opensslConfig);
+        $resource = openssl_pkey_new($opensslConfig);
         if (false === $resource) {
             throw new Exception\RuntimeException(
-                'Can not generate keys; openssl ' . \openssl_error_string()
+                'Can not generate keys; openssl ' . openssl_error_string()
             );
         }
 
         // export key
         $passPhrase = $this->getPassPhrase();
-        $result     = \openssl_pkey_export($resource, $private, $passPhrase, $opensslConfig);
+        $result     = openssl_pkey_export($resource, $private, $passPhrase, $opensslConfig);
         if (false === $result) {
             throw new Exception\RuntimeException(
-                'Can not export key; openssl ' . \openssl_error_string()
+                'Can not export key; openssl ' . openssl_error_string()
             );
         }
 
-        $details          = \openssl_pkey_get_details($resource);
+        $details          = openssl_pkey_get_details($resource);
         $this->privateKey = new Rsa\PrivateKey($private, $passPhrase);
         $this->publicKey  = new Rsa\PublicKey($details['key']);
 

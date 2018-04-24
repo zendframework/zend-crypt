@@ -1,13 +1,21 @@
 <?php
 /**
- * Zend Framework (http://framework.zend.com/)
- *
- * @link      http://github.com/zendframework/zf2 for the canonical source repository
- * @copyright Copyright (c) 2005-2016 Zend Technologies USA Inc. (http://www.zend.com)
- * @license   http://framework.zend.com/license/new-bsd New BSD License
+ * @see       https://github.com/zendframework/zend-crypt for the canonical source repository
+ * @copyright Copyright (c) 2005-2018 Zend Technologies USA Inc. (https://www.zend.com)
+ * @license   https://github.com/zendframework/zend-crypt/blob/master/LICENSE.md New BSD License
  */
 
 namespace Zend\Crypt\Key\Derivation;
+
+use const PHP_INT_MAX;
+use const PHP_INT_SIZE;
+
+use function extension_loaded;
+use function hex2bin;
+use function mb_substr;
+use function pack;
+use function scrypt;
+use function unpack;
 
 /**
  * Scrypt key derivation function
@@ -33,25 +41,25 @@ abstract class Scrypt
         if ($n == 0 || ($n & ($n - 1)) != 0) {
             throw new Exception\InvalidArgumentException("N must be > 0 and a power of 2");
         }
-        if ($n > \PHP_INT_MAX / 128 / $r) {
+        if ($n > PHP_INT_MAX / 128 / $r) {
             throw new Exception\InvalidArgumentException("Parameter n is too large");
         }
-        if ($r > \PHP_INT_MAX / 128 / $p) {
+        if ($r > PHP_INT_MAX / 128 / $p) {
             throw new Exception\InvalidArgumentException("Parameter r is too large");
         }
 
-        if (\extension_loaded('Scrypt')) {
+        if (extension_loaded('Scrypt')) {
             if ($length < 16) {
                 throw new Exception\InvalidArgumentException("Key length is too low, must be greater or equal to 16");
             }
-            return \hex2bin(\scrypt($password, $salt, $n, $r, $p, $length));
+            return hex2bin(scrypt($password, $salt, $n, $r, $p, $length));
         }
 
         $b = Pbkdf2::calc('sha256', $password, $salt, 1, $p * 128 * $r);
 
         $s = '';
         for ($i = 0; $i < $p; $i++) {
-            $s .= self::scryptROMix(\mb_substr($b, $i * 128 * $r, 128 * $r, '8bit'), $n, $r);
+            $s .= self::scryptROMix(mb_substr($b, $i * 128 * $r, 128 * $r, '8bit'), $n, $r);
         }
 
         return Pbkdf2::calc('sha256', $password, $s, 1, $length);
@@ -92,16 +100,16 @@ abstract class Scrypt
      */
     protected static function scryptBlockMix($b, $r)
     {
-        $x    = \mb_substr($b, -64, null, '8bit');
+        $x    = mb_substr($b, -64, null, '8bit');
         $even = '';
         $odd  = '';
         $len  = 2 * $r;
 
         for ($i = 0; $i < $len; $i++) {
-            if (\PHP_INT_SIZE === 4) {
-                $x = self::salsa208Core32($x ^ \mb_substr($b, 64 * $i, 64, '8bit'));
+            if (PHP_INT_SIZE === 4) {
+                $x = self::salsa208Core32($x ^ mb_substr($b, 64 * $i, 64, '8bit'));
             } else {
-                $x = self::salsa208Core64($x ^ \mb_substr($b, 64 * $i, 64, '8bit'));
+                $x = self::salsa208Core64($x ^ mb_substr($b, 64 * $i, 64, '8bit'));
             }
             if ($i % 2 == 0) {
                 $even .= $x;
@@ -124,7 +132,7 @@ abstract class Scrypt
     {
         $b32 = [];
         for ($i = 0; $i < 16; $i++) {
-            list(, $b32[$i]) = \unpack("V", \mb_substr($b, $i * 4, 4, '8bit'));
+            list(, $b32[$i]) = unpack("V", mb_substr($b, $i * 4, 4, '8bit'));
         }
 
         $x = $b32;
@@ -199,7 +207,7 @@ abstract class Scrypt
         }
         $result = '';
         for ($i = 0; $i < 16; $i++) {
-            $result .= \pack("V", $b32[$i]);
+            $result .= pack("V", $b32[$i]);
         }
 
         return $result;
@@ -217,7 +225,7 @@ abstract class Scrypt
     {
         $b32 = [];
         for ($i = 0; $i < 16; $i++) {
-            list(, $b32[$i]) = \unpack("V", \mb_substr($b, $i * 4, 4, '8bit'));
+            list(, $b32[$i]) = unpack("V", mb_substr($b, $i * 4, 4, '8bit'));
         }
 
         $x = $b32;
@@ -292,7 +300,7 @@ abstract class Scrypt
         }
         $result = '';
         for ($i = 0; $i < 16; $i++) {
-            $result .= \pack("V", $b32[$i]);
+            $result .= pack("V", $b32[$i]);
         }
 
         return $result;
@@ -312,10 +320,10 @@ abstract class Scrypt
     protected static function integerify($b)
     {
         $v = 'v';
-        if (\PHP_INT_SIZE === 8) {
+        if (PHP_INT_SIZE === 8) {
             $v = 'V';
         }
-        list(, $n) = \unpack($v, \mb_substr($b, -64, null, '8bit'));
+        list(, $n) = unpack($v, mb_substr($b, -64, null, '8bit'));
         return $n;
     }
 }

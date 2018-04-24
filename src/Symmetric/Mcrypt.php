@@ -1,10 +1,8 @@
 <?php
 /**
- * Zend Framework (http://framework.zend.com/)
- *
- * @link      http://github.com/zendframework/zf2 for the canonical source repository
- * @copyright Copyright (c) 2005-2016 Zend Technologies USA Inc. (http://www.zend.com)
- * @license   http://framework.zend.com/license/new-bsd New BSD License
+ * @see       https://github.com/zendframework/zend-crypt for the canonical source repository
+ * @copyright Copyright (c) 2005-2018 Zend Technologies USA Inc. (https://www.zend.com)
+ * @license   https://github.com/zendframework/zend-crypt/blob/master/LICENSE.md New BSD License
  */
 
 namespace Zend\Crypt\Symmetric;
@@ -12,6 +10,32 @@ namespace Zend\Crypt\Symmetric;
 use Interop\Container\ContainerInterface;
 use Traversable;
 use Zend\Stdlib\ArrayUtils;
+
+use const PHP_VERSION_ID;
+
+use function array_keys;
+use function array_key_exists;
+use function class_exists;
+use function extension_loaded;
+use function gettype;
+use function get_class;
+use function implode;
+use function in_array;
+use function is_array;
+use function is_object;
+use function is_string;
+use function is_subclass_of;
+use function mb_strlen;
+use function mb_substr;
+use function mcrypt_decrypt;
+use function mcrypt_encrypt;
+use function mcrypt_get_block_size;
+use function mcrypt_get_iv_size;
+use function mcrypt_get_key_size;
+use function mcrypt_module_get_supported_key_sizes;
+use function sprintf;
+use function strtolower;
+use function trigger_error;
 
 /**
  * Symmetric encryption using the Mcrypt extension
@@ -110,14 +134,14 @@ class Mcrypt implements SymmetricInterface
      */
     public function __construct($options = [])
     {
-        if (\PHP_VERSION_ID >= 70100) {
-            \trigger_error(
+        if (PHP_VERSION_ID >= 70100) {
+            trigger_error(
                 'The Mcrypt extension is deprecated from PHP 7.1+. '
                 . 'We suggest to use Zend\Crypt\Symmetric\Openssl.',
                 E_USER_DEPRECATED
             );
         }
-        if (! \extension_loaded('mcrypt')) {
+        if (! extension_loaded('mcrypt')) {
             throw new Exception\RuntimeException(sprintf(
                 'You cannot use %s without the Mcrypt extension',
                 __CLASS__
@@ -138,13 +162,13 @@ class Mcrypt implements SymmetricInterface
         if (!empty($options)) {
             if ($options instanceof Traversable) {
                 $options = ArrayUtils::iteratorToArray($options);
-            } elseif (!\is_array($options)) {
+            } elseif (! is_array($options)) {
                 throw new Exception\InvalidArgumentException(
                     'The options parameter must be an array or a Traversable'
                 );
             }
             foreach ($options as $key => $value) {
-                switch (\strtolower($key)) {
+                switch (strtolower($key)) {
                     case 'algo':
                     case 'algorithm':
                         $this->setAlgorithm($value);
@@ -207,8 +231,8 @@ class Mcrypt implements SymmetricInterface
      */
     public static function setPaddingPluginManager($plugins)
     {
-        if (\is_string($plugins)) {
-            if (! \class_exists($plugins) || ! \is_subclass_of($plugins, ContainerInterface::class)) {
+        if (is_string($plugins)) {
+            if (! class_exists($plugins) || ! is_subclass_of($plugins, ContainerInterface::class)) {
                 throw new Exception\InvalidArgumentException(sprintf(
                     'Unable to locate padding plugin manager via class "%s"; '
                     . 'class does not exist or does not implement ContainerInterface',
@@ -217,10 +241,10 @@ class Mcrypt implements SymmetricInterface
             }
             $plugins = new $plugins();
         }
-        if (!$plugins instanceof ContainerInterface) {
+        if (! $plugins instanceof ContainerInterface) {
             throw new Exception\InvalidArgumentException(sprintf(
                 'Padding plugins must implements Interop\Container\ContainerInterface; received "%s"',
-                (\is_object($plugins) ? \get_class($plugins) : \gettype($plugins))
+                is_object($plugins) ? get_class($plugins) : gettype($plugins)
             ));
         }
         static::$paddingPlugins = $plugins;
@@ -233,7 +257,7 @@ class Mcrypt implements SymmetricInterface
      */
     public function getKeySize()
     {
-        return \mcrypt_get_key_size($this->supportedAlgos[$this->algo], $this->supportedModes[$this->mode]);
+        return mcrypt_get_key_size($this->supportedAlgos[$this->algo], $this->supportedModes[$this->mode]);
     }
 
     /**
@@ -246,12 +270,12 @@ class Mcrypt implements SymmetricInterface
      */
     public function setKey($key)
     {
-        $keyLen = \mb_strlen($key, '8bit');
+        $keyLen = mb_strlen($key, '8bit');
 
-        if (!$keyLen) {
+        if (! $keyLen) {
             throw new Exception\InvalidArgumentException('The key cannot be empty');
         }
-        $keySizes = \mcrypt_module_get_supported_key_sizes($this->supportedAlgos[$this->algo]);
+        $keySizes = mcrypt_module_get_supported_key_sizes($this->supportedAlgos[$this->algo]);
         $maxKey = $this->getKeySize();
 
         /*
@@ -259,10 +283,10 @@ class Mcrypt implements SymmetricInterface
          * the others are more picky.
          */
         if (!empty($keySizes) && $keyLen < $maxKey) {
-            if (!\in_array($keyLen, $keySizes)) {
+            if (! in_array($keyLen, $keySizes)) {
                 throw new Exception\InvalidArgumentException(sprintf(
                     'The size of the key must be %s bytes or longer',
-                    \implode(', ', $keySizes)
+                    implode(', ', $keySizes)
                 ));
             }
         }
@@ -281,7 +305,7 @@ class Mcrypt implements SymmetricInterface
         if (empty($this->key)) {
             return;
         }
-        return \mb_substr($this->key, 0, $this->getKeySize(), '8bit');
+        return mb_substr($this->key, 0, $this->getKeySize(), '8bit');
     }
 
     /**
@@ -293,7 +317,7 @@ class Mcrypt implements SymmetricInterface
      */
     public function setAlgorithm($algo)
     {
-        if (!\array_key_exists($algo, $this->supportedAlgos)) {
+        if (! array_key_exists($algo, $this->supportedAlgos)) {
             throw new Exception\InvalidArgumentException(sprintf(
                 'The algorithm %s is not supported by %s',
                 $algo,
@@ -348,7 +372,7 @@ class Mcrypt implements SymmetricInterface
     public function encrypt($data)
     {
         // Cannot encrypt empty string
-        if (!\is_string($data) || $data === '') {
+        if (! is_string($data) || $data === '') {
             throw new Exception\InvalidArgumentException('The data to encrypt cannot be empty');
         }
         if (null === $this->getKey()) {
@@ -364,7 +388,7 @@ class Mcrypt implements SymmetricInterface
         $data = $this->padding->pad($data, $this->getBlockSize());
         $iv   = $this->getSalt();
         // encryption
-        $result = \mcrypt_encrypt(
+        $result = mcrypt_encrypt(
             $this->supportedAlgos[$this->algo],
             $this->getKey(),
             $data,
@@ -393,9 +417,9 @@ class Mcrypt implements SymmetricInterface
         if (null === $this->getPadding()) {
             throw new Exception\InvalidArgumentException('You have to specify a padding method');
         }
-        $iv         = \mb_substr($data, 0, $this->getSaltSize(), '8bit');
-        $ciphertext = \mb_substr($data, $this->getSaltSize(), null, '8bit');
-        $result     = \mcrypt_decrypt(
+        $iv         = mb_substr($data, 0, $this->getSaltSize(), '8bit');
+        $ciphertext = mb_substr($data, $this->getSaltSize(), null, '8bit');
+        $result     = mcrypt_decrypt(
             $this->supportedAlgos[$this->algo],
             $this->getKey(),
             $ciphertext,
@@ -413,7 +437,7 @@ class Mcrypt implements SymmetricInterface
      */
     public function getSaltSize()
     {
-        return \mcrypt_get_iv_size($this->supportedAlgos[$this->algo], $this->supportedModes[$this->mode]);
+        return mcrypt_get_iv_size($this->supportedAlgos[$this->algo], $this->supportedModes[$this->mode]);
     }
 
     /**
@@ -423,7 +447,7 @@ class Mcrypt implements SymmetricInterface
      */
     public function getSupportedAlgorithms()
     {
-        return \array_keys($this->supportedAlgos);
+        return array_keys($this->supportedAlgos);
     }
 
     /**
@@ -438,7 +462,7 @@ class Mcrypt implements SymmetricInterface
         if (empty($salt)) {
             throw new Exception\InvalidArgumentException('The salt (IV) cannot be empty');
         }
-        if (\mb_strlen($salt, '8bit') < $this->getSaltSize()) {
+        if (mb_strlen($salt, '8bit') < $this->getSaltSize()) {
             throw new Exception\InvalidArgumentException(sprintf(
                 'The size of the salt (IV) must be at least %d bytes',
                 $this->getSaltSize()
@@ -459,14 +483,14 @@ class Mcrypt implements SymmetricInterface
         if (empty($this->iv)) {
             return;
         }
-        if (\mb_strlen($this->iv, '8bit') < $this->getSaltSize()) {
+        if (mb_strlen($this->iv, '8bit') < $this->getSaltSize()) {
             throw new Exception\RuntimeException(sprintf(
                 'The size of the salt (IV) must be at least %d bytes',
                 $this->getSaltSize()
             ));
         }
 
-        return \mb_substr($this->iv, 0, $this->getSaltSize(), '8bit');
+        return mb_substr($this->iv, 0, $this->getSaltSize(), '8bit');
     }
 
     /**
@@ -489,8 +513,8 @@ class Mcrypt implements SymmetricInterface
     public function setMode($mode)
     {
         if (!empty($mode)) {
-            $mode = \strtolower($mode);
-            if (!\array_key_exists($mode, $this->supportedModes)) {
+            $mode = strtolower($mode);
+            if (! array_key_exists($mode, $this->supportedModes)) {
                 throw new Exception\InvalidArgumentException(sprintf(
                     'The mode %s is not supported by %s',
                     $mode,
@@ -520,7 +544,7 @@ class Mcrypt implements SymmetricInterface
      */
     public function getSupportedModes()
     {
-        return \array_keys($this->supportedModes);
+        return array_keys($this->supportedModes);
     }
 
     /**
@@ -530,6 +554,6 @@ class Mcrypt implements SymmetricInterface
      */
     public function getBlockSize()
     {
-        return \mcrypt_get_block_size($this->supportedAlgos[$this->algo], $this->supportedModes[$this->mode]);
+        return mcrypt_get_block_size($this->supportedAlgos[$this->algo], $this->supportedModes[$this->mode]);
     }
 }

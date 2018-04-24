@@ -1,10 +1,8 @@
 <?php
 /**
- * Zend Framework (http://framework.zend.com/)
- *
- * @link      http://github.com/zendframework/zf2 for the canonical source repository
- * @copyright Copyright (c) 2005-2016 Zend Technologies USA Inc. (http://www.zend.com)
- * @license   http://framework.zend.com/license/new-bsd New BSD License
+ * @see       https://github.com/zendframework/zend-crypt for the canonical source repository
+ * @copyright Copyright (c) 2005-2018 Zend Technologies USA Inc. (https://www.zend.com)
+ * @license   https://github.com/zendframework/zend-crypt/blob/master/LICENSE.md New BSD License
  */
 
 namespace Zend\Crypt;
@@ -12,6 +10,14 @@ namespace Zend\Crypt;
 use Zend\Math\Rand;
 use Zend\Crypt\PublicKey\Rsa\PublicKey as PubKey;
 use Zend\Crypt\PublicKey\Rsa\PrivateKey;
+
+use function array_search;
+use function base64_decode;
+use function base64_encode;
+use function explode;
+use function is_array;
+use function is_string;
+use function sprintf;
 
 /**
  * Hybrid encryption (OpenPGP like)
@@ -62,21 +68,21 @@ class Hybrid
         $this->bCipher->setKey($sessionKey);
         $ciphertext = $this->bCipher->encrypt($plaintext);
 
-        if (! \is_array($keys)) {
+        if (! is_array($keys)) {
             $keys = ['' => $keys];
         }
 
         $encKeys = '';
         // encrypt the session key with public keys
         foreach ($keys as $id => $pubkey) {
-            if (! $pubkey instanceof PubKey && ! \is_string($pubkey)) {
+            if (! $pubkey instanceof PubKey && ! is_string($pubkey)) {
                 throw new Exception\RuntimeException(sprintf(
                     "The public key must be a string in PEM format or an instance of %s",
                     PubKey::class
                 ));
             }
-            $pubkey = \is_string($pubkey) ? new PubKey($pubkey) : $pubkey;
-            $encKeys .= \sprintf(
+            $pubkey = is_string($pubkey) ? new PubKey($pubkey) : $pubkey;
+            $encKeys .= sprintf(
                 "%s:%s:",
                 base64_encode($id),
                 base64_encode($this->rsa->encrypt($sessionKey, $pubkey))
@@ -98,26 +104,26 @@ class Hybrid
     public function decrypt($msg, $privateKey = null, $passPhrase = null, $id = null)
     {
         // get the session key
-        list($encKeys, $ciphertext) = \explode(';', $msg, 2);
+        list($encKeys, $ciphertext) = explode(';', $msg, 2);
 
-        $keys = \explode(':', $encKeys);
-        $pos  = \array_search(\base64_encode($id), $keys);
+        $keys = explode(':', $encKeys);
+        $pos  = array_search(base64_encode($id), $keys);
         if (false === $pos) {
             throw new Exception\RuntimeException(
                 "This private key cannot be used for decryption"
             );
         }
 
-        if (! $privateKey instanceof PrivateKey && ! \is_string($privateKey)) {
+        if (! $privateKey instanceof PrivateKey && ! is_string($privateKey)) {
             throw new Exception\RuntimeException(\sprintf(
                 "The private key must be a string in PEM format or an instance of %s",
                 PrivateKey::class
             ));
         }
-        $privateKey = \is_string($privateKey) ? new PrivateKey($privateKey, $passPhrase) : $privateKey;
+        $privateKey = is_string($privateKey) ? new PrivateKey($privateKey, $passPhrase) : $privateKey;
 
         // decrypt the session key with privateKey
-        $sessionKey = $this->rsa->decrypt(\base64_decode($keys[$pos + 1]), $privateKey);
+        $sessionKey = $this->rsa->decrypt(base64_decode($keys[$pos + 1]), $privateKey);
 
         // decrypt the plaintext with the blockcipher algorithm
         $this->bCipher->setKey($sessionKey);
