@@ -329,6 +329,7 @@ class BlockCipher
      */
     public function getCipherSupportedAlgorithms()
     {
+        return $this->cipher->getSupportedAlgorithms();
     }
 
     /**
