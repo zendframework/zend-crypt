@@ -1,10 +1,8 @@
 <?php
 /**
- * Zend Framework (http://framework.zend.com/)
- *
- * @link      http://github.com/zendframework/zf2 for the canonical source repository
- * @copyright Copyright (c) 2005-2016 Zend Technologies USA Inc. (http://www.zend.com)
- * @license   http://framework.zend.com/license/new-bsd New BSD License
+ * @see       https://github.com/zendframework/zend-crypt for the canonical source repository
+ * @copyright Copyright (c) 2005-2018 Zend Technologies USA Inc. (https://www.zend.com)
+ * @license   https://github.com/zendframework/zend-crypt/blob/master/LICENSE.md New BSD License
  */
 
 namespace Zend\Crypt\Symmetric;
@@ -12,6 +10,29 @@ namespace Zend\Crypt\Symmetric;
 use Interop\Container\ContainerInterface;
 use Traversable;
 use Zend\Stdlib\ArrayUtils;
+
+use const OPENSSL_RAW_DATA;
+use const OPENSSL_ZERO_PADDING;
+use const PHP_VERSION_ID;
+
+use function class_exists;
+use function extension_loaded;
+use function gettype;
+use function get_class;
+use function in_array;
+use function is_array;
+use function is_int;
+use function is_object;
+use function is_string;
+use function is_subclass_of;
+use function mb_strlen;
+use function mb_substr;
+use function openssl_cipher_iv_length;
+use function openssl_decrypt;
+use function openssl_encrypt;
+use function openssl_error_string;
+use function openssl_get_cipher_methods;
+use function strtolower;
 
 /**
  * Symmetric encryption using the OpenSSL extension
@@ -158,7 +179,7 @@ class Openssl implements SymmetricInterface
      */
     public function __construct($options = [])
     {
-        if (!extension_loaded('openssl')) {
+        if (! extension_loaded('openssl')) {
             throw new Exception\RuntimeException(sprintf(
                 'You cannot use %s without the OpenSSL extension',
                 __CLASS__
@@ -290,7 +311,7 @@ class Openssl implements SymmetricInterface
             throw new Exception\InvalidArgumentException(sprintf(
                 'Padding plugins must implements %s; received "%s"',
                 ContainerInterface::class,
-                (is_object($plugins) ? get_class($plugins) : gettype($plugins))
+                is_object($plugins) ? get_class($plugins) : gettype($plugins)
             ));
         }
 

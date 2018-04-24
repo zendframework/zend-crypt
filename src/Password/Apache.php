@@ -1,10 +1,8 @@
 <?php
 /**
- * Zend Framework (http://framework.zend.com/)
- *
- * @link      http://github.com/zendframework/zf2 for the canonical source repository
- * @copyright Copyright (c) 2005-2016 Zend Technologies USA Inc. (http://www.zend.com)
- * @license   http://framework.zend.com/license/new-bsd New BSD License
+ * @see       https://github.com/zendframework/zend-crypt for the canonical source repository
+ * @copyright Copyright (c) 2005-2018 Zend Technologies USA Inc. (https://www.zend.com)
+ * @license   https://github.com/zendframework/zend-crypt/blob/master/LICENSE.md New BSD License
  */
 
 namespace Zend\Crypt\Password;
@@ -12,6 +10,27 @@ namespace Zend\Crypt\Password;
 use Traversable;
 use Zend\Crypt\Utils;
 use Zend\Math\Rand;
+
+use function addcslashes;
+use function base64_encode;
+use function chr;
+use function crypt;
+use function explode;
+use function implode;
+use function in_array;
+use function is_array;
+use function mb_strlen;
+use function mb_substr;
+use function md5;
+use function min;
+use function pack;
+use function preg_match;
+use function sha1;
+use function sprintf;
+use function strpos;
+use function strrev;
+use function strtolower;
+use function strtr;
 
 /**
  * Apache password authentication
@@ -59,7 +78,7 @@ class Apache implements PasswordInterface
         if (empty($options)) {
             return;
         }
-        if (!is_array($options) && !$options instanceof Traversable) {
+        if (! is_array($options) && ! $options instanceof Traversable) {
             throw new Exception\InvalidArgumentException(
                 'The options parameter must be an array or a Traversable'
             );
@@ -109,7 +128,7 @@ class Apache implements PasswordInterface
                         'You must specify UserName and AuthName (realm) to generate the digest'
                     );
                 }
-                $hash = md5($this->userName . ':' . $this->authName . ':' .$password);
+                $hash = md5($this->userName . ':' . $this->authName . ':' . $password);
                 break;
         }
 
@@ -149,7 +168,7 @@ class Apache implements PasswordInterface
                     'You must specify UserName and AuthName (realm) to verify the digest'
                 );
             }
-            $hash2 = md5($this->userName . ':' . $this->authName . ':' .$password);
+            $hash2 = md5($this->userName . ':' . $this->authName . ':' . $password);
             return Utils::compareStrings($hash, $hash2);
         }
 
@@ -166,7 +185,7 @@ class Apache implements PasswordInterface
     public function setFormat($format)
     {
         $format = strtolower($format);
-        if (!in_array($format, $this->supportedFormat)) {
+        if (! in_array($format, $this->supportedFormat)) {
             throw new Exception\InvalidArgumentException(sprintf(
                 'The format %s specified is not valid. The supported formats are: %s',
                 $format,

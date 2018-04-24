@@ -1,10 +1,8 @@
 <?php
 /**
- * Zend Framework (http://framework.zend.com/)
- *
- * @link      http://github.com/zendframework/zf2 for the canonical source repository
- * @copyright Copyright (c) 2005-2016 Zend Technologies USA Inc. (http://www.zend.com)
- * @license   http://framework.zend.com/license/new-bsd New BSD License
+ * @see       https://github.com/zendframework/zend-crypt for the canonical source repository
+ * @copyright Copyright (c) 2005-2018 Zend Technologies USA Inc. (https://www.zend.com)
+ * @license   https://github.com/zendframework/zend-crypt/blob/master/LICENSE.md New BSD License
  */
 
 namespace Zend\Crypt\Symmetric;
@@ -12,6 +10,32 @@ namespace Zend\Crypt\Symmetric;
 use Interop\Container\ContainerInterface;
 use Traversable;
 use Zend\Stdlib\ArrayUtils;
+
+use const PHP_VERSION_ID;
+
+use function array_keys;
+use function array_key_exists;
+use function class_exists;
+use function extension_loaded;
+use function gettype;
+use function get_class;
+use function implode;
+use function in_array;
+use function is_array;
+use function is_object;
+use function is_string;
+use function is_subclass_of;
+use function mb_strlen;
+use function mb_substr;
+use function mcrypt_decrypt;
+use function mcrypt_encrypt;
+use function mcrypt_get_block_size;
+use function mcrypt_get_iv_size;
+use function mcrypt_get_key_size;
+use function mcrypt_module_get_supported_key_sizes;
+use function sprintf;
+use function strtolower;
+use function trigger_error;
 
 /**
  * Symmetric encryption using the Mcrypt extension
@@ -138,7 +162,7 @@ class Mcrypt implements SymmetricInterface
         if (!empty($options)) {
             if ($options instanceof Traversable) {
                 $options = ArrayUtils::iteratorToArray($options);
-            } elseif (!is_array($options)) {
+            } elseif (! is_array($options)) {
                 throw new Exception\InvalidArgumentException(
                     'The options parameter must be an array or a Traversable'
                 );
@@ -217,10 +241,10 @@ class Mcrypt implements SymmetricInterface
             }
             $plugins = new $plugins();
         }
-        if (!$plugins instanceof ContainerInterface) {
+        if (! $plugins instanceof ContainerInterface) {
             throw new Exception\InvalidArgumentException(sprintf(
                 'Padding plugins must implements Interop\Container\ContainerInterface; received "%s"',
-                (is_object($plugins) ? get_class($plugins) : gettype($plugins))
+                is_object($plugins) ? get_class($plugins) : gettype($plugins)
             ));
         }
         static::$paddingPlugins = $plugins;
@@ -248,7 +272,7 @@ class Mcrypt implements SymmetricInterface
     {
         $keyLen = mb_strlen($key, '8bit');
 
-        if (!$keyLen) {
+        if (! $keyLen) {
             throw new Exception\InvalidArgumentException('The key cannot be empty');
         }
         $keySizes = mcrypt_module_get_supported_key_sizes($this->supportedAlgos[$this->algo]);
@@ -259,7 +283,7 @@ class Mcrypt implements SymmetricInterface
          * the others are more picky.
          */
         if (!empty($keySizes) && $keyLen < $maxKey) {
-            if (!in_array($keyLen, $keySizes)) {
+            if (! in_array($keyLen, $keySizes)) {
                 throw new Exception\InvalidArgumentException(sprintf(
                     'The size of the key must be %s bytes or longer',
                     implode(', ', $keySizes)
@@ -293,7 +317,7 @@ class Mcrypt implements SymmetricInterface
      */
     public function setAlgorithm($algo)
     {
-        if (!array_key_exists($algo, $this->supportedAlgos)) {
+        if (! array_key_exists($algo, $this->supportedAlgos)) {
             throw new Exception\InvalidArgumentException(sprintf(
                 'The algorithm %s is not supported by %s',
                 $algo,
@@ -348,7 +372,7 @@ class Mcrypt implements SymmetricInterface
     public function encrypt($data)
     {
         // Cannot encrypt empty string
-        if (!is_string($data) || $data === '') {
+        if (! is_string($data) || $data === '') {
             throw new Exception\InvalidArgumentException('The data to encrypt cannot be empty');
         }
         if (null === $this->getKey()) {
@@ -490,7 +514,7 @@ class Mcrypt implements SymmetricInterface
     {
         if (!empty($mode)) {
             $mode = strtolower($mode);
-            if (!array_key_exists($mode, $this->supportedModes)) {
+            if (! array_key_exists($mode, $this->supportedModes)) {
                 throw new Exception\InvalidArgumentException(sprintf(
                     'The mode %s is not supported by %s',
                     $mode,

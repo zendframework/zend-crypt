@@ -1,16 +1,26 @@
 <?php
 /**
- * Zend Framework (http://framework.zend.com/)
- *
- * @link      http://github.com/zendframework/zf2 for the canonical source repository
- * @copyright Copyright (c) 2005-2016 Zend Technologies USA Inc. (http://www.zend.com)
- * @license   http://framework.zend.com/license/new-bsd New BSD License
+ * @see       https://github.com/zendframework/zend-crypt for the canonical source repository
+ * @copyright Copyright (c) 2005-2018 Zend Technologies USA Inc. (https://www.zend.com)
+ * @license   https://github.com/zendframework/zend-crypt/blob/master/LICENSE.md New BSD License
  */
 
 namespace Zend\Crypt;
 
 use Zend\Crypt\Key\Derivation\Pbkdf2;
 use Zend\Math\Rand;
+
+use function fclose;
+use function filesize;
+use function file_exists;
+use function fopen;
+use function fread;
+use function fseek;
+use function fwrite;
+use function mb_strlen;
+use function mb_substr;
+use function sprintf;
+use function str_repeat;
 
 /**
  * Encrypt/decrypt a file using a symmetric cipher in CBC mode
@@ -170,7 +180,7 @@ class FileCipher
      */
     public function setHashAlgorithm($hash)
     {
-        if (!Hash::isSupported($hash)) {
+        if (! Hash::isSupported($hash)) {
             throw new Exception\InvalidArgumentException(
                 "The specified hash algorithm '{$hash}' is not supported by Zend\Crypt\Hash"
             );
@@ -196,7 +206,7 @@ class FileCipher
      */
     public function setPbkdf2HashAlgorithm($hash)
     {
-        if (!Hash::isSupported($hash)) {
+        if (! Hash::isSupported($hash)) {
             throw new Exception\InvalidArgumentException(
                 "The specified hash algorithm '{$hash}' is not supported by Zend\Crypt\Hash"
             );
@@ -369,7 +379,7 @@ class FileCipher
      */
     protected function checkFileInOut($fileIn, $fileOut)
     {
-        if (!file_exists($fileIn)) {
+        if (! file_exists($fileIn)) {
             throw new Exception\InvalidArgumentException(sprintf(
                 'I cannot open the %s file',
                 $fileIn
