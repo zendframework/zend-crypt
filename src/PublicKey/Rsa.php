@@ -46,7 +46,7 @@ class Rsa
     {
         if (! extension_loaded('openssl')) {
             throw new Exception\RuntimeException(
-                'Can not create Zend\Crypt\PublicKey\Rsa; openssl extension to be loaded'
+                'Can not create Zend\Crypt\PublicKey\Rsa; openssl extension needs to be loaded'
             );
         }
 
