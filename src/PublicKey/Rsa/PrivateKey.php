@@ -126,7 +126,7 @@ class PrivateKey extends AbstractKey
      */
     public function decrypt($data, $padding = OPENSSL_PKCS1_OAEP_PADDING)
     {
-        if (!is_string($data)) {
+        if (! is_string($data)) {
             throw new Exception\InvalidArgumentException('The data to decrypt must be a string');
         }
         if ('' === $data) {

@@ -10,17 +10,21 @@
 namespace ZendTest\Crypt\Password;
 
 use ArrayObject;
+use PHPUnit\Framework\TestCase;
 use Zend\Crypt\Password\Bcrypt;
+use Zend\Crypt\Password\Exception;
 
 /**
  * @group      Zend_Crypt
  */
-class BcryptTest extends \PHPUnit_Framework_TestCase
+class BcryptTest extends TestCase
 {
     /** @var Bcrypt */
     public $bcrypt;
+
     /** @var string */
     public $bcryptPassword;
+
     /** @var string */
     public $password;
 
@@ -54,11 +58,9 @@ class BcryptTest extends \PHPUnit_Framework_TestCase
 
     public function testWrongConstruct()
     {
-        $this->setExpectedException(
-            'Zend\Crypt\Password\Exception\InvalidArgumentException',
-            'The options parameter must be an array or a Traversable'
-        );
-        $bcrypt = new Bcrypt('test');
+        $this->expectException(Exception\InvalidArgumentException::class);
+        $this->expectExceptionMessage('The options parameter must be an array or a Traversable');
+        new Bcrypt('test');
     }
 
     public function testSetCost()
@@ -69,10 +71,8 @@ class BcryptTest extends \PHPUnit_Framework_TestCase
 
     public function testSetWrongCost()
     {
-        $this->setExpectedException(
-            'Zend\Crypt\Password\Exception\InvalidArgumentException',
-            'The cost parameter of bcrypt must be in range 04-31'
-        );
+        $this->expectException(Exception\InvalidArgumentException::class);
+        $this->expectExceptionMessage('The cost parameter of bcrypt must be in range 04-31');
         $this->bcrypt->setCost('3');
     }
 
@@ -101,26 +101,26 @@ class BcryptTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @requires PHP 7.0
-     * @expectedException PHPUnit_Framework_Error
      */
     public function testSetSaltError()
     {
+        $this->expectException(\PHPUnit\Framework\Error\Error::class);
         $this->bcrypt->setSalt('test');
     }
 
     /**
      * @requires PHP 7.0
-     * @expectedException PHPUnit_Framework_Error
      */
     public function testGetSaltError()
     {
-        $salt = $this->bcrypt->getSalt();
+        $this->expectException(\PHPUnit\Framework\Error\Error::class);
+        $this->bcrypt->getSalt();
     }
 
     public function testBenchmarkCost()
     {
         $cost = $this->bcrypt->benchmarkCost();
-        $this->assertInternalType("int", $cost);
+        $this->assertInternalType('int', $cost);
         $this->assertTrue($cost > 8 && $cost < 32);
     }
 }

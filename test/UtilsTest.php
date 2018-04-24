@@ -9,6 +9,7 @@
 
 namespace ZendTest\Crypt;
 
+use PHPUnit\Framework\TestCase;
 use Zend\Crypt\Utils;
 
 /**
@@ -19,7 +20,7 @@ use Zend\Crypt\Utils;
 /**
  * @group      Zend_Crypt
  */
-class UtilsTest extends \PHPUnit_Framework_TestCase
+class UtilsTest extends TestCase
 {
     public function testCompareStringsBasic()
     {

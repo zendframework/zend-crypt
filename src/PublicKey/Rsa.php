@@ -46,13 +46,13 @@ class Rsa
     {
         if (! extension_loaded('openssl')) {
             throw new Exception\RuntimeException(
-                'Can not create Zend\Crypt\PublicKey\Rsa; openssl extension to be loaded'
+                'Can not create Zend\Crypt\PublicKey\Rsa; openssl extension needs to be loaded'
             );
         }
 
         if ($options instanceof Traversable) {
             $options = ArrayUtils::iteratorToArray($options);
-        } elseif (!is_array($options)) {
+        } elseif (! is_array($options)) {
             throw new Exception\InvalidArgumentException(
                 'The options parameter must be an array or a Traversable'
             );

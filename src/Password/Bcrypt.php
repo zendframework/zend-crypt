@@ -49,7 +49,7 @@ class Bcrypt implements PasswordInterface
      */
     public function __construct($options = [])
     {
-        if (!empty($options)) {
+        if (! empty($options)) {
             if ($options instanceof Traversable) {
                 $options = ArrayUtils::iteratorToArray($options);
             }
@@ -111,7 +111,7 @@ class Bcrypt implements PasswordInterface
      */
     public function setCost($cost)
     {
-        if (!empty($cost)) {
+        if (! empty($cost)) {
             $cost = (int) $cost;
             if ($cost < 4 || $cost > 31) {
                 throw new Exception\InvalidArgumentException(

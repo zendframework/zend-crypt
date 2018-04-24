@@ -159,7 +159,7 @@ class Mcrypt implements SymmetricInterface
      */
     public function setOptions($options)
     {
-        if (!empty($options)) {
+        if (! empty($options)) {
             if ($options instanceof Traversable) {
                 $options = ArrayUtils::iteratorToArray($options);
             } elseif (! is_array($options)) {
@@ -201,7 +201,7 @@ class Mcrypt implements SymmetricInterface
      */
     protected function setDefaultOptions($options = [])
     {
-        if (!isset($options['padding'])) {
+        if (! isset($options['padding'])) {
             $plugins       = static::getPaddingPluginManager();
             $padding       = $plugins->get(self::DEFAULT_PADDING);
             $this->padding = $padding;
@@ -282,7 +282,7 @@ class Mcrypt implements SymmetricInterface
          * blowfish has $keySizes empty, meaning it can have arbitrary key length.
          * the others are more picky.
          */
-        if (!empty($keySizes) && $keyLen < $maxKey) {
+        if (! empty($keySizes) && $keyLen < $maxKey) {
             if (! in_array($keyLen, $keySizes)) {
                 throw new Exception\InvalidArgumentException(sprintf(
                     'The size of the key must be %s bytes or longer',
@@ -512,7 +512,7 @@ class Mcrypt implements SymmetricInterface
      */
     public function setMode($mode)
     {
-        if (!empty($mode)) {
+        if (! empty($mode)) {
             $mode = strtolower($mode);
             if (! array_key_exists($mode, $this->supportedModes)) {
                 throw new Exception\InvalidArgumentException(sprintf(

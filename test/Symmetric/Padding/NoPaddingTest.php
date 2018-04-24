@@ -9,9 +9,10 @@
 
 namespace ZendTest\Crypt\Symmetric\Padding;
 
+use PHPUnit\Framework\TestCase;
 use Zend\Crypt\Symmetric\Padding\NoPadding;
 
-class NoPaddingTest extends \PHPUnit_Framework_TestCase
+class NoPaddingTest extends TestCase
 {
     /**
      * @var NoPadding
@@ -26,7 +27,7 @@ class NoPaddingTest extends \PHPUnit_Framework_TestCase
     public function testPad()
     {
         $string = 'test';
-        for ($size=0; $size<10; $size++) {
+        for ($size = 0; $size < 10; $size++) {
             $this->assertEquals($string, $this->padding->pad($string, $size));
         }
     }

@@ -271,7 +271,7 @@ class DiffieHellman
      */
     public function getSharedSecretKey($format = self::FORMAT_NUMBER)
     {
-        if (!isset($this->secretKey)) {
+        if (! isset($this->secretKey)) {
             throw new Exception\InvalidArgumentException(
                 'A secret key has not yet been computed; call computeSecretKey() first'
             );
@@ -309,7 +309,7 @@ class DiffieHellman
      */
     public function getPrime($format = self::FORMAT_NUMBER)
     {
-        if (!isset($this->prime)) {
+        if (! isset($this->prime)) {
             throw new Exception\InvalidArgumentException('No prime number has been set');
         }
 
@@ -378,7 +378,7 @@ class DiffieHellman
      */
     public function getPrivateKey($format = self::FORMAT_NUMBER)
     {
-        if (!$this->hasPrivateKey()) {
+        if (! $this->hasPrivateKey()) {
             $this->setPrivateKey($this->generatePrivateKey(), self::FORMAT_BINARY);
         }
 

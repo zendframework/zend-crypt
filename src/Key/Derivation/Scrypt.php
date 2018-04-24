@@ -84,7 +84,7 @@ abstract class Scrypt
         }
         for ($i = 0; $i < $n; $i++) {
             $j = self::integerify($x) % $n;
-            $t = $x ^  $v[$j];
+            $t = $x ^ $v[$j];
             $x = self::scryptBlockMix($t, $r);
         }
         return $x;

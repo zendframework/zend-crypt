@@ -7,8 +7,8 @@
 
 namespace ZendTest\Crypt\BlockCipher;
 
-use Zend\Crypt\Symmetric;
 use Zend\Crypt\BlockCipher;
+use Zend\Crypt\Symmetric;
 
 class OpensslTest extends AbstractBlockCipherTest
 {

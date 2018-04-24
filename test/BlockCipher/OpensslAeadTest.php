@@ -7,11 +7,12 @@
 
 namespace ZendTest\Crypt\BlockCipher;
 
-use Zend\Crypt\Symmetric\Openssl;
+use PHPUnit\Framework\TestCase;
 use Zend\Crypt\BlockCipher;
+use Zend\Crypt\Symmetric\Openssl;
 use Zend\Math\Rand;
 
-class OpensslAeadTest extends \PHPUnit_Framework_TestCase
+class OpensslAeadTest extends TestCase
 {
     public function setUp()
     {

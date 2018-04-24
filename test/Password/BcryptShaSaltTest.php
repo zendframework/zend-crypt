@@ -10,20 +10,25 @@
 namespace ZendTest\Crypt\Password;
 
 use ArrayObject;
+use PHPUnit\Framework\TestCase;
 use Zend\Crypt\Password\Bcrypt;
 use Zend\Crypt\Password\BcryptSha;
+use Zend\Crypt\Password\Exception;
 
 /**
  * @group      Zend_Crypt
  */
-class BcryptShaSaltTest extends \PHPUnit_Framework_TestCase
+class BcryptShaSaltTest extends TestCase
 {
     /** @var Bcrypt */
     private $bcrypt;
+
     /** @var string */
     private $salt;
+
     /** @var string */
     private $bcryptPassword;
+
     /** @var string */
     private $password;
 
@@ -31,7 +36,7 @@ class BcryptShaSaltTest extends \PHPUnit_Framework_TestCase
     {
         if (PHP_VERSION_ID >= 70000) {
             $this->markTestSkipped(
-                sprintf("I cannot execute %s with PHP 7+", __CLASS__)
+                sprintf('I cannot execute %s with PHP 7+', __CLASS__)
             );
         }
         $this->bcrypt   = new BcryptSha();
@@ -45,8 +50,8 @@ class BcryptShaSaltTest extends \PHPUnit_Framework_TestCase
     public function testConstructByOptions()
     {
         $options = [
-            'cost'       => '15',
-            'salt'       => $this->salt
+            'cost' => '15',
+            'salt' => $this->salt,
         ];
         $bcrypt  = new BcryptSha($options);
         $this->assertEquals('15', $bcrypt->getCost());
@@ -60,8 +65,8 @@ class BcryptShaSaltTest extends \PHPUnit_Framework_TestCase
     public function testConstructByConfig()
     {
         $options = [
-            'cost'       => '15',
-            'salt'       => $this->salt
+            'cost' => '15',
+            'salt' => $this->salt,
         ];
         $config  = new ArrayObject($options);
         $bcrypt  = new BcryptSha($config);
@@ -77,10 +82,11 @@ class BcryptShaSaltTest extends \PHPUnit_Framework_TestCase
 
     public function testSetSmallSalt()
     {
-        $this->setExpectedException(
-            'Zend\Crypt\Password\Exception\InvalidArgumentException',
-            'The length of the salt must be at least ' . Bcrypt::MIN_SALT_SIZE . ' bytes'
-        );
+        $this->expectException(Exception\InvalidArgumentException::class);
+        $this->expectExceptionMessage(sprintf(
+            'The length of the salt must be at least %d bytes',
+            Bcrypt::MIN_SALT_SIZE
+        ));
         $this->bcrypt->setSalt('small salt');
     }
 

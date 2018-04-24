@@ -3,6 +3,29 @@
 All notable changes to this project will be documented in this file, in reverse
 chronological order by release.
 
+## 3.3.0 - TBD
+
+### Added
+
+- [#52](https://github.com/zendframework/zend-crypt/pull/52) adds support for PHP 7.2.
+
+### Changed
+
+- [#55](https://github.com/zendframework/zend-crypt/pull/55) updates `Zend\Crypt\Hmac` to use `hash_hmac_algos` instead of `hmac_algos`
+  when it is present.
+
+### Deprecated
+
+- Nothing.
+
+### Removed
+
+- Nothing.
+
+### Fixed
+
+- Nothing.
+
 ## 3.2.2 - TBD
 
 ### Added
