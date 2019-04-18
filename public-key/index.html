@@ -12,6 +12,7 @@
     <title>Public Key Cryptography - zend-crypt</title>
 
     <link rel="stylesheet" href="../css/styles-18b942728f.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/anchor-js/4.2.0/anchor.min.js"></script>
 </head>
 <body id="page-top">
 
@@ -66,7 +67,7 @@
                     
     <div class="subnavigation hidden-print">
         <h4 class="subnavigation__title">
-            <a href="..">zend-crypt</a>
+            <a href="">zend-crypt</a>
         </h4>
 
         <h5 class="subnavigation__subtitle">Table of Contents</h5>
@@ -75,13 +76,13 @@
             
                 
                     <li class="subnavigation__list-item ">
-                        <a href=".." class="subnavigation__link">zend-crypt</a>
+                        <a href="" class="subnavigation__link">zend-crypt</a>
                     </li>
                 
             
                 
                     <li class="subnavigation__list-item ">
-                        <a href="../intro/" class="subnavigation__link">Intro</a>
+                        <a href="intro/" class="subnavigation__link">Intro</a>
                     </li>
                 
             
@@ -92,37 +93,37 @@
                             
                                 
     <li class="subnavigation__list-item ">
-        <a href="../block-cipher/" class="subnavigation__link">Block Ciphers</a>
+        <a href="block-cipher/" class="subnavigation__link">Block Ciphers</a>
     </li>
 
                             
                                 
     <li class="subnavigation__list-item ">
-        <a href="../files/" class="subnavigation__link">Encrypting Files</a>
+        <a href="files/" class="subnavigation__link">Encrypting Files</a>
     </li>
 
                             
                                 
     <li class="subnavigation__list-item ">
-        <a href="../hybrid/" class="subnavigation__link">Hybrid Cryptosystem</a>
+        <a href="hybrid/" class="subnavigation__link">Hybrid Cryptosystem</a>
     </li>
 
                             
                                 
     <li class="subnavigation__list-item ">
-        <a href="../key-derivation/" class="subnavigation__link">Key Derivation</a>
+        <a href="key-derivation/" class="subnavigation__link">Key Derivation</a>
     </li>
 
                             
                                 
     <li class="subnavigation__list-item ">
-        <a href="../password/" class="subnavigation__link">Passwords</a>
+        <a href="password/" class="subnavigation__link">Passwords</a>
     </li>
 
                             
                                 
     <li class="subnavigation__list-item subnavigation__list-item--active">
-        <a href="./" class="subnavigation__link">Public Key Cryptography</a>
+        <a href="public-key/" class="subnavigation__link">Public Key Cryptography</a>
     </li>
 
                             
@@ -206,7 +207,7 @@
         <li><a href="https://docs.zendframework.com/">Documentation</a></li>
 
         
-            <li><a href="..">zend-crypt</a></li>
+            <li><a href="">zend-crypt</a></li>
 
             
                 
@@ -322,9 +323,9 @@ $bobSecretKey = $bob-&gt;computeSecretKey(
 );
 
 if ($aliceSecretKey !== $bobSecretKey) {
-    echo &quot;ERROR!\n&quot;;
+    echo "ERROR!\n";
 } else {
-    printf(&quot;The secret key is: %s\n&quot;, base64_encode($aliceSecretKey));
+    printf("The secret key is: %s\n", base64_encode($aliceSecretKey));
 }</code></pre>
 
 <p>The parameters of the Diffie-Hellman class are:</p>
@@ -413,14 +414,14 @@ $rsa = Rsa::factory([
 $text = 'This is the message to encrypt';
 
 $encrypt = $rsa-&gt;encrypt($text);
-printf(&quot;Encrypted message:\n%s\n&quot;, $encrypt);
+printf("Encrypted message:\n%s\n", $encrypt);
 
 $decrypt = $rsa-&gt;decrypt($encrypt);
 
 if ($text !== $decrypt) {
-    echo &quot;ERROR\n&quot;;
+    echo "ERROR\n";
 } else {
-    echo &quot;Encryption and decryption performed successfully!\n&quot;;
+    echo "Encryption and decryption performed successfully!\n";
 }</code></pre>
 
 <h3 id="generate-a-digital-signature-of-a-file">Generate a digital signature of a file</h3>
@@ -439,11 +440,11 @@ $signature = $rsa-&gt;sign($file, $rsa-&gt;getOptions()-&gt;getPrivateKey());
 $verify    = $rsa-&gt;verify($file, $signature, $rsa-&gt;getOptions()-&gt;getPublicKey());
 
 if ($verify) {
-    echo &quot;The signature is OK\n&quot;;
+    echo "The signature is OK\n";
     file_put_contents($filename . '.sig', $signature);
-    echo &quot;Signature save in $filename.sig\n&quot;;
+    echo "Signature save in $filename.sig\n";
 } else {
-     echo &quot;The signature is not valid!\n&quot;;
+     echo "The signature is not valid!\n";
 }</code></pre>
 
 <p>In this example, we used the Base64 format to encode the digital signature of the file
@@ -461,7 +462,7 @@ if ($verify) {
         
         <li class="page-nav__item">
             
-                <a rel="prev" class="page-nav__link page-nav__link--prev" href="../password/">
+                <a rel="prev" class="page-nav__link page-nav__link--prev" href="password/">
                     <i class="fa fa-chevron-left"></i> Previous
                 </a>
             
@@ -501,7 +502,7 @@ if ($verify) {
                     
     <div class="subnavigation hidden-print">
         <h4 class="subnavigation__title">
-            <a href="..">zend-crypt</a>
+            <a href="">zend-crypt</a>
         </h4>
 
         <h5 class="subnavigation__subtitle">Table of Contents</h5>
@@ -510,13 +511,13 @@ if ($verify) {
             
                 
                     <li class="subnavigation__list-item ">
-                        <a href=".." class="subnavigation__link">zend-crypt</a>
+                        <a href="" class="subnavigation__link">zend-crypt</a>
                     </li>
                 
             
                 
                     <li class="subnavigation__list-item ">
-                        <a href="../intro/" class="subnavigation__link">Intro</a>
+                        <a href="intro/" class="subnavigation__link">Intro</a>
                     </li>
                 
             
@@ -527,37 +528,37 @@ if ($verify) {
                             
                                 
     <li class="subnavigation__list-item ">
-        <a href="../block-cipher/" class="subnavigation__link">Block Ciphers</a>
+        <a href="block-cipher/" class="subnavigation__link">Block Ciphers</a>
     </li>
 
                             
                                 
     <li class="subnavigation__list-item ">
-        <a href="../files/" class="subnavigation__link">Encrypting Files</a>
+        <a href="files/" class="subnavigation__link">Encrypting Files</a>
     </li>
 
                             
                                 
     <li class="subnavigation__list-item ">
-        <a href="../hybrid/" class="subnavigation__link">Hybrid Cryptosystem</a>
+        <a href="hybrid/" class="subnavigation__link">Hybrid Cryptosystem</a>
     </li>
 
                             
                                 
     <li class="subnavigation__list-item ">
-        <a href="../key-derivation/" class="subnavigation__link">Key Derivation</a>
+        <a href="key-derivation/" class="subnavigation__link">Key Derivation</a>
     </li>
 
                             
                                 
     <li class="subnavigation__list-item ">
-        <a href="../password/" class="subnavigation__link">Passwords</a>
+        <a href="password/" class="subnavigation__link">Passwords</a>
     </li>
 
                             
                                 
     <li class="subnavigation__list-item subnavigation__list-item--active">
-        <a href="./" class="subnavigation__link">Public Key Cryptography</a>
+        <a href="public-key/" class="subnavigation__link">Public Key Cryptography</a>
     </li>
 
                             
@@ -639,9 +640,8 @@ if ($verify) {
         var base_url = '..',
             siteName = 'zend-crypt';
     </script>
-    <script src="../js/scripts-0bcb0a3bb3.js"></script>
-        <script src="../search/require.js"></script>
-        <script src="../search/search.js"></script>
+    <script src="../js/scripts-edc4cfa790.js"></script>
+        <script src="../search/main.js"></script>
 
     
     <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="Search Modal" aria-hidden="true">
@@ -670,6 +670,14 @@ if ($verify) {
             </div>
         </div>
     </div>
+
+<script>
+// Anchors
+anchors.options.placement = 'left';
+anchors.add(
+    '.content h1:not(.content__title), .content h2, .content > h3, .content h4, .content h5'
+);
+</script>
 
 
 

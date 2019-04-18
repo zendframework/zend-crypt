@@ -12,6 +12,7 @@
     <title>Key Derivation - zend-crypt</title>
 
     <link rel="stylesheet" href="../css/styles-18b942728f.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/anchor-js/4.2.0/anchor.min.js"></script>
 </head>
 <body id="page-top">
 
@@ -66,7 +67,7 @@
                     
     <div class="subnavigation hidden-print">
         <h4 class="subnavigation__title">
-            <a href="..">zend-crypt</a>
+            <a href="">zend-crypt</a>
         </h4>
 
         <h5 class="subnavigation__subtitle">Table of Contents</h5>
@@ -75,13 +76,13 @@
             
                 
                     <li class="subnavigation__list-item ">
-                        <a href=".." class="subnavigation__link">zend-crypt</a>
+                        <a href="" class="subnavigation__link">zend-crypt</a>
                     </li>
                 
             
                 
                     <li class="subnavigation__list-item ">
-                        <a href="../intro/" class="subnavigation__link">Intro</a>
+                        <a href="intro/" class="subnavigation__link">Intro</a>
                     </li>
                 
             
@@ -92,37 +93,37 @@
                             
                                 
     <li class="subnavigation__list-item ">
-        <a href="../block-cipher/" class="subnavigation__link">Block Ciphers</a>
+        <a href="block-cipher/" class="subnavigation__link">Block Ciphers</a>
     </li>
 
                             
                                 
     <li class="subnavigation__list-item ">
-        <a href="../files/" class="subnavigation__link">Encrypting Files</a>
+        <a href="files/" class="subnavigation__link">Encrypting Files</a>
     </li>
 
                             
                                 
     <li class="subnavigation__list-item ">
-        <a href="../hybrid/" class="subnavigation__link">Hybrid Cryptosystem</a>
+        <a href="hybrid/" class="subnavigation__link">Hybrid Cryptosystem</a>
     </li>
 
                             
                                 
     <li class="subnavigation__list-item subnavigation__list-item--active">
-        <a href="./" class="subnavigation__link">Key Derivation</a>
+        <a href="key-derivation/" class="subnavigation__link">Key Derivation</a>
     </li>
 
                             
                                 
     <li class="subnavigation__list-item ">
-        <a href="../password/" class="subnavigation__link">Passwords</a>
+        <a href="password/" class="subnavigation__link">Passwords</a>
     </li>
 
                             
                                 
     <li class="subnavigation__list-item ">
-        <a href="../public-key/" class="subnavigation__link">Public Key Cryptography</a>
+        <a href="public-key/" class="subnavigation__link">Public Key Cryptography</a>
     </li>
 
                             
@@ -206,7 +207,7 @@
         <li><a href="https://docs.zendframework.com/">Documentation</a></li>
 
         
-            <li><a href="..">zend-crypt</a></li>
+            <li><a href="">zend-crypt</a></li>
 
             
                 
@@ -284,8 +285,8 @@ $pass = 'password';
 $salt = Rand::getBytes(32, true);
 $key  = Pbkdf2::calc('sha256', $pass, $salt, 10000, 32);
 
-printf (&quot;Original password: %s\n&quot;, $pass);
-printf (&quot;Derived key (hex): %s\n&quot;, bin2hex($key));</code></pre>
+printf ("Original password: %s\n", $pass);
+printf ("Derived key (hex): %s\n", bin2hex($key));</code></pre>
 
 <p>The <code>Pbkdf2</code> adapter takes the password (<code>$pass</code>) and generates a binary key of
 32 bytes. The syntax is <code>calc($hash, $pass, $salt, $iterations, $length)</code> where
@@ -315,8 +316,8 @@ $pass = 'password';
 $salt = Rand::getBytes(32, true);
 $key  = SaltedS2k::calc('sha256', $pass, $salt, 32);
 
-printf (&quot;Original password: %s\n&quot;, $pass);
-printf (&quot;Derived key (hex): %s\n&quot;, bin2hex($key));</code></pre>
+printf ("Original password: %s\n", $pass);
+printf ("Derived key (hex): %s\n", bin2hex($key));</code></pre>
 
 <h2 id="scrypt-adapter">Scrypt adapter</h2>
 <p>The <a href="http://www.tarsnap.com/scrypt.html">scrypt</a> algorithm uses the <a href="http://cr.yp.to/salsa20.html">Salsa20/8
@@ -357,8 +358,8 @@ $pass = 'password';
 $salt = Rand::getBytes(32, true);
 $key  = Scrypt::calc($pass, $salt, 2048, 2, 1, 32);
 
-printf (&quot;Original password: %s\n&quot;, $pass);
-printf (&quot;Derived key (hex): %s\n&quot;, bin2hex($key));</code></pre>
+printf ("Original password: %s\n", $pass);
+printf ("Derived key (hex): %s\n", bin2hex($key));</code></pre>
 
 <blockquote>
 <h3 id="performance-of-the-scrypt-implementation">Performance of the scrypt implementation</h3>
@@ -386,7 +387,7 @@ instead of the pure PHP implementation.</p>
         
         <li class="page-nav__item">
             
-                <a rel="prev" class="page-nav__link page-nav__link--prev" href="../hybrid/">
+                <a rel="prev" class="page-nav__link page-nav__link--prev" href="hybrid/">
                     <i class="fa fa-chevron-left"></i> Previous
                 </a>
             
@@ -395,7 +396,7 @@ instead of the pure PHP implementation.</p>
         
         <li class="page-nav__item">
             
-                <a rel="next" class="page-nav__link page-nav__link--next" href="../password/">
+                <a rel="next" class="page-nav__link page-nav__link--next" href="password/">
                     Next <i class="fa fa-chevron-right"></i>
                 </a>
             
@@ -430,7 +431,7 @@ instead of the pure PHP implementation.</p>
                     
     <div class="subnavigation hidden-print">
         <h4 class="subnavigation__title">
-            <a href="..">zend-crypt</a>
+            <a href="">zend-crypt</a>
         </h4>
 
         <h5 class="subnavigation__subtitle">Table of Contents</h5>
@@ -439,13 +440,13 @@ instead of the pure PHP implementation.</p>
             
                 
                     <li class="subnavigation__list-item ">
-                        <a href=".." class="subnavigation__link">zend-crypt</a>
+                        <a href="" class="subnavigation__link">zend-crypt</a>
                     </li>
                 
             
                 
                     <li class="subnavigation__list-item ">
-                        <a href="../intro/" class="subnavigation__link">Intro</a>
+                        <a href="intro/" class="subnavigation__link">Intro</a>
                     </li>
                 
             
@@ -456,37 +457,37 @@ instead of the pure PHP implementation.</p>
                             
                                 
     <li class="subnavigation__list-item ">
-        <a href="../block-cipher/" class="subnavigation__link">Block Ciphers</a>
+        <a href="block-cipher/" class="subnavigation__link">Block Ciphers</a>
     </li>
 
                             
                                 
     <li class="subnavigation__list-item ">
-        <a href="../files/" class="subnavigation__link">Encrypting Files</a>
+        <a href="files/" class="subnavigation__link">Encrypting Files</a>
     </li>
 
                             
                                 
     <li class="subnavigation__list-item ">
-        <a href="../hybrid/" class="subnavigation__link">Hybrid Cryptosystem</a>
+        <a href="hybrid/" class="subnavigation__link">Hybrid Cryptosystem</a>
     </li>
 
                             
                                 
     <li class="subnavigation__list-item subnavigation__list-item--active">
-        <a href="./" class="subnavigation__link">Key Derivation</a>
+        <a href="key-derivation/" class="subnavigation__link">Key Derivation</a>
     </li>
 
                             
                                 
     <li class="subnavigation__list-item ">
-        <a href="../password/" class="subnavigation__link">Passwords</a>
+        <a href="password/" class="subnavigation__link">Passwords</a>
     </li>
 
                             
                                 
     <li class="subnavigation__list-item ">
-        <a href="../public-key/" class="subnavigation__link">Public Key Cryptography</a>
+        <a href="public-key/" class="subnavigation__link">Public Key Cryptography</a>
     </li>
 
                             
@@ -568,9 +569,8 @@ instead of the pure PHP implementation.</p>
         var base_url = '..',
             siteName = 'zend-crypt';
     </script>
-    <script src="../js/scripts-0bcb0a3bb3.js"></script>
-        <script src="../search/require.js"></script>
-        <script src="../search/search.js"></script>
+    <script src="../js/scripts-edc4cfa790.js"></script>
+        <script src="../search/main.js"></script>
 
     
     <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="Search Modal" aria-hidden="true">
@@ -599,6 +599,14 @@ instead of the pure PHP implementation.</p>
             </div>
         </div>
     </div>
+
+<script>
+// Anchors
+anchors.options.placement = 'left';
+anchors.add(
+    '.content h1:not(.content__title), .content h2, .content > h3, .content h4, .content h5'
+);
+</script>
 
 
 

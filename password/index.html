@@ -12,6 +12,7 @@
     <title>Passwords - zend-crypt</title>
 
     <link rel="stylesheet" href="../css/styles-18b942728f.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/anchor-js/4.2.0/anchor.min.js"></script>
 </head>
 <body id="page-top">
 
@@ -66,7 +67,7 @@
                     
     <div class="subnavigation hidden-print">
         <h4 class="subnavigation__title">
-            <a href="..">zend-crypt</a>
+            <a href="">zend-crypt</a>
         </h4>
 
         <h5 class="subnavigation__subtitle">Table of Contents</h5>
@@ -75,13 +76,13 @@
             
                 
                     <li class="subnavigation__list-item ">
-                        <a href=".." class="subnavigation__link">zend-crypt</a>
+                        <a href="" class="subnavigation__link">zend-crypt</a>
                     </li>
                 
             
                 
                     <li class="subnavigation__list-item ">
-                        <a href="../intro/" class="subnavigation__link">Intro</a>
+                        <a href="intro/" class="subnavigation__link">Intro</a>
                     </li>
                 
             
@@ -92,37 +93,37 @@
                             
                                 
     <li class="subnavigation__list-item ">
-        <a href="../block-cipher/" class="subnavigation__link">Block Ciphers</a>
+        <a href="block-cipher/" class="subnavigation__link">Block Ciphers</a>
     </li>
 
                             
                                 
     <li class="subnavigation__list-item ">
-        <a href="../files/" class="subnavigation__link">Encrypting Files</a>
+        <a href="files/" class="subnavigation__link">Encrypting Files</a>
     </li>
 
                             
                                 
     <li class="subnavigation__list-item ">
-        <a href="../hybrid/" class="subnavigation__link">Hybrid Cryptosystem</a>
+        <a href="hybrid/" class="subnavigation__link">Hybrid Cryptosystem</a>
     </li>
 
                             
                                 
     <li class="subnavigation__list-item ">
-        <a href="../key-derivation/" class="subnavigation__link">Key Derivation</a>
+        <a href="key-derivation/" class="subnavigation__link">Key Derivation</a>
     </li>
 
                             
                                 
     <li class="subnavigation__list-item subnavigation__list-item--active">
-        <a href="./" class="subnavigation__link">Passwords</a>
+        <a href="password/" class="subnavigation__link">Passwords</a>
     </li>
 
                             
                                 
     <li class="subnavigation__list-item ">
-        <a href="../public-key/" class="subnavigation__link">Public Key Cryptography</a>
+        <a href="public-key/" class="subnavigation__link">Public Key Cryptography</a>
     </li>
 
                             
@@ -206,7 +207,7 @@
         <li><a href="https://docs.zendframework.com/">Documentation</a></li>
 
         
-            <li><a href="..">zend-crypt</a></li>
+            <li><a href="">zend-crypt</a></li>
 
             
                 
@@ -306,9 +307,9 @@ $securePass = 'the stored bcrypt value';
 $password = 'the password to check';
 
 if ($bcrypt-&gt;verify($password, $securePass)) {
-    echo &quot;The password is correct! \n&quot;;
+    echo "The password is correct! \n";
 } else {
-    echo &quot;The password is NOT correct.\n&quot;;
+    echo "The password is NOT correct.\n";
 }</code></pre>
 
 <p>Bcrypt also uses a salt value to improve the randomness of the algorithm.
@@ -356,18 +357,18 @@ method. An example with all the formats usage is demonstrated below:</p>
 $apache = new Apache();
 
 $apache-&gt;setFormat('crypt');
-printf (&quot;CRYPT output: %s\n&quot;, $apache-&gt;create('password'));
+printf ("CRYPT output: %s\n", $apache-&gt;create('password'));
 
 $apache-&gt;setFormat('sha1');
-printf (&quot;SHA1 output: %s\n&quot;, $apache-&gt;create('password'));
+printf ("SHA1 output: %s\n", $apache-&gt;create('password'));
 
 $apache-&gt;setFormat('md5');
-printf (&quot;MD5 output: %s\n&quot;, $apache-&gt;create('password'));
+printf ("MD5 output: %s\n", $apache-&gt;create('password'));
 
 $apache-&gt;setFormat('digest');
 $apache-&gt;setUserName('enrico');
 $apache-&gt;setAuthName('test');
-printf (&quot;Digest output: %s\n&quot;, $apache-&gt;create('password'));</code></pre>
+printf ("Digest output: %s\n", $apache-&gt;create('password'));</code></pre>
 
 <p>You can also specify the format of the password during the constructor of the class:</p>
 <pre class="codehilite"><code class="language-php">use Zend\Crypt\Password\Apache;
@@ -387,7 +388,7 @@ for the digest format.</p>
         
         <li class="page-nav__item">
             
-                <a rel="prev" class="page-nav__link page-nav__link--prev" href="../key-derivation/">
+                <a rel="prev" class="page-nav__link page-nav__link--prev" href="key-derivation/">
                     <i class="fa fa-chevron-left"></i> Previous
                 </a>
             
@@ -396,7 +397,7 @@ for the digest format.</p>
         
         <li class="page-nav__item">
             
-                <a rel="next" class="page-nav__link page-nav__link--next" href="../public-key/">
+                <a rel="next" class="page-nav__link page-nav__link--next" href="public-key/">
                     Next <i class="fa fa-chevron-right"></i>
                 </a>
             
@@ -431,7 +432,7 @@ for the digest format.</p>
                     
     <div class="subnavigation hidden-print">
         <h4 class="subnavigation__title">
-            <a href="..">zend-crypt</a>
+            <a href="">zend-crypt</a>
         </h4>
 
         <h5 class="subnavigation__subtitle">Table of Contents</h5>
@@ -440,13 +441,13 @@ for the digest format.</p>
             
                 
                     <li class="subnavigation__list-item ">
-                        <a href=".." class="subnavigation__link">zend-crypt</a>
+                        <a href="" class="subnavigation__link">zend-crypt</a>
                     </li>
                 
             
                 
                     <li class="subnavigation__list-item ">
-                        <a href="../intro/" class="subnavigation__link">Intro</a>
+                        <a href="intro/" class="subnavigation__link">Intro</a>
                     </li>
                 
             
@@ -457,37 +458,37 @@ for the digest format.</p>
                             
                                 
     <li class="subnavigation__list-item ">
-        <a href="../block-cipher/" class="subnavigation__link">Block Ciphers</a>
+        <a href="block-cipher/" class="subnavigation__link">Block Ciphers</a>
     </li>
 
                             
                                 
     <li class="subnavigation__list-item ">
-        <a href="../files/" class="subnavigation__link">Encrypting Files</a>
+        <a href="files/" class="subnavigation__link">Encrypting Files</a>
     </li>
 
                             
                                 
     <li class="subnavigation__list-item ">
-        <a href="../hybrid/" class="subnavigation__link">Hybrid Cryptosystem</a>
+        <a href="hybrid/" class="subnavigation__link">Hybrid Cryptosystem</a>
     </li>
 
                             
                                 
     <li class="subnavigation__list-item ">
-        <a href="../key-derivation/" class="subnavigation__link">Key Derivation</a>
+        <a href="key-derivation/" class="subnavigation__link">Key Derivation</a>
     </li>
 
                             
                                 
     <li class="subnavigation__list-item subnavigation__list-item--active">
-        <a href="./" class="subnavigation__link">Passwords</a>
+        <a href="password/" class="subnavigation__link">Passwords</a>
     </li>
 
                             
                                 
     <li class="subnavigation__list-item ">
-        <a href="../public-key/" class="subnavigation__link">Public Key Cryptography</a>
+        <a href="public-key/" class="subnavigation__link">Public Key Cryptography</a>
     </li>
 
                             
@@ -569,9 +570,8 @@ for the digest format.</p>
         var base_url = '..',
             siteName = 'zend-crypt';
     </script>
-    <script src="../js/scripts-0bcb0a3bb3.js"></script>
-        <script src="../search/require.js"></script>
-        <script src="../search/search.js"></script>
+    <script src="../js/scripts-edc4cfa790.js"></script>
+        <script src="../search/main.js"></script>
 
     
     <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="Search Modal" aria-hidden="true">
@@ -600,6 +600,14 @@ for the digest format.</p>
             </div>
         </div>
     </div>
+
+<script>
+// Anchors
+anchors.options.placement = 'left';
+anchors.add(
+    '.content h1:not(.content__title), .content h2, .content > h3, .content h4, .content h5'
+);
+</script>
 
 
 
