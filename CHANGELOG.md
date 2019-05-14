@@ -29,7 +29,7 @@ chronological order by release.
 
 ### Added
 
-- Nothing.
+- [#60](https://github.com/zendframework/zend-crypt/pull/60) adds support for PHP 7.3.
 
 ### Changed
 
