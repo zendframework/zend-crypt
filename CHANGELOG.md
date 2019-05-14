@@ -25,7 +25,29 @@ chronological order by release.
 
 - Nothing.
 
-## 3.3.1 - TBD
+## 3.3.2 - TBD
+
+### Added
+
+- Nothing.
+
+### Changed
+
+- Nothing.
+
+### Deprecated
+
+- Nothing.
+
+### Removed
+
+- Nothing.
+
+### Fixed
+
+- Nothing.
+
+## 3.3.1 - 2019-05-14
 
 ### Added
 
