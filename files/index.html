@@ -295,21 +295,20 @@ last block of the buffer as the new IV for the next encryption step.</p>
 The default cipher is <code>Zend\Crypt\Symmetric\Openssl</code>.</p>
 <p>The usage of this component is very simple; create an instance of <code>FileCipher</code>,
 specify the key, and you are ready to encrypt/decrypt any file:</p>
-<pre class="codehilite"><code class="language-php">use Zend\Crypt\FileCipher;
+<p> <pre class=codehilite><code class=language-php>use Zend\Crypt\FileCipher;
 
 $fileCipher = new FileCipher;
 $fileCipher-&gt;setKey('encryption key');
 
 // encryption
 if ($fileCipher-&gt;encrypt('path/to/file_to_encrypt', 'path/to/output')) {
-    echo "The file has been encrypted successfully\n";
+    echo &quot;The file has been encrypted successfully\n&quot;;
 }
 
 // decryption
 if ($fileCipher-&gt;decrypt('path/to/file_to_decrypt', 'path/to/output')) {
-    echo "The file has been decrypted successfully\n";
-}</code></pre>
-
+    echo &quot;The file has been decrypted successfully\n&quot;;
+}</code></pre></p>
 <p>By default, <code>FileCipher</code> uses the <a href="http://en.wikipedia.org/wiki/Advanced_Encryption_Standard">AES</a>
 encryption algorithm (with a 256-bit key) and the <a href="http://en.wikipedia.org/wiki/SHA-2">SHA-256</a>
 hash algorithm to authenticate the data using the HMAC function. This component uses the
@@ -367,7 +366,7 @@ encrypted file contents.</p>
     <div class="help-wanted">
         <p>
             Found a mistake or want to contribute to the documentation?
-            <a href="https://github.com/zendframework/zend-crypt/edit/master/docs/files.md" target="_blank" class="help-wanted__link">
+            <a href="https://github.com/zendframework/zend-crypt/edit/master/docs/book/files.md" target="_blank" class="help-wanted__link">
                 Edit this page on GitHub!
             </a>
         </p>

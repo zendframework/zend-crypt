@@ -278,7 +278,7 @@
                     </li>
                 
                     <li class="toc__entry">
-                        <a href="#openssl_1" class="toc__link">Openssl</a>
+                        <a href="#openssl" class="toc__link">Openssl</a>
                     </li>
                 
             </ul>
@@ -313,7 +313,7 @@ Wikipedia page):</p>
 <p><img alt="Diffie-Hellman algorithm" src="../images/zend.crypt.public-key.diffie-hellman.png" class="img-responsive"/></p>
 <p>The schema's colors represent the parameters of the algorithm.</p>
 <p>Below is an example demonstrating usage of <code>Zend\Crypt\PublicKey\DiffieHellman</code>:</p>
-<pre class="codehilite"><code class="language-php">use Zend\Crypt\PublicKey\DiffieHellman;
+<p> <pre class=codehilite><code class=language-php>use Zend\Crypt\PublicKey\DiffieHellman;
 
 $aliceOptions = [
     'prime' =&gt; '155172898181473697471232257763715539915724801966915404479707795314057629378541917580651227'
@@ -363,11 +363,10 @@ $bobSecretKey = $bob-&gt;computeSecretKey(
 );
 
 if ($aliceSecretKey !== $bobSecretKey) {
-    echo "ERROR!\n";
+    echo &quot;ERROR!\n&quot;;
 } else {
-    printf("The secret key is: %s\n", base64_encode($aliceSecretKey));
-}</code></pre>
-
+    printf(&quot;The secret key is: %s\n&quot;, base64_encode($aliceSecretKey));
+}</code></pre></p>
 <p>The parameters of the Diffie-Hellman class are:</p>
 <ul>
 <li>a prime number (p),</li>
@@ -378,7 +377,7 @@ if ($aliceSecretKey !== $bobSecretKey) {
 of these parameters. To know how to choose secure numbers you can read the
 <a href="http://tools.ietf.org/html/rfc3526">RFC 3526</a> document.</p>
 <blockquote>
-<h3 id="openssl">Openssl</h3>
+<h3>Openssl</h3>
 <p>The <code>Zend\Crypt\PublicKey\DiffieHellman</code> class by default uses the
 <a href="http://php.net/manual/en/book.openssl.php">OpenSSL</a> extension to generate the
 parameters. If you don't want to use the OpenSSL library, call
@@ -411,9 +410,9 @@ the encryption first and the digital signature after.</p>
 <li>encrypt/decrypt a string;</li>
 <li>generate a digital signature of a file.</li>
 </ul>
-<h3 id="generate-a-public-key-and-a-private-key">Generate a public key and a private key</h3>
+<h3>Generate a public key and a private key</h3>
 <p>In order to generate a public and private key, use the following code:</p>
-<pre class="codehilite"><code class="language-php">use Zend\Crypt\PublicKey\RsaOptions;
+<p> <pre class=codehilite><code class=language-php>use Zend\Crypt\PublicKey\RsaOptions;
 
 $rsaOptions = new RsaOptions([
     'pass_phrase' =&gt; 'test'
@@ -424,14 +423,12 @@ $rsaOptions-&gt;generateKeys([
 ]);
 
 file_put_contents('private_key.pem', $rsaOptions-&gt;getPrivateKey());
-file_put_contents('public_key.pub', $rsaOptions-&gt;getPublicKey());</code></pre>
-
+file_put_contents('public_key.pub', $rsaOptions-&gt;getPublicKey());</code></pre></p>
 <p>This example generates a 2048-bit public and private key, storing the keys in two separate files,
 <code>private_key.pem</code> for the private key and <code>public_key.pub</code> for the public key. You can also
 generate the public and private key using OpenSSL from the command line (Unix style syntax):</p>
-<pre class="codehilite"><code class="language-bash">$ ssh-keygen -t rsa</code></pre>
-
-<h3 id="encrypt-and-decrypt-a-string">Encrypt and decrypt a string</h3>
+<p> <pre class=codehilite><code class=language-bash>$ ssh-keygen -t rsa</code></pre></p>
+<h3>Encrypt and decrypt a string</h3>
 <p>Below is an example demonstrating encryption and decryption of a string using
 the RSA algorithm. You can encrypt only small strings. The maximum size of
 encryption is given by the length of the public/private key - 88 bits. For
@@ -442,7 +439,7 @@ implementation for a security reason related to the nature of the RSA algorithm.
 hash of the data you want to encrypt or sign. A hash is typically 128-256 bits
 (the PHP <code>sha1()</code> function returns a 160 bit hash). An AES encryption key is 128
 to 256 bits. Either will comfortably fit inside a single RSA encryption.</p>
-<pre class="codehilite"><code class="language-php">use Zend\Crypt\PublicKey\Rsa;
+<p> <pre class=codehilite><code class=language-php>use Zend\Crypt\PublicKey\Rsa;
 
 $rsa = Rsa::factory([
     'public_key'    =&gt; 'public_key.pub',
@@ -454,19 +451,18 @@ $rsa = Rsa::factory([
 $text = 'This is the message to encrypt';
 
 $encrypt = $rsa-&gt;encrypt($text);
-printf("Encrypted message:\n%s\n", $encrypt);
+printf(&quot;Encrypted message:\n%s\n&quot;, $encrypt);
 
 $decrypt = $rsa-&gt;decrypt($encrypt);
 
 if ($text !== $decrypt) {
-    echo "ERROR\n";
+    echo &quot;ERROR\n&quot;;
 } else {
-    echo "Encryption and decryption performed successfully!\n";
-}</code></pre>
-
-<h3 id="generate-a-digital-signature-of-a-file">Generate a digital signature of a file</h3>
+    echo &quot;Encryption and decryption performed successfully!\n&quot;;
+}</code></pre></p>
+<h3>Generate a digital signature of a file</h3>
 <p>Below is an example demonstrating generation of a digital file signature.</p>
-<pre class="codehilite"><code class="language-php">use Zend\Crypt\PublicKey\Rsa;
+<p> <pre class=codehilite><code class=language-php>use Zend\Crypt\PublicKey\Rsa;
 
 $rsa = Rsa::factory([
     'private_key'   =&gt; 'path/to/private_key',
@@ -480,17 +476,16 @@ $signature = $rsa-&gt;sign($file, $rsa-&gt;getOptions()-&gt;getPrivateKey());
 $verify    = $rsa-&gt;verify($file, $signature, $rsa-&gt;getOptions()-&gt;getPublicKey());
 
 if ($verify) {
-    echo "The signature is OK\n";
+    echo &quot;The signature is OK\n&quot;;
     file_put_contents($filename . '.sig', $signature);
-    echo "Signature save in $filename.sig\n";
+    echo &quot;Signature save in $filename.sig\n&quot;;
 } else {
-     echo "The signature is not valid!\n";
-}</code></pre>
-
+     echo &quot;The signature is not valid!\n&quot;;
+}</code></pre></p>
 <p>In this example, we used the Base64 format to encode the digital signature of the file
 (<code>binary_output</code> is false).</p>
 <blockquote>
-<h2 id="openssl_1">Openssl</h2>
+<h2 id="openssl">Openssl</h2>
 <p>The implementation of the <code>Zend\Crypt\PublicKey\Rsa</code> algorithm uses PHP's OpenSSL extension.</p>
 </blockquote>
 
@@ -522,7 +517,7 @@ if ($verify) {
     <div class="help-wanted">
         <p>
             Found a mistake or want to contribute to the documentation?
-            <a href="https://github.com/zendframework/zend-crypt/edit/master/docs/public-key.md" target="_blank" class="help-wanted__link">
+            <a href="https://github.com/zendframework/zend-crypt/edit/master/docs/book/public-key.md" target="_blank" class="help-wanted__link">
                 Edit this page on GitHub!
             </a>
         </p>

@@ -318,16 +318,15 @@ operations. The added computational work makes password cracking much more
 difficult, and is known as <a href="http://en.wikipedia.org/wiki/Key_stretching">key
 stretching</a>.</p>
 <p>In the example below we demonstrate typical usage of the <code>Pbkdf2</code> adapter.</p>
-<pre class="codehilite"><code class="language-php">use Zend\Crypt\Key\Derivation\Pbkdf2;
+<p> <pre class=codehilite><code class=language-php>use Zend\Crypt\Key\Derivation\Pbkdf2;
 use Zend\Math\Rand;
 
 $pass = 'password';
 $salt = Rand::getBytes(32, true);
 $key  = Pbkdf2::calc('sha256', $pass, $salt, 10000, 32);
 
-printf ("Original password: %s\n", $pass);
-printf ("Derived key (hex): %s\n", bin2hex($key));</code></pre>
-
+printf (&quot;Original password: %s\n&quot;, $pass);
+printf (&quot;Derived key (hex): %s\n&quot;, bin2hex($key));</code></pre></p>
 <p>The <code>Pbkdf2</code> adapter takes the password (<code>$pass</code>) and generates a binary key of
 32 bytes. The syntax is <code>calc($hash, $pass, $salt, $iterations, $length)</code> where
 <code>$hash</code> is the name of the hash function to use, <code>$pass</code> is the password,
@@ -349,16 +348,15 @@ algorithm only if you really need it (for instance, due to hardware
 limitations).</p>
 <p>The following demonstrates usage of the <code>SaltedS2k</code> adapter to generate a 32
 byte key.</p>
-<pre class="codehilite"><code class="language-php">use Zend\Crypt\Key\Derivation\SaltedS2k;
+<p> <pre class=codehilite><code class=language-php>use Zend\Crypt\Key\Derivation\SaltedS2k;
 use Zend\Math\Rand;
 
 $pass = 'password';
 $salt = Rand::getBytes(32, true);
 $key  = SaltedS2k::calc('sha256', $pass, $salt, 32);
 
-printf ("Original password: %s\n", $pass);
-printf ("Derived key (hex): %s\n", bin2hex($key));</code></pre>
-
+printf (&quot;Original password: %s\n&quot;, $pass);
+printf (&quot;Derived key (hex): %s\n&quot;, bin2hex($key));</code></pre></p>
 <h2 id="scrypt-adapter">Scrypt adapter</h2>
 <p>The <a href="http://www.tarsnap.com/scrypt.html">scrypt</a> algorithm uses the <a href="http://cr.yp.to/salsa20.html">Salsa20/8
 core</a> algorithm and Pbkdf2-SHA256 to generate a
@@ -391,18 +389,17 @@ attack against Pbkdf2."</p>
 <li><code>p</code>, the parallelization cost.</li>
 </ul>
 <p>Following is a usage example for the <code>Scrypt</code> adapter:</p>
-<pre class="codehilite"><code class="language-php">use Zend\Crypt\Key\Derivation\Scrypt;
+<p> <pre class=codehilite><code class=language-php>use Zend\Crypt\Key\Derivation\Scrypt;
 use Zend\Math\Rand;
 
 $pass = 'password';
 $salt = Rand::getBytes(32, true);
 $key  = Scrypt::calc($pass, $salt, 2048, 2, 1, 32);
 
-printf ("Original password: %s\n", $pass);
-printf ("Derived key (hex): %s\n", bin2hex($key));</code></pre>
-
+printf (&quot;Original password: %s\n&quot;, $pass);
+printf (&quot;Derived key (hex): %s\n&quot;, bin2hex($key));</code></pre></p>
 <blockquote>
-<h3 id="performance-of-the-scrypt-implementation">Performance of the scrypt implementation</h3>
+<h3>Performance of the scrypt implementation</h3>
 <p>The aim of the scrypt algorithm is to generate a secure derived key that
 prevents brute force attacks.  Just like the other derivation functions, the
 more time (and memory) spent executing the algorithm, the more secure the
@@ -451,7 +448,7 @@ instead of the pure PHP implementation.</p>
     <div class="help-wanted">
         <p>
             Found a mistake or want to contribute to the documentation?
-            <a href="https://github.com/zendframework/zend-crypt/edit/master/docs/key-derivation.md" target="_blank" class="help-wanted__link">
+            <a href="https://github.com/zendframework/zend-crypt/edit/master/docs/book/key-derivation.md" target="_blank" class="help-wanted__link">
                 Edit this page on GitHub!
             </a>
         </p>

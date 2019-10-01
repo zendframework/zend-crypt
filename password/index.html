@@ -322,16 +322,15 @@ authentication. All of the parts needed to verify the hash are present in the
 hash itself,, separated with <code>$</code>’s; first the algorithm, then the cost, the
 salt, and then finally the hash.</p>
 <p>The example below demonstrates using the bcrypt algorithm to store a user’s password:</p>
-<pre class="codehilite"><code class="language-php">use Zend\Crypt\Password\Bcrypt;
+<p> <pre class=codehilite><code class=language-php>use Zend\Crypt\Password\Bcrypt;
 
 $bcrypt = new Bcrypt();
-$securePass = $bcrypt-&gt;create('user password');</code></pre>
-
+$securePass = $bcrypt-&gt;create('user password');</code></pre></p>
 <p>The output of the <code>create()</code> method is the hash of the password. This value can
 then be stored in a repository like a database (the output is a string of 60
 bytes).</p>
 <blockquote>
-<h3 id="bcrypt-truncates-input-72-bytes">Bcrypt truncates input &gt; 72 bytes</h3>
+<h3>Bcrypt truncates input &gt; 72 bytes</h3>
 <p>The input string of the bcrypt algorithm is limited to 72 bytes. If you use a
 string with a length more than this limit, bcrypt will consider only the first
 72 bytes. If you need to use a longer string, you should pre-hash it.
@@ -340,18 +339,17 @@ password pre-hashing of hash input &gt; 72 bytes.</p>
 </blockquote>
 <p>To verify if a given password is valid against a bcrypt value you can use the
 <code>verify()</code> method. The example below demonstrates verification:</p>
-<pre class="codehilite"><code class="language-php">use Zend\Crypt\Password\Bcrypt;
+<p> <pre class=codehilite><code class=language-php>use Zend\Crypt\Password\Bcrypt;
 
 $bcrypt = new Bcrypt();
 $securePass = 'the stored bcrypt value';
 $password = 'the password to check';
 
 if ($bcrypt-&gt;verify($password, $securePass)) {
-    echo "The password is correct! \n";
+    echo &quot;The password is correct! \n&quot;;
 } else {
-    echo "The password is NOT correct.\n";
-}</code></pre>
-
+    echo &quot;The password is NOT correct.\n&quot;;
+}</code></pre></p>
 <p>Bcrypt also uses a salt value to improve the randomness of the algorithm.
 By default, <code>Zend\Crypt\Password\Bcrypt</code> generates a random salt for
 each hash. If you want to specify a preselected salt you can use the <code>setSalt()</code>
@@ -359,15 +357,14 @@ method.</p>
 <p>We also provide a <code>getSalt()</code> method to retrieve the salt specified by the user.
 The salt and the cost parameter can be also specified during the constructor of
 the class, as demonstrated below:</p>
-<pre class="codehilite"><code class="language-php">use Zend\Crypt\Password\Bcrypt;
+<p> <pre class=codehilite><code class=language-php>use Zend\Crypt\Password\Bcrypt;
 
 $bcrypt = new Bcrypt([
     'salt' =&gt; 'random value',
     'cost' =&gt; 11
-]);</code></pre>
-
+]);</code></pre></p>
 <blockquote>
-<h3 id="version-30">Version 3.0</h3>
+<h3>Version 3.0</h3>
 <p>Starting with version 3.0, we now use the <a href="http://php.net/password_hash">password_hash()</a>
 and `<a href="http://php.net/password_verify">password_verify()</a> functions introduced
 in PHP 5.5 to generate bcrypt hash values. We provide backwards
@@ -392,31 +389,29 @@ releases can still be validated under version 3.</p>
 </ul>
 <p>In order to specify the format of the Apache’s password, use the <code>setFormat()</code>
 method. An example with all the formats usage is demonstrated below:</p>
-<pre class="codehilite"><code class="language-php">use Zend\Crypt\Password\Apache;
+<p> <pre class=codehilite><code class=language-php>use Zend\Crypt\Password\Apache;
 
 $apache = new Apache();
 
 $apache-&gt;setFormat('crypt');
-printf ("CRYPT output: %s\n", $apache-&gt;create('password'));
+printf (&quot;CRYPT output: %s\n&quot;, $apache-&gt;create('password'));
 
 $apache-&gt;setFormat('sha1');
-printf ("SHA1 output: %s\n", $apache-&gt;create('password'));
+printf (&quot;SHA1 output: %s\n&quot;, $apache-&gt;create('password'));
 
 $apache-&gt;setFormat('md5');
-printf ("MD5 output: %s\n", $apache-&gt;create('password'));
+printf (&quot;MD5 output: %s\n&quot;, $apache-&gt;create('password'));
 
 $apache-&gt;setFormat('digest');
 $apache-&gt;setUserName('enrico');
 $apache-&gt;setAuthName('test');
-printf ("Digest output: %s\n", $apache-&gt;create('password'));</code></pre>
-
+printf (&quot;Digest output: %s\n&quot;, $apache-&gt;create('password'));</code></pre></p>
 <p>You can also specify the format of the password during the constructor of the class:</p>
-<pre class="codehilite"><code class="language-php">use Zend\Crypt\Password\Apache;
+<p> <pre class=codehilite><code class=language-php>use Zend\Crypt\Password\Apache;
 
 $apache = new Apache([
     'format' =&gt; 'md5'
-]);</code></pre>
-
+]);</code></pre></p>
 <p>Other possible parameters to pass in the constructor are <code>username</code> and <code>authname</code>,
 for the digest format.</p>
 
@@ -452,7 +447,7 @@ for the digest format.</p>
     <div class="help-wanted">
         <p>
             Found a mistake or want to contribute to the documentation?
-            <a href="https://github.com/zendframework/zend-crypt/edit/master/docs/password.md" target="_blank" class="help-wanted__link">
+            <a href="https://github.com/zendframework/zend-crypt/edit/master/docs/book/password.md" target="_blank" class="help-wanted__link">
                 Edit this page on GitHub!
             </a>
         </p>
