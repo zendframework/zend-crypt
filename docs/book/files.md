@@ -54,7 +54,7 @@ the Padding mode &mdash; you can inject your `Mcrypt` object in the `FileCipher`
 using the `setCipher()` method. The only parameter of the cipher that you cannot
 change is the cipher mode, which is hard-coded to CBC.
 
-> ## Output format
+> ### Output format
 >
 > The output of the encryption file is in binary format. We used this format to
 > reduce impact on output size. If you encrypt a file using the `FileCipher`

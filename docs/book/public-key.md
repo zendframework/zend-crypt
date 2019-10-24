@@ -232,6 +232,6 @@ if ($verify) {
 In this example, we used the Base64 format to encode the digital signature of the file
 (`binary_output` is false).
 
-> ## Openssl
+> ### Openssl
 >
 > The implementation of the `Zend\Crypt\PublicKey\Rsa` algorithm uses PHP's OpenSSL extension.

@@ -15,7 +15,7 @@ and the HMAC algorithm (using the [SHA-256](http://en.wikipedia.org/wiki/SHA-2)
 hash function).
 
 
-> ## Mcrypt
+> ### Mcrypt
 >
 > The Mcrypt extension is based on the libmcrypt library. Unfortunately, at the
 > time of writing, the project is dead, having been unmaintained for around 8
@@ -56,7 +56,7 @@ used by `BlockCipher` are generated with the [PBKDF2](http://en.wikipedia.org/wi
 algorithm, used as the key derivation function from the user's key specified
 using the `setKey()` method.
 
-> ## Key size
+> ### Key size
 >
 > BlockCipher always attempts to use the longest key size for the specified
 > cipher. For instance, for the AES algorithm it uses 256 bits, and for the
@@ -80,7 +80,7 @@ $blockCipher = BlockCipher::factory(
 );
 ```
 
-> ## Recommendation
+> ### Recommendation
 >
 > If you are not familiar with symmetric encryption techniques, we strongly
 > suggest using the default values of the `BlockCipher` class. The default
@@ -145,7 +145,7 @@ $blockCipher = BlockCipher::factory(
 );
 ```
 
-> ## Recommendation
+> ### Recommendation
 >
 > **GCM mode is about 3x faster than CCM**, we recommend using GCM unless
 > you have requirements that dictate CCM.
