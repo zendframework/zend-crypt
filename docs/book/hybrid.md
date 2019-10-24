@@ -28,7 +28,7 @@ To decrypt the message, *Bob* needs to:
 - Uses his private key to decrypt the session key;
 - Uses this session key to decrypt the message.
 
-## Example of usage
+## Example of Usage
 
 In order to use the `Zend\Crypt\Hybrid` component, you need to have a keyring of
 public and private keys. To encrypt a message, use the following code:
@@ -84,7 +84,7 @@ printf($plaintext === 'message' ? "Success\n" : "Error\n");
 The `Hybrid` component uses `Zend\Crypt\BlockCipher` for the symmetric
 cipher and `Zend\Crypt\Rsa` for the public-key cipher.
 
-## Encrypt with multiple keys
+## Encrypt with multiple Keys
 
 The `Zend\Crypt\Hybrid` component can be used to encrypt a message for multiple
 users, using a keyring of identifiers and public keys. This keyring can be

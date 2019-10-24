@@ -56,7 +56,7 @@ used by `BlockCipher` are generated with the [PBKDF2](http://en.wikipedia.org/wi
 algorithm, used as the key derivation function from the user's key specified
 using the `setKey()` method.
 
-> ### Key size
+> ### Key Size
 >
 > BlockCipher always attempts to use the longest key size for the specified
 > cipher. For instance, for the AES algorithm it uses 256 bits, and for the
@@ -104,7 +104,7 @@ $result = $blockCipher->encrypt('this is a secret message');
 echo "Encrypted text: $result \n";
 ```
 
-## Using GCM or CCM mode from PHP 7.1+
+## Using GCM or CCM Mode from PHP 7.1+
 
 If you are using PHP 7.1+ you can choose the GCM or CCM mode for authenticated
 encryption with OpenSSL. These modes provide authenticated encryption by itself,

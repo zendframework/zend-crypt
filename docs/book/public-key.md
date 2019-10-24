@@ -137,7 +137,7 @@ Below are examples of usage of the `Zend\Crypt\PublicKey\Rsa` class in order to:
 - encrypt/decrypt a string;
 - generate a digital signature of a file.
 
-### Generate a public key and a private key
+### Generate a public Key and a private Key
 
 In order to generate a public and private key, use the following code:
 
@@ -164,7 +164,7 @@ generate the public and private key using OpenSSL from the command line (Unix st
 $ ssh-keygen -t rsa
 ```
 
-### Encrypt and decrypt a string
+### Encrypt and decrypt a String
 
 Below is an example demonstrating encryption and decryption of a string using
 the RSA algorithm. You can encrypt only small strings. The maximum size of
@@ -202,7 +202,7 @@ if ($text !== $decrypt) {
 }
 ```
 
-### Generate a digital signature of a file
+### Generate a digital Signature of a File
 
 Below is an example demonstrating generation of a digital file signature.
 

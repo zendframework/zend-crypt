@@ -57,7 +57,7 @@ The output of the `create()` method is the hash of the password. This value can
 then be stored in a repository like a database (the output is a string of 60
 bytes).
 
-> ### Bcrypt truncates input > 72 bytes
+> ### Bcrypt truncates Input > 72 bytes
 >
 > The input string of the bcrypt algorithm is limited to 72 bytes. If you use a
 > string with a length more than this limit, bcrypt will consider only the first

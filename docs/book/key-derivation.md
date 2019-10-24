@@ -20,7 +20,7 @@ suggest converting it to Base64 format, using the
 or to hex format, using the
 [bin2hex()](http://php.net/manual/en/function.bin2hex.php) function.
 
-## Pbkdf2 adapter
+## Pbkdf2 Adapter
 
 [Pbkdf2](http://en.wikipedia.org/wiki/PBKDF2) is a KDF that applies a
 pseudorandom function, such as a cryptographic hash, to the input password or
@@ -58,7 +58,7 @@ algorithm; bigger values guarantee more security. There is no fixed value for
 the parameter because the number of iterations depends on CPU power. You should
 always choose a number of iterations that prevents brute force attacks.
 
-## SaltedS2k adapter
+## SaltedS2k Adapter
 
 The [SaltedS2k](http://www.faqs.org/rfcs/rfc2440.html) algorithm uses a hash
 function and a salt to generate a key based on a user's password. This algorithm
@@ -82,7 +82,7 @@ printf ("Original password: %s\n", $pass);
 printf ("Derived key (hex): %s\n", bin2hex($key));
 ```
 
-## Scrypt adapter
+## Scrypt Adapter
 
 The [scrypt](http://www.tarsnap.com/scrypt.html) algorithm uses the [Salsa20/8
 core](http://cr.yp.to/salsa20.html) algorithm and Pbkdf2-SHA256 to generate a
@@ -130,7 +130,7 @@ printf ("Original password: %s\n", $pass);
 printf ("Derived key (hex): %s\n", bin2hex($key));
 ```
 
-> ### Performance of the scrypt implementation
+> ### Performance of the Scrypt Implementation
 >
 > The aim of the scrypt algorithm is to generate a secure derived key that
 > prevents brute force attacks.  Just like the other derivation functions, the
