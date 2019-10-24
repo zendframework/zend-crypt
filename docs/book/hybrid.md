@@ -1,5 +1,7 @@
 # Hybrid Cryptosystem
 
+> Available since version 3.1.0
+
 Hybrid is an encryption mode that uses symmetric and public key ciphers together.
 The approach takes advantage of public key cryptography for sharing keys and
 symmetric encryption speed for encrypting messages.
