@@ -11,6 +11,5 @@ pages:
       - { Passwords: password.md }
       - { 'Public Key Cryptography': public-key.md }
 site_name: zend-crypt
-copyright: 'Copyright (c) 2005-2018 <a href="https://www.zend.com/">Zend Technologies USA Inc.</a>'
 site_description: 'Strong cryptography tools and password hashing.'
 repo_url: 'https://github.com/zendframework/zend-crypt'
