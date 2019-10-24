@@ -2,42 +2,42 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
     <url>
      <loc>https://docs.zendframework.com/zend-crypt/</loc>
-     <lastmod>2019-10-01</lastmod>
+     <lastmod>2019-10-24</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
      <loc>https://docs.zendframework.com/zend-crypt/intro/</loc>
-     <lastmod>2019-10-01</lastmod>
+     <lastmod>2019-10-24</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
      <loc>https://docs.zendframework.com/zend-crypt/block-cipher/</loc>
-     <lastmod>2019-10-01</lastmod>
+     <lastmod>2019-10-24</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
      <loc>https://docs.zendframework.com/zend-crypt/files/</loc>
-     <lastmod>2019-10-01</lastmod>
+     <lastmod>2019-10-24</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
      <loc>https://docs.zendframework.com/zend-crypt/hybrid/</loc>
-     <lastmod>2019-10-01</lastmod>
+     <lastmod>2019-10-24</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
      <loc>https://docs.zendframework.com/zend-crypt/key-derivation/</loc>
-     <lastmod>2019-10-01</lastmod>
+     <lastmod>2019-10-24</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
      <loc>https://docs.zendframework.com/zend-crypt/password/</loc>
-     <lastmod>2019-10-01</lastmod>
+     <lastmod>2019-10-24</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
      <loc>https://docs.zendframework.com/zend-crypt/public-key/</loc>
-     <lastmod>2019-10-01</lastmod>
+     <lastmod>2019-10-24</lastmod>
      <changefreq>daily</changefreq>
     </url>
 </urlset>
