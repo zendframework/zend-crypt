@@ -99,7 +99,7 @@ The security of the Diffie-Hellman exchange algorithm is related to the choice
 of these parameters. To know how to choose secure numbers you can read the
 [RFC 3526](http://tools.ietf.org/html/rfc3526) document.
 
-> ### Openssl
+> ### OpenSSL
 >
 > The `Zend\Crypt\PublicKey\DiffieHellman` class by default uses the
 > [OpenSSL](http://php.net/manual/en/book.openssl.php) extension to generate the
@@ -232,6 +232,6 @@ if ($verify) {
 In this example, we used the Base64 format to encode the digital signature of the file
 (`binary_output` is false).
 
-> ### Openssl
+> ### OpenSSL
 >
 > The implementation of the `Zend\Crypt\PublicKey\Rsa` algorithm uses PHP's OpenSSL extension.
