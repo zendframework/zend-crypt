@@ -1,4 +1,4 @@
-# Encrypt and decrypt files
+# Encrypting Files
 
 `Zend\Crypt\FileCipher` implements file encryption and decryption using a
 symmetric cipher in

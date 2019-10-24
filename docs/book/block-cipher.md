@@ -1,4 +1,4 @@
-# Encrypt/decrypt using block ciphers
+# Block Ciphers
 
 `Zend\Crypt\BlockCipher` implements encrypt-then-authenticate mode using
 [HMAC](http://en.wikipedia.org/wiki/HMAC) to provide authentication.

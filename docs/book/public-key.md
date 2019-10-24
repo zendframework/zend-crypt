@@ -1,4 +1,4 @@
-# Public key cryptography
+# Public Key Cryptography
 
 Public-key cryptography refers to a cryptographic system requiring two separate
 keys, one of which is secret and one of which is public. Although different, the

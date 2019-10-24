@@ -1,4 +1,4 @@
-# Key derivation function
+# Key Derivation
 
 In cryptography, a key derivation function (or KDF) derives one or more secret
 keys from a secret value such as a master key, or known information &mdash; such

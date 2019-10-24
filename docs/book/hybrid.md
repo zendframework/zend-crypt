@@ -1,4 +1,4 @@
-# Encrypt and decrypt using hybrid cryptosystem - Since 3.1.0
+# Hybrid Cryptosystem
 
 Hybrid is an encryption mode that uses symmetric and public key ciphers together.
 The approach takes advantage of public key cryptography for sharing keys and
