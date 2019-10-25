@@ -1,0 +1,617 @@
+<!DOCTYPE html>
+<html lang="en">
+
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Strong cryptography tools and password hashing.">  
+    <link rel="canonical" href="https://docs.zendframework.com/zend-crypt/hybrid/">
+    <link rel="shortcut icon" href="../img/favicon.ico">
+
+    <title>Hybrid Cryptosystem - zend-crypt - Zend Framework Docs</title>
+
+    <link rel="stylesheet" href="../css/styles-5cfabd53ee.css">
+</head>
+<body id="page-top">
+
+    
+    <div class="navbar navbar-default" role="navigation">
+    <div class="container">
+        <div class="navbar-header">
+
+            
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+
+            
+            <span class="navbar-brand">
+                <a class="logo-link" href="https://framework.zend.com/" data-tooltip data-placement="bottom" title="Go to the ZF homepage">
+                    <img src="../img/zend-framework-logo.svg" height="28" alt="Zend Framework">
+                </a>
+            </span>
+        </div>
+
+        <div class="navbar-collapse collapse">
+
+            
+            <ul class="nav navbar-nav navbar-right">
+                <li>
+                    <a href="https://framework.zend.com/about">About</a>
+                </li>
+                <li>
+                    <a href="https://framework.zend.com/downloads">Install</a>
+                </li>
+                <li class="active">
+                    <a href="https://docs.zendframework.com">Documentation</a>
+                </li>
+                <li>
+                    <a href="https://www.zend.com/en/services/training">Training</a>
+                </li>
+                <li>
+                    <a href="https://framework.zend.com/blog">Blog</a>
+                </li>
+                <li>
+                    <a href="https://framework.zend.com/participate">Participate</a>
+                </li>
+            </ul>
+
+            
+            
+                <div class="nav navbar-nav navbar-collapse visible-xs-block ">
+                    
+    <div class="subnavigation hidden-print">
+        <h4 class="subnavigation__title">
+            <a href="..">zend-crypt</a>
+        </h4>
+
+        <h5 class="subnavigation__subtitle">Table of Contents</h5>
+
+        <ul class="subnavigation__list">
+            
+
+                
+                
+
+                    
+                    
+                        
+                            <li class="subnavigation__list-item ">
+                                <a href="../intro/" class="subnavigation__link">Introduction</a>
+                            </li>
+                        
+                    
+                
+            
+
+                
+                
+
+                    
+                    
+                        
+                            <li class="subnavigation__list-item">
+                                <span class="subnavigation__headline">Reference</span>
+                                <ul class="subnavigation__list">
+                                    
+                                        
+    <li class="subnavigation__list-item ">
+        <a href="../block-cipher/" class="subnavigation__link">Block Ciphers</a>
+    </li>
+
+                                    
+                                        
+    <li class="subnavigation__list-item ">
+        <a href="../files/" class="subnavigation__link">Encrypting Files</a>
+    </li>
+
+                                    
+                                        
+    <li class="subnavigation__list-item subnavigation__list-item--active">
+        <a href="./" class="subnavigation__link">Hybrid Cryptosystem</a>
+    </li>
+
+                                    
+                                        
+    <li class="subnavigation__list-item ">
+        <a href="../key-derivation/" class="subnavigation__link">Key Derivation</a>
+    </li>
+
+                                    
+                                        
+    <li class="subnavigation__list-item ">
+        <a href="../password/" class="subnavigation__link">Password</a>
+    </li>
+
+                                    
+                                        
+    <li class="subnavigation__list-item ">
+        <a href="../public-key/" class="subnavigation__link">Public Key Cryptography</a>
+    </li>
+
+                                    
+                                </ul>
+                            </li>
+                        
+                    
+                
+            
+        </ul>
+    </div>
+
+                </div>
+            
+
+            
+            <div class="nav navbar-nav navbar-collapse visible-xs-block">
+                <div class="component-selector">
+    <h4 class="component-selector__title">Components</h4>
+    <h5 class="component-selector__subtitle">Find documentation…</h5>
+    <select class="form-control component-selector__control">
+        <option value="/">Overview</option>
+        <optgroup label="Components"></optgroup>
+    </select>
+</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+    
+    <header class="header">
+    <div class="container">
+        <div class="row">
+
+            
+            <div class="col-xs-8">
+                <h1 class="header__title">
+                    Documentation
+
+                    
+                        <small class="header__subtitle">zend-crypt</small>
+                    
+                </h1>
+            </div>
+
+            
+            <div class="col-xs-4 text-right">
+                
+                    
+
+                    <a href="#" class="header__link header__link--search" data-toggle="modal" data-target="#mkdocs_search_modal" title="Open search">
+                        <i class="fa fa-search"></i> Search
+                    </a>
+                    <a href="https://github.com/zendframework/zend-crypt/" class="header__link header__link--github" title="Go to repository of zend-crypt">
+                        <i class="fa fa-github"></i> GitHub
+                    </a>
+                
+            </div>
+        </div>
+    </div>
+</header>
+
+    
+    <div class="laminas-announcement">
+    <div class="container">
+        <div class="row">
+            <div class="col-xs-12">
+                Zend Framework transitions to the Linux Foundation. <a href="https://getlaminas.org">Learn More.</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+    
+    <div class="container">
+        <div class="row">
+            <div class="col-md-9 col-xs-12 content" role="main">
+            <!-- content:begin -->
+                
+                    <ol class="breadcrumb" role="navigation" aria-label="breadcrumbs navigation">
+    <li><a href="https://framework.zend.com/">Home</a></li>
+
+    
+        <li><a href="https://docs.zendframework.com/">Documentation</a></li>
+
+        
+            <li><a href="..">zend-crypt</a></li>
+
+            
+                
+                    
+                    
+                        <li>Reference</li>
+                    
+                
+            
+
+            <li class="active">Hybrid Cryptosystem</li>
+        
+    
+</ol>
+
+
+
+
+
+
+    
+    
+        <h2 class="chapter__headline">Reference</h2>
+    
+
+    <div>
+        
+    
+
+    
+    
+        <div class="toc">
+            <h6 class="toc__headline">In This Article</h6>
+            <ul class="toc__list">
+                
+                    <li class="toc__entry">
+                        <a href="#how-it-works" class="toc__link">How it works</a>
+                    </li>
+                
+                    <li class="toc__entry">
+                        <a href="#example-of-usage" class="toc__link">Example of Usage</a>
+                    </li>
+                
+                    <li class="toc__entry">
+                        <a href="#encrypt-with-multiple-keys" class="toc__link">Encrypt with multiple Keys</a>
+                    </li>
+                
+            </ul>
+        </div>
+    
+
+    </div>
+
+    <h1 id="hybrid-cryptosystem">Hybrid Cryptosystem</h1>
+<blockquote>
+<p>Available since version 3.1.0</p>
+</blockquote>
+<p>Hybrid is an encryption mode that uses symmetric and public key ciphers together.
+The approach takes advantage of public key cryptography for sharing keys and
+symmetric encryption speed for encrypting messages.</p>
+<p>Hybrid mode allows you to encrypt a message for one or more receivers, and can
+be used in multi-user scenarios where you wish to limit decryption to specific
+users.</p>
+<h2 id="how-it-works">How it works</h2>
+<p>Suppose we have two users: <em>Alice</em> and <em>Bob</em>. <em>Alice</em> wants to send a message to <em>Bob</em>
+using a hybrid cryptosystem, she needs to:</p>
+<ul>
+<li>Obtain <em>Bob</em>'s public key;</li>
+<li>Generates a random session key (one-time pad);</li>
+<li>Encrypts message using a symmetric cipher with the previous session key;</li>
+<li>Encrypts session key using the <em>Bob</em>'s public key;</li>
+<li>Sends both the encrypted message and encrypted session key to <em>Bob</em>.</li>
+</ul>
+<p>A schema of the encryption is reported in the image below:</p>
+<p><img alt="Encryption schema" src="../images/zend.crypt.hybrid.png" class="img-responsive"/></p>
+<p>To decrypt the message, <em>Bob</em> needs to:</p>
+<ul>
+<li>Uses his private key to decrypt the session key;</li>
+<li>Uses this session key to decrypt the message.</li>
+</ul>
+<h2 id="example-of-usage">Example of Usage</h2>
+<p>In order to use the <code>Zend\Crypt\Hybrid</code> component, you need to have a keyring of
+public and private keys. To encrypt a message, use the following code:</p>
+<p> <pre class=codehilite><code class=language-php>use Zend\Crypt\Hybrid;
+use Zend\Crypt\PublicKey\RsaOptions;
+
+// Generate public and private key
+$rsaOptions = new RsaOptions([
+    'pass_phrase' =&gt; 'test'
+]);
+$rsaOptions-&gt;generateKeys([
+    'private_key_bits' =&gt; 4096
+]);
+$publicKey  = $rsaOptions-&gt;getPublicKey();
+$privateKey = $rsaOptions-&gt;getPrivateKey();
+
+$hybrid     = new Hybrid();
+$ciphertext = $hybrid-&gt;encrypt('message', $publicKey);
+$plaintext  = $hybrid-&gt;decrypt($ciphertext, $privateKey);
+
+printf($plaintext === 'message' ? &quot;Success\n&quot; : &quot;Error\n&quot;);</code></pre></p>
+<p>We generated the keys using the <a href="../public-key/">Zend\Crypt\PublicKey\RsaOptions</a>
+component. You can also use a <a href="https://en.wikipedia.org/wiki/Privacy-enhanced_Electronic_Mail">PEM</a>
+string for the keys. If you use a string for the private key, you need to pass
+the pass phrase to use when decrypting, if present, like in the following example:</p>
+<p> <pre class=codehilite><code class=language-php>use Zend\Crypt\Hybrid;
+use Zend\Crypt\PublicKey\RsaOptions;
+
+// Generate public and private key
+$rsaOptions = new RsaOptions([
+    'pass_phrase' =&gt; 'test'
+]);
+$rsaOptions-&gt;generateKeys([
+    'private_key_bits' =&gt; 4096
+]);
+// Strings in PEM format
+$publicKey  = $rsaOptions-&gt;getPublicKey()-&gt;toString();
+$privateKey = $rsaOptions-&gt;getPrivateKey()-&gt;toString();
+
+$hybrid     = new Hybrid();
+$ciphertext = $hybrid-&gt;encrypt('message', $publicKey);
+$plaintext  = $hybrid-&gt;decrypt($ciphertext, $privateKey, 'test'); // pass-phrase
+
+printf($plaintext === 'message' ? &quot;Success\n&quot; : &quot;Error\n&quot;);</code></pre></p>
+<p>The <code>Hybrid</code> component uses <code>Zend\Crypt\BlockCipher</code> for the symmetric
+cipher and <code>Zend\Crypt\Rsa</code> for the public-key cipher.</p>
+<h2 id="encrypt-with-multiple-keys">Encrypt with multiple Keys</h2>
+<p>The <code>Zend\Crypt\Hybrid</code> component can be used to encrypt a message for multiple
+users, using a keyring of identifiers and public keys. This keyring can be
+specified using an array of <code>[ 'id' =&gt; 'publickey' ]</code>, where <code>publickey</code> can be
+a string (PEM) or an instance of <code>Zend\Crypt\PublicKey\Rsa\PublicKey</code>. The <code>id</code>
+can be any string, for example, a receipient email address.</p>
+<p>The following details encryption using a keyring with 4 keys:</p>
+<p> <pre class=codehilite><code class=language-php>use Zend\Crypt\Hybrid;
+use Zend\Crypt\PublicKey\RsaOptions;
+
+$publicKeys  = [];
+$privateKeys = [];
+for ($id = 0; $id &lt; 4; $id++) {
+    $rsaOptions = new RsaOptions([
+        'pass_phrase' =&gt; &quot;test-$id&quot;
+    ]);
+    $rsaOptions-&gt;generateKeys([
+        'private_key_bits' =&gt; 4096
+    ]);
+    $publicKeys[$id]  = $rsaOptions-&gt;getPublicKey();
+    $privateKeys[$id] = $rsaOptions-&gt;getPrivateKey();
+}
+
+$hybrid    = new Hybrid();
+$encrypted = $hybrid-&gt;encrypt('message', $publicKeys);
+for ($id = 0; $id &lt; 4; $id++) {
+    $plaintext = $hybrid-&gt;decrypt($encrypted, $privateKeys[$id], null, $id);
+    printf($plaintext === 'message' ? &quot;Success on %d\n&quot; : &quot;Error on %d\n&quot;, $id);
+}</code></pre></p>
+
+
+
+
+    <nav>
+    <ul class="page-nav hidden-print">
+
+        
+        <li class="page-nav__item">
+            
+                <a rel="prev" class="page-nav__link page-nav__link--prev" href="../files/">
+                    <i class="fa fa-chevron-left"></i> Previous
+                </a>
+            
+        </li>
+
+        
+        <li class="page-nav__item">
+            
+                <a rel="next" class="page-nav__link page-nav__link--next" href="../key-derivation/">
+                    Next <i class="fa fa-chevron-right"></i>
+                </a>
+            
+        </li>
+    </ul>
+</nav>
+
+
+
+
+    <div class="help-wanted">
+        <p>
+            Found a mistake or want to contribute to the documentation?
+            <a href="https://github.com/zendframework/zend-crypt/edit/master/docs/book/hybrid.md" target="_blank" class="help-wanted__link">
+                Edit this page on GitHub!
+            </a>
+        </p>
+    </div>
+
+                
+            <!-- content:end -->
+            </div>
+            <div class="col-md-3 col-xs-12 sidebar">
+                
+                    <div class="component-selector">
+    <h4 class="component-selector__title">Components</h4>
+    <h5 class="component-selector__subtitle">Find documentation…</h5>
+    <select class="form-control component-selector__control">
+        <option value="/">Overview</option>
+        <optgroup label="Components"></optgroup>
+    </select>
+</div>
+                    
+    <div class="subnavigation hidden-print">
+        <h4 class="subnavigation__title">
+            <a href="..">zend-crypt</a>
+        </h4>
+
+        <h5 class="subnavigation__subtitle">Table of Contents</h5>
+
+        <ul class="subnavigation__list">
+            
+
+                
+                
+
+                    
+                    
+                        
+                            <li class="subnavigation__list-item ">
+                                <a href="../intro/" class="subnavigation__link">Introduction</a>
+                            </li>
+                        
+                    
+                
+            
+
+                
+                
+
+                    
+                    
+                        
+                            <li class="subnavigation__list-item">
+                                <span class="subnavigation__headline">Reference</span>
+                                <ul class="subnavigation__list">
+                                    
+                                        
+    <li class="subnavigation__list-item ">
+        <a href="../block-cipher/" class="subnavigation__link">Block Ciphers</a>
+    </li>
+
+                                    
+                                        
+    <li class="subnavigation__list-item ">
+        <a href="../files/" class="subnavigation__link">Encrypting Files</a>
+    </li>
+
+                                    
+                                        
+    <li class="subnavigation__list-item subnavigation__list-item--active">
+        <a href="./" class="subnavigation__link">Hybrid Cryptosystem</a>
+    </li>
+
+                                    
+                                        
+    <li class="subnavigation__list-item ">
+        <a href="../key-derivation/" class="subnavigation__link">Key Derivation</a>
+    </li>
+
+                                    
+                                        
+    <li class="subnavigation__list-item ">
+        <a href="../password/" class="subnavigation__link">Password</a>
+    </li>
+
+                                    
+                                        
+    <li class="subnavigation__list-item ">
+        <a href="../public-key/" class="subnavigation__link">Public Key Cryptography</a>
+    </li>
+
+                                    
+                                </ul>
+                            </li>
+                        
+                    
+                
+            
+        </ul>
+    </div>
+
+                
+            </div>
+        </div>
+    </div>
+
+    
+    <footer class="footer">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-9">
+                <h5>Zend Framework</h5>
+                <ul>
+                    <li><a href="https://framework.zend.com/">framework.zend.com</a></li>
+                    <li><a href="https://docs.zendframework.com">docs.zendframework.com</a></li>
+                    <li><a href="https://packages.zendframework.com">packages.zendframework.com</a></li>
+                    <li><a href="https://apigility.org">apigility.org</a></li>
+                    <li><a href="https://getexpressive.org/">getexpressive.org</a></li>
+                </ul>
+            </div>
+        </div>
+
+        
+        <div class="row">
+            <div class="col-md-12 text-center">
+                <a class="footer__button" href="#page-top"><i class="fa fa-chevron-up" aria-hidden="true"></i></a>
+            </div>
+        </div>
+
+        <div class="row">
+
+            
+            <div class="col-md-9">
+                <h4 class="footer__headline">Copyright</h4>
+                <p>&copy; 2006-2019 by <a href="https://www.zend.com/">Zend</a>, a <a href="https://www.roguewave.com/">Rogue Wave Company</a>.</p>
+            </div>
+
+            
+            <div class="col-md-3">
+                <h4 class="footer__headline">Support</h4>
+                <ul class="support__list">
+                    <li class="support__list-item">
+                        <a href="https://discourse.zendframework.com" class="support__link" title="Forum"><i class="fa fa-comments"></i></a>
+                    </li>
+                    <li class="support__list-item">
+                        <a href="https://zendframework-slack.herokuapp.com" class="support__link" title="Chat"><i class="fa fa-slack"></i></a>
+                    </li>
+                    <li class="support__list-item">
+                        <a href="https://github.com/zendframework" class="support__link" title="Github"><i class="fa fa-github"></i></a>
+                    </li>
+                    <li class="support__list-item">
+                        <a href="https://twitter.com/zfdevteam" class="support__link" title="Twitter"><i class="fa fa-twitter"></i></a>
+                    </li>
+                    <li class="support__list-item">
+                        <a href="https://tinyletter.com/mwopzend" class="support__link" title="Newsletter"><i class="fa fa-envelope"></i></a>
+                    </li>
+                    <li class="support__list-item">
+                        <a href="https://framework.zend.com/blog/feed-rss.xml" class="support__link" title="Blog feed"><i class="fa fa-rss"></i></a>
+                    </li>
+                    <li class="support__list-item">
+                        <a href="https://framework.zend.com/security/feed" class="support__link" title="Security feed"><i class="fa fa-rss-square"></i></a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</footer>
+
+    <script>
+        var base_url = '..',
+            siteName = 'zend-crypt';
+    </script>
+    <script src="../js/scripts-8d7ae56abf.js"></script>
+        <script src="../search/main.js"></script>
+
+    
+    <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="Search Modal" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">
+                        <span aria-hidden="true">&times;</span>
+                        <span class="sr-only">Close</span>
+                    </button>
+                    <h4 class="modal-title" id="exampleModalLabel">Search</h4>
+                </div>
+                <div class="modal-body">
+                    <p>
+                        From here you can search these documents. Enter your search terms below.
+                    </p>
+                    <form role="form">
+                        <div class="form-group">
+                            <input type="text" class="form-control" placeholder="Search..." id="mkdocs-search-query">
+                        </div>
+                    </form>
+                    <div id="mkdocs-search-results"></div>
+                </div>
+                <div class="modal-footer">
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+</body>
+
+
+</html>
