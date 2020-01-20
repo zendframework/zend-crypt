@@ -2,7 +2,7 @@
 
 > ## Repository abandoned 2019-12-31
 >
-> This repository has moved to laminas/laminas-crypt.
+> This repository has moved to [laminas/laminas-crypt](https://github.com/laminas/laminas-crypt).
 
 [![Build Status](https://secure.travis-ci.org/zendframework/zend-crypt.svg?branch=master)](https://secure.travis-ci.org/zendframework/zend-crypt)
 [![Coverage Status](https://coveralls.io/repos/github/zendframework/zend-crypt/badge.svg?branch=master)](https://coveralls.io/github/zendframework/zend-crypt?branch=master)
