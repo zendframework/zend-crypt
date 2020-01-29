@@ -7,12 +7,12 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Strong cryptography tools and password hashing.">  
-    <link rel="canonical" href="https://docs.zendframework.com/zend-crypt/key-derivation/">
+    <link rel="canonical" href="https://docs.zendframework.com/key-derivation/">
     <link rel="shortcut icon" href="../img/favicon.ico">
 
     <title>Key Derivation - zend-crypt - Zend Framework Docs</title>
 
-    <link rel="stylesheet" href="../css/styles-5cfabd53ee.css">
+    <link rel="stylesheet" href="/css/styles.css">
 </head>
 <body id="page-top">
 
@@ -199,9 +199,9 @@
     <div class="laminas-announcement">
     <div class="container">
         <div class="row">
-            <div class="col-xs-12">
-                Zend Framework transitions to the Linux Foundation. <a href="https://getlaminas.org">Learn More.</a>
-            </div>
+            <div class="col-xs-12"><strong>
+                This package has moved. Visit its replacement, <a href="https://docs.laminas.dev/laminas-crypt/">laminas/laminas-crypt.</a>
+            </strong></div>
         </div>
     </div>
 </div>
@@ -304,7 +304,7 @@ operations. The added computational work makes password cracking much more
 difficult, and is known as <a href="http://en.wikipedia.org/wiki/Key_stretching">key
 stretching</a>.</p>
 <p>In the example below we demonstrate typical usage of the <code>Pbkdf2</code> adapter.</p>
-<p> <pre class=codehilite><code class=language-php>use Zend\Crypt\Key\Derivation\Pbkdf2;
+<pre><code class="language-php">use Zend\Crypt\Key\Derivation\Pbkdf2;
 use Zend\Math\Rand;
 
 $pass = 'password';
@@ -312,7 +312,9 @@ $salt = Rand::getBytes(32, true);
 $key  = Pbkdf2::calc('sha256', $pass, $salt, 10000, 32);
 
 printf (&quot;Original password: %s\n&quot;, $pass);
-printf (&quot;Derived key (hex): %s\n&quot;, bin2hex($key));</code></pre></p>
+printf (&quot;Derived key (hex): %s\n&quot;, bin2hex($key));
+</code></pre>
+
 <p>The <code>Pbkdf2</code> adapter takes the password (<code>$pass</code>) and generates a binary key of
 32 bytes. The syntax is <code>calc($hash, $pass, $salt, $iterations, $length)</code> where
 <code>$hash</code> is the name of the hash function to use, <code>$pass</code> is the password,
@@ -334,7 +336,7 @@ algorithm only if you really need it (for instance, due to hardware
 limitations).</p>
 <p>The following demonstrates usage of the <code>SaltedS2k</code> adapter to generate a 32
 byte key.</p>
-<p> <pre class=codehilite><code class=language-php>use Zend\Crypt\Key\Derivation\SaltedS2k;
+<pre><code class="language-php">use Zend\Crypt\Key\Derivation\SaltedS2k;
 use Zend\Math\Rand;
 
 $pass = 'password';
@@ -342,7 +344,9 @@ $salt = Rand::getBytes(32, true);
 $key  = SaltedS2k::calc('sha256', $pass, $salt, 32);
 
 printf (&quot;Original password: %s\n&quot;, $pass);
-printf (&quot;Derived key (hex): %s\n&quot;, bin2hex($key));</code></pre></p>
+printf (&quot;Derived key (hex): %s\n&quot;, bin2hex($key));
+</code></pre>
+
 <h2 id="scrypt-adapter">Scrypt Adapter</h2>
 <p>The <a href="http://www.tarsnap.com/scrypt.html">scrypt</a> algorithm uses the <a href="http://cr.yp.to/salsa20.html">Salsa20/8
 core</a> algorithm and Pbkdf2-SHA256 to generate a
@@ -375,7 +379,7 @@ attack against Pbkdf2."</p>
 <li><code>p</code>, the parallelization cost.</li>
 </ul>
 <p>Following is a usage example for the <code>Scrypt</code> adapter:</p>
-<p> <pre class=codehilite><code class=language-php>use Zend\Crypt\Key\Derivation\Scrypt;
+<pre><code class="language-php">use Zend\Crypt\Key\Derivation\Scrypt;
 use Zend\Math\Rand;
 
 $pass = 'password';
@@ -383,7 +387,9 @@ $salt = Rand::getBytes(32, true);
 $key  = Scrypt::calc($pass, $salt, 2048, 2, 1, 32);
 
 printf (&quot;Original password: %s\n&quot;, $pass);
-printf (&quot;Derived key (hex): %s\n&quot;, bin2hex($key));</code></pre></p>
+printf (&quot;Derived key (hex): %s\n&quot;, bin2hex($key));
+</code></pre>
+
 <blockquote>
 <h3>Performance of the Scrypt Implementation</h3>
 <p>The aim of the scrypt algorithm is to generate a secure derived key that
@@ -566,7 +572,7 @@ instead of the pure PHP implementation.</p>
             
             <div class="col-md-9">
                 <h4 class="footer__headline">Copyright</h4>
-                <p>&copy; 2006-2019 by <a href="https://www.zend.com/">Zend</a>, a <a href="https://www.roguewave.com/">Rogue Wave Company</a>.</p>
+                <p>&copy; 2006-2020 by <a href="https://www.zend.com/">Zend</a> by <a href="https://www.perforce.com/">Perforce</a>.</p>
             </div>
 
             
@@ -574,10 +580,10 @@ instead of the pure PHP implementation.</p>
                 <h4 class="footer__headline">Support</h4>
                 <ul class="support__list">
                     <li class="support__list-item">
-                        <a href="https://discourse.zendframework.com" class="support__link" title="Forum"><i class="fa fa-comments"></i></a>
+                        <a href="https://discourse.laminas.dev" class="support__link" title="Forum"><i class="fa fa-comments"></i></a>
                     </li>
                     <li class="support__list-item">
-                        <a href="https://zendframework-slack.herokuapp.com" class="support__link" title="Chat"><i class="fa fa-slack"></i></a>
+                        <a href="https://laminas.dev/chat/" class="support__link" title="Chat"><i class="fa fa-slack"></i></a>
                     </li>
                     <li class="support__list-item">
                         <a href="https://github.com/zendframework" class="support__link" title="Github"><i class="fa fa-github"></i></a>
@@ -585,27 +591,28 @@ instead of the pure PHP implementation.</p>
                     <li class="support__list-item">
                         <a href="https://twitter.com/zfdevteam" class="support__link" title="Twitter"><i class="fa fa-twitter"></i></a>
                     </li>
-                    <li class="support__list-item">
-                        <a href="https://tinyletter.com/mwopzend" class="support__link" title="Newsletter"><i class="fa fa-envelope"></i></a>
-                    </li>
-                    <li class="support__list-item">
-                        <a href="https://framework.zend.com/blog/feed-rss.xml" class="support__link" title="Blog feed"><i class="fa fa-rss"></i></a>
-                    </li>
-                    <li class="support__list-item">
-                        <a href="https://framework.zend.com/security/feed" class="support__link" title="Security feed"><i class="fa fa-rss-square"></i></a>
-                    </li>
                 </ul>
             </div>
         </div>
     </div>
 </footer>
 
+<nav class="cookie-bar navbar navbar-fixed-bottom navbar-default hidden">
+    <div class="container">
+        <p class="navbar-text">
+            We use cookies to allow you to dismiss dialogs such as the Laminas
+            Project notification.
+        </p>
+        <button type="button" class="cookie-button btn btn-default navbar-btn">Allow Cookies</button>
+    </div>
+</nav>
+
     <script>
         var base_url = '..',
             siteName = 'zend-crypt';
     </script>
-    <script src="../js/scripts-8d7ae56abf.js"></script>
-        <script src="../search/main.js"></script>
+    <script src="/js/scripts.js"></script>
+    <script src="../search/main.js"></script>
 
     
     <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="Search Modal" aria-hidden="true">

@@ -7,12 +7,12 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Strong cryptography tools and password hashing.">  
-    <link rel="canonical" href="https://docs.zendframework.com/zend-crypt/password/">
+    <link rel="canonical" href="https://docs.zendframework.com/password/">
     <link rel="shortcut icon" href="../img/favicon.ico">
 
     <title>Password - zend-crypt - Zend Framework Docs</title>
 
-    <link rel="stylesheet" href="../css/styles-5cfabd53ee.css">
+    <link rel="stylesheet" href="/css/styles.css">
 </head>
 <body id="page-top">
 
@@ -199,9 +199,9 @@
     <div class="laminas-announcement">
     <div class="container">
         <div class="row">
-            <div class="col-xs-12">
-                Zend Framework transitions to the Linux Foundation. <a href="https://getlaminas.org">Learn More.</a>
-            </div>
+            <div class="col-xs-12"><strong>
+                This package has moved. Visit its replacement, <a href="https://docs.laminas.dev/laminas-crypt/">laminas/laminas-crypt.</a>
+            </strong></div>
         </div>
     </div>
 </div>
@@ -308,10 +308,12 @@ authentication. All of the parts needed to verify the hash are present in the
 hash itself,, separated with <code>$</code>’s; first the algorithm, then the cost, the
 salt, and then finally the hash.</p>
 <p>The example below demonstrates using the bcrypt algorithm to store a user’s password:</p>
-<p> <pre class=codehilite><code class=language-php>use Zend\Crypt\Password\Bcrypt;
+<pre><code class="language-php">use Zend\Crypt\Password\Bcrypt;
 
 $bcrypt = new Bcrypt();
-$securePass = $bcrypt-&gt;create('user password');</code></pre></p>
+$securePass = $bcrypt-&gt;create('user password');
+</code></pre>
+
 <p>The output of the <code>create()</code> method is the hash of the password. This value can
 then be stored in a repository like a database (the output is a string of 60
 bytes).</p>
@@ -325,7 +327,7 @@ password pre-hashing of hash input &gt; 72 bytes.</p>
 </blockquote>
 <p>To verify if a given password is valid against a bcrypt value you can use the
 <code>verify()</code> method. The example below demonstrates verification:</p>
-<p> <pre class=codehilite><code class=language-php>use Zend\Crypt\Password\Bcrypt;
+<pre><code class="language-php">use Zend\Crypt\Password\Bcrypt;
 
 $bcrypt = new Bcrypt();
 $securePass = 'the stored bcrypt value';
@@ -335,7 +337,9 @@ if ($bcrypt-&gt;verify($password, $securePass)) {
     echo &quot;The password is correct! \n&quot;;
 } else {
     echo &quot;The password is NOT correct.\n&quot;;
-}</code></pre></p>
+}
+</code></pre>
+
 <p>Bcrypt also uses a salt value to improve the randomness of the algorithm.
 By default, <code>Zend\Crypt\Password\Bcrypt</code> generates a random salt for
 each hash. If you want to specify a preselected salt you can use the <code>setSalt()</code>
@@ -343,12 +347,14 @@ method.</p>
 <p>We also provide a <code>getSalt()</code> method to retrieve the salt specified by the user.
 The salt and the cost parameter can be also specified during the constructor of
 the class, as demonstrated below:</p>
-<p> <pre class=codehilite><code class=language-php>use Zend\Crypt\Password\Bcrypt;
+<pre><code class="language-php">use Zend\Crypt\Password\Bcrypt;
 
 $bcrypt = new Bcrypt([
     'salt' =&gt; 'random value',
     'cost' =&gt; 11
-]);</code></pre></p>
+]);
+</code></pre>
+
 <blockquote>
 <h3>Version 3.0</h3>
 <p>Starting with version 3.0, we now use the <a href="http://php.net/password_hash">password_hash()</a>
@@ -375,7 +381,7 @@ releases can still be validated under version 3.</p>
 </ul>
 <p>In order to specify the format of the Apache’s password, use the <code>setFormat()</code>
 method. An example with all the formats usage is demonstrated below:</p>
-<p> <pre class=codehilite><code class=language-php>use Zend\Crypt\Password\Apache;
+<pre><code class="language-php">use Zend\Crypt\Password\Apache;
 
 $apache = new Apache();
 
@@ -391,13 +397,17 @@ printf (&quot;MD5 output: %s\n&quot;, $apache-&gt;create('password'));
 $apache-&gt;setFormat('digest');
 $apache-&gt;setUserName('enrico');
 $apache-&gt;setAuthName('test');
-printf (&quot;Digest output: %s\n&quot;, $apache-&gt;create('password'));</code></pre></p>
+printf (&quot;Digest output: %s\n&quot;, $apache-&gt;create('password'));
+</code></pre>
+
 <p>You can also specify the format of the password during the constructor of the class:</p>
-<p> <pre class=codehilite><code class=language-php>use Zend\Crypt\Password\Apache;
+<pre><code class="language-php">use Zend\Crypt\Password\Apache;
 
 $apache = new Apache([
     'format' =&gt; 'md5'
-]);</code></pre></p>
+]);
+</code></pre>
+
 <p>Other possible parameters to pass in the constructor are <code>username</code> and <code>authname</code>,
 for the digest format.</p>
 
@@ -565,7 +575,7 @@ for the digest format.</p>
             
             <div class="col-md-9">
                 <h4 class="footer__headline">Copyright</h4>
-                <p>&copy; 2006-2019 by <a href="https://www.zend.com/">Zend</a>, a <a href="https://www.roguewave.com/">Rogue Wave Company</a>.</p>
+                <p>&copy; 2006-2020 by <a href="https://www.zend.com/">Zend</a> by <a href="https://www.perforce.com/">Perforce</a>.</p>
             </div>
 
             
@@ -573,10 +583,10 @@ for the digest format.</p>
                 <h4 class="footer__headline">Support</h4>
                 <ul class="support__list">
                     <li class="support__list-item">
-                        <a href="https://discourse.zendframework.com" class="support__link" title="Forum"><i class="fa fa-comments"></i></a>
+                        <a href="https://discourse.laminas.dev" class="support__link" title="Forum"><i class="fa fa-comments"></i></a>
                     </li>
                     <li class="support__list-item">
-                        <a href="https://zendframework-slack.herokuapp.com" class="support__link" title="Chat"><i class="fa fa-slack"></i></a>
+                        <a href="https://laminas.dev/chat/" class="support__link" title="Chat"><i class="fa fa-slack"></i></a>
                     </li>
                     <li class="support__list-item">
                         <a href="https://github.com/zendframework" class="support__link" title="Github"><i class="fa fa-github"></i></a>
@@ -584,27 +594,28 @@ for the digest format.</p>
                     <li class="support__list-item">
                         <a href="https://twitter.com/zfdevteam" class="support__link" title="Twitter"><i class="fa fa-twitter"></i></a>
                     </li>
-                    <li class="support__list-item">
-                        <a href="https://tinyletter.com/mwopzend" class="support__link" title="Newsletter"><i class="fa fa-envelope"></i></a>
-                    </li>
-                    <li class="support__list-item">
-                        <a href="https://framework.zend.com/blog/feed-rss.xml" class="support__link" title="Blog feed"><i class="fa fa-rss"></i></a>
-                    </li>
-                    <li class="support__list-item">
-                        <a href="https://framework.zend.com/security/feed" class="support__link" title="Security feed"><i class="fa fa-rss-square"></i></a>
-                    </li>
                 </ul>
             </div>
         </div>
     </div>
 </footer>
 
+<nav class="cookie-bar navbar navbar-fixed-bottom navbar-default hidden">
+    <div class="container">
+        <p class="navbar-text">
+            We use cookies to allow you to dismiss dialogs such as the Laminas
+            Project notification.
+        </p>
+        <button type="button" class="cookie-button btn btn-default navbar-btn">Allow Cookies</button>
+    </div>
+</nav>
+
     <script>
         var base_url = '..',
             siteName = 'zend-crypt';
     </script>
-    <script src="../js/scripts-8d7ae56abf.js"></script>
-        <script src="../search/main.js"></script>
+    <script src="/js/scripts.js"></script>
+    <script src="../search/main.js"></script>
 
     
     <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="Search Modal" aria-hidden="true">

@@ -7,12 +7,12 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Strong cryptography tools and password hashing.">  
-    <link rel="canonical" href="https://docs.zendframework.com/zend-crypt/block-cipher/">
+    <link rel="canonical" href="https://docs.zendframework.com/block-cipher/">
     <link rel="shortcut icon" href="../img/favicon.ico">
 
     <title>Block Ciphers - zend-crypt - Zend Framework Docs</title>
 
-    <link rel="stylesheet" href="../css/styles-5cfabd53ee.css">
+    <link rel="stylesheet" href="/css/styles.css">
 </head>
 <body id="page-top">
 
@@ -199,9 +199,9 @@
     <div class="laminas-announcement">
     <div class="container">
         <div class="row">
-            <div class="col-xs-12">
-                Zend Framework transitions to the Linux Foundation. <a href="https://getlaminas.org">Learn More.</a>
-            </div>
+            <div class="col-xs-12"><strong>
+                This package has moved. Visit its replacement, <a href="https://docs.laminas.dev/laminas-crypt/">laminas/laminas-crypt.</a>
+            </strong></div>
         </div>
     </div>
 </div>
@@ -289,12 +289,14 @@ For these reasons, <strong>we strongly suggest using only the Openssl adapter</s
 by <code>Zend\Crypt\FileCipher</code>), and all examples now only demonstrate that
 adapter.</p>
 </blockquote>
-<p> <pre class=codehilite><code class=language-php>use Zend\Crypt\BlockCipher;
+<pre><code class="language-php">use Zend\Crypt\BlockCipher;
 
 $blockCipher = BlockCipher::factory('openssl', array('algo' =&gt; 'aes'));
 $blockCipher-&gt;setKey('encryption key');
 $result = $blockCipher-&gt;encrypt('this is a secret message');
-echo &quot;Encrypted text: $result\n&quot;;</code></pre></p>
+echo &quot;Encrypted text: $result\n&quot;;
+</code></pre>
+
 <p>The <code>BlockCipher</code> instance is initialized using a factory method with the name
 of the cipher adapter to use (e.g., <code>openssl</code>) and the parameters to pass to the adapter
 (the AES algorithm). In order to encrypt a string, we need to specify an
@@ -321,7 +323,7 @@ uses 448 bits.</p>
 <p>You can change all the default settings by passing the values to the factory
 parameters. For instance, if you want to use the Blowfish algorithm, with the
 CFB mode and the HMAC SHA512 hash function, initialize the class as follows:</p>
-<p> <pre class=codehilite><code class=language-php>use Zend\Crypt\BlockCipher;
+<pre><code class="language-php">use Zend\Crypt\BlockCipher;
 
 $blockCipher = BlockCipher::factory(
     'openssl',
@@ -330,7 +332,9 @@ $blockCipher = BlockCipher::factory(
         'mode' =&gt; 'cfb',
         'hash' =&gt; 'sha512'
     ]
-);</code></pre></p>
+);
+</code></pre>
+
 <blockquote>
 <h3>Recommendation</h3>
 <p>If you are not familiar with symmetric encryption techniques, we strongly
@@ -343,13 +347,15 @@ used during encryption.</p>
 <p>We can also initialize the <code>BlockCipher</code> manually without using the factory method;
 we can inject the symmetric cipher adapter directly via the constructor.
 For instance, we can rewrite the previous example as follows:</p>
-<p> <pre class=codehilite><code class=language-php>use Zend\Crypt\BlockCipher;
+<pre><code class="language-php">use Zend\Crypt\BlockCipher;
 use Zend\Crypt\Symmetric\Openssl;
 
 $blockCipher = new BlockCipher(new Openssl(['algo' =&gt; 'aes']));
 $blockCipher-&gt;setKey('encryption key');
 $result = $blockCipher-&gt;encrypt('this is a secret message');
-echo &quot;Encrypted text: $result \n&quot;;</code></pre></p>
+echo &quot;Encrypted text: $result \n&quot;;
+</code></pre>
+
 <h2 id="using-gcm-or-ccm-mode-from-php-71">Using GCM or CCM Mode from PHP 7.1+</h2>
 <p>If you are using PHP 7.1+ you can choose the GCM or CCM mode for authenticated
 encryption with OpenSSL. These modes provide authenticated encryption by itself,
@@ -361,7 +367,7 @@ read <a href="http://www.zimuel.it/authenticated-encrypt-with-openssl-and-php-7-
 <p>If you want to use the GCM or CCM mode with <code>BlockCipher</code> you can just specify
 the mode in the factory. For instance, the following is an example of
 <code>aes-256-gcm</code> encryption with OpenSSL:</p>
-<p> <pre class=codehilite><code class=language-php>use Zend\Crypt\BlockCipher;
+<pre><code class="language-php">use Zend\Crypt\BlockCipher;
 
 $blockCipher = BlockCipher::factory(
     'openssl',
@@ -369,9 +375,11 @@ $blockCipher = BlockCipher::factory(
         'algo' =&gt; 'aes',
         'mode' =&gt; 'gcm'
     ]
-);</code></pre></p>
+);
+</code></pre>
+
 <p>And below is an example demonstrating the factory for <code>aes-256-ccm</code> algorithm:</p>
-<p> <pre class=codehilite><code class=language-php>use Zend\Crypt\BlockCipher;
+<pre><code class="language-php">use Zend\Crypt\BlockCipher;
 
 $blockCipher = BlockCipher::factory(
     'openssl',
@@ -379,7 +387,9 @@ $blockCipher = BlockCipher::factory(
         'algo' =&gt; 'aes',
         'mode' =&gt; 'ccm'
     ]
-);</code></pre></p>
+);
+</code></pre>
+
 <blockquote>
 <h3>Recommendation</h3>
 <p><strong>GCM mode is about 3x faster than CCM</strong>, we recommend using GCM unless
@@ -550,7 +560,7 @@ you have requirements that dictate CCM.</p>
             
             <div class="col-md-9">
                 <h4 class="footer__headline">Copyright</h4>
-                <p>&copy; 2006-2019 by <a href="https://www.zend.com/">Zend</a>, a <a href="https://www.roguewave.com/">Rogue Wave Company</a>.</p>
+                <p>&copy; 2006-2020 by <a href="https://www.zend.com/">Zend</a> by <a href="https://www.perforce.com/">Perforce</a>.</p>
             </div>
 
             
@@ -558,10 +568,10 @@ you have requirements that dictate CCM.</p>
                 <h4 class="footer__headline">Support</h4>
                 <ul class="support__list">
                     <li class="support__list-item">
-                        <a href="https://discourse.zendframework.com" class="support__link" title="Forum"><i class="fa fa-comments"></i></a>
+                        <a href="https://discourse.laminas.dev" class="support__link" title="Forum"><i class="fa fa-comments"></i></a>
                     </li>
                     <li class="support__list-item">
-                        <a href="https://zendframework-slack.herokuapp.com" class="support__link" title="Chat"><i class="fa fa-slack"></i></a>
+                        <a href="https://laminas.dev/chat/" class="support__link" title="Chat"><i class="fa fa-slack"></i></a>
                     </li>
                     <li class="support__list-item">
                         <a href="https://github.com/zendframework" class="support__link" title="Github"><i class="fa fa-github"></i></a>
@@ -569,27 +579,28 @@ you have requirements that dictate CCM.</p>
                     <li class="support__list-item">
                         <a href="https://twitter.com/zfdevteam" class="support__link" title="Twitter"><i class="fa fa-twitter"></i></a>
                     </li>
-                    <li class="support__list-item">
-                        <a href="https://tinyletter.com/mwopzend" class="support__link" title="Newsletter"><i class="fa fa-envelope"></i></a>
-                    </li>
-                    <li class="support__list-item">
-                        <a href="https://framework.zend.com/blog/feed-rss.xml" class="support__link" title="Blog feed"><i class="fa fa-rss"></i></a>
-                    </li>
-                    <li class="support__list-item">
-                        <a href="https://framework.zend.com/security/feed" class="support__link" title="Security feed"><i class="fa fa-rss-square"></i></a>
-                    </li>
                 </ul>
             </div>
         </div>
     </div>
 </footer>
 
+<nav class="cookie-bar navbar navbar-fixed-bottom navbar-default hidden">
+    <div class="container">
+        <p class="navbar-text">
+            We use cookies to allow you to dismiss dialogs such as the Laminas
+            Project notification.
+        </p>
+        <button type="button" class="cookie-button btn btn-default navbar-btn">Allow Cookies</button>
+    </div>
+</nav>
+
     <script>
         var base_url = '..',
             siteName = 'zend-crypt';
     </script>
-    <script src="../js/scripts-8d7ae56abf.js"></script>
-        <script src="../search/main.js"></script>
+    <script src="/js/scripts.js"></script>
+    <script src="../search/main.js"></script>
 
     
     <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="Search Modal" aria-hidden="true">
